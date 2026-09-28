@@ -1,0 +1,33 @@
+{
+  "scenario_id": "ts-aes256-cbc",
+  "name": "AES-256-CBC with HMAC",
+  "description": "Enterprise IPsec tunnel utilizing AES-256-CBC with HMAC-SHA256 integrity, DH Group 14 (MODP-2048), but with PFS disabled.",
+  "ike_version": "IKEv2",
+  "mode": "Tunnel",
+  "ip_version": "IPv4",
+  "encryption": "AES-256-CBC",
+  "authentication": "HMAC-SHA256",
+  "dh_group": "DH Group 14",
+  "pfs": false,
+  "replay_protection": true,
+  "sa_lifetime_seconds": 28800,
+  "traffic_profiles": [
+    "ICMP",
+    "Web",
+    "Email",
+    "VoIP",
+    "Video",
+    "Messaging"
+  ],
+  "expected_security": {
+    "score_range": {
+      "min": 65,
+      "max": 80
+    },
+    "risk_level": "Medium",
+    "expected_findings": [
+      "PFS-001",
+      "CRYPTO-002"
+    ]
+  }
+}

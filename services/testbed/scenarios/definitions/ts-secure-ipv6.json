@@ -1,0 +1,30 @@
+{
+  "scenario_id": "ts-secure-ipv6",
+  "name": "Secure IPv6 IPsec",
+  "description": "High-security IPv6 IPsec tunnel using AES-256-GCM AEAD, DH Group 20 (ECP-384), PFS, and strict replay protection.",
+  "ike_version": "IKEv2",
+  "mode": "Tunnel",
+  "ip_version": "IPv6",
+  "encryption": "AES-256-GCM",
+  "authentication": "AEAD",
+  "dh_group": "DH Group 20",
+  "pfs": true,
+  "replay_protection": true,
+  "sa_lifetime_seconds": 28800,
+  "traffic_profiles": [
+    "ICMP",
+    "Web",
+    "Email",
+    "VoIP",
+    "Video",
+    "Messaging"
+  ],
+  "expected_security": {
+    "score_range": {
+      "min": 90,
+      "max": 98
+    },
+    "risk_level": "Low",
+    "expected_findings": []
+  }
+}

@@ -83,6 +83,16 @@ storage/pcaps/*
 storage/reports/*
 !storage/reports/.gitkeep
 
+# Testbed Generated artifacts (preserve .gitkeep)
+services/testbed/generated/pcaps/*
+!services/testbed/generated/pcaps/.gitkeep
+services/testbed/generated/ground_truth/*
+!services/testbed/generated/ground_truth/.gitkeep
+services/testbed/generated/analysis/*
+!services/testbed/generated/analysis/.gitkeep
+services/testbed/configs/strongswan/*
+!services/testbed/configs/strongswan/.gitkeep
+
 # IDEs & OS metadata
 .DS_Store
 Thumbs.db

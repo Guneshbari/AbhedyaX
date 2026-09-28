@@ -1,0 +1,35 @@
+{
+  "scenario_id": "ts-legacy-ikev1",
+  "name": "Legacy IKEv1",
+  "description": "Deprecated IKEv1 protocol with weak 1024-bit DH Group 2, SHA-1 integrity, and excessive SA lifetime without replay protection.",
+  "ike_version": "IKEv1",
+  "mode": "Tunnel",
+  "ip_version": "IPv4",
+  "encryption": "AES-128-CBC",
+  "authentication": "HMAC-SHA1",
+  "dh_group": "DH Group 2",
+  "pfs": false,
+  "replay_protection": false,
+  "sa_lifetime_seconds": 86400,
+  "traffic_profiles": [
+    "ICMP",
+    "Web",
+    "Email",
+    "VoIP",
+    "Video",
+    "Messaging"
+  ],
+  "expected_security": {
+    "score_range": {
+      "min": 15,
+      "max": 35
+    },
+    "risk_level": "Critical",
+    "expected_findings": [
+      "IKE-001",
+      "AUTH-001",
+      "DH-001",
+      "LIFE-001"
+    ]
+  }
+}

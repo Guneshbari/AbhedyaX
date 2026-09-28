@@ -1,0 +1,30 @@
+{
+  "scenario_id": "ts-secure-ikev2-gcm",
+  "name": "Secure IKEv2 AES-GCM",
+  "description": "Production-grade IKEv2 tunnel using AES-256-GCM AEAD cipher, Diffie-Hellman Group 19 (ECP-256), Perfect Forward Secrecy enabled, and an 8-hour SA lifetime.",
+  "ike_version": "IKEv2",
+  "mode": "Tunnel",
+  "ip_version": "IPv4",
+  "encryption": "AES-256-GCM",
+  "authentication": "AEAD",
+  "dh_group": "DH Group 19",
+  "pfs": true,
+  "replay_protection": true,
+  "sa_lifetime_seconds": 28800,
+  "traffic_profiles": [
+    "ICMP",
+    "Web",
+    "Email",
+    "VoIP",
+    "Video",
+    "Messaging"
+  ],
+  "expected_security": {
+    "score_range": {
+      "min": 88,
+      "max": 96
+    },
+    "risk_level": "Low",
+    "expected_findings": []
+  }
+}

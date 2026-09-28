@@ -1,0 +1,33 @@
+{
+  "scenario_id": "ts-weak-dh",
+  "name": "Weak Diffie-Hellman Configuration",
+  "description": "Vulnerable IPsec deployment using legacy Diffie-Hellman Group 2 (MODP-1024) susceptible to discrete logarithm cryptanalysis.",
+  "ike_version": "IKEv2",
+  "mode": "Tunnel",
+  "ip_version": "IPv4",
+  "encryption": "AES-128-CBC",
+  "authentication": "HMAC-SHA256",
+  "dh_group": "DH Group 2",
+  "pfs": false,
+  "replay_protection": true,
+  "sa_lifetime_seconds": 28800,
+  "traffic_profiles": [
+    "ICMP",
+    "Web",
+    "Email",
+    "VoIP",
+    "Video",
+    "Messaging"
+  ],
+  "expected_security": {
+    "score_range": {
+      "min": 40,
+      "max": 60
+    },
+    "risk_level": "High",
+    "expected_findings": [
+      "DH-001",
+      "PFS-001"
+    ]
+  }
+}
