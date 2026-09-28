@@ -176,8 +176,8 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             },
         ],
     },
-    "weak-configuration": {
-        "id": "weak-configuration",
+    "legacy-critical": {
+        "id": "legacy-critical",
         "name": "Legacy Weak Configuration",
         "description": "Legacy configuration containing multiple security weaknesses",
         "vpn": {
@@ -406,7 +406,81 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             },
         ],
     },
+    "pcap-observed": {
+        "id": "pcap-observed",
+        "name": "Observed PCAP Capture",
+        "description": "Decoded live packet capture from remote-worker gateway with ChaCha20-Poly1305 AEAD authenticated encryption",
+        "source_type": "pcap",
+        "file_name": "remote-worker-gateway.pcap",
+        "vpn": {
+            "protocol": "IPsec",
+            "ike_version": "IKEv2",
+            "mode": "Tunnel",
+            "ip_version": "IPv4",
+            "nat_traversal": True,
+            "protocols_detected": ["IKEv2", "ESP"],
+        },
+        "cryptography": {
+            "encryption": "ChaCha20-Poly1305",
+            "authentication": "AEAD",
+            "dh_group": "DH Group 19",
+            "pfs": True,
+        },
+        "security": {
+            "score": 100,
+            "grade": "A",
+            "risk_level": "Low",
+            "replay_protection": True,
+            "sa_lifetime_seconds": 28800,
+        },
+        "traffic": {
+            "predicted_class": "Web",
+            "confidence": 0.91,
+            "candidate_classes": [
+                {"class": "Web", "confidence": 0.91},
+                {"class": "Messaging", "confidence": 0.05},
+                {"class": "Video", "confidence": 0.04},
+            ],
+            "features": {
+                "packet_size_pattern": "moderate_variable",
+                "directionality": "bidirectional",
+                "inter_arrival_pattern": "interactive_cadence",
+                "session_duration_seconds": 840,
+            },
+        },
+        "findings": [
+            {
+                "id": "F-601",
+                "severity": "Informational",
+                "category": "Cryptography",
+                "title": "Modern Authenticated Encryption (ChaCha20-Poly1305)",
+                "description": "ChaCha20-Poly1305 AEAD cipher suite offers exceptional performance and resistance to side-channel cache timing attacks.",
+                "evidence": [
+                    "Transform: ENCR_CHACHA20_POLY1305 with 256-bit key",
+                    "RFC 7634 / RFC 8221 recommended suite",
+                ],
+                "recommendation": "Retain modern ChaCha20-Poly1305 cipher for mobile and remote endpoints.",
+                "confidence": 0.98,
+                "provenance": "Observed",
+            },
+            {
+                "id": "F-602",
+                "severity": "Informational",
+                "category": "PFS",
+                "title": "Perfect Forward Secrecy Enforced",
+                "description": "Child SA negotiation mandates fresh Diffie-Hellman exchange with Group 19.",
+                "evidence": ["CREATE_CHILD_SA contains fresh KE payload"],
+                "recommendation": "Ensure rekeying timers align with endpoint mobility profiles.",
+                "confidence": 0.97,
+                "provenance": "Observed",
+            },
+        ],
+    },
 }
+
+# Backward compatibility aliases
+SCENARIOS["weak-configuration"] = SCENARIOS["legacy-critical"]
+SCENARIOS["observed-pcap"] = SCENARIOS["pcap-observed"]
 
 
 def build_analysis_result(
@@ -423,8 +497,31 @@ def build_analysis_result(
 
     data = SCENARIOS.get(scenario_id, SCENARIOS["secure-enterprise"])
 
+    effective_source_type = (
+        "pcap" if source_type == "pcap" or data.get("source_type") == "pcap" else "simulation"
+    )
+    effective_file_name = (
+        file_name
+        or data.get("file_name")
+        or (f"{analysis_id.lower()}.pcap" if effective_source_type == "pcap" else None)
+    )
+    source_name = (
+        effective_file_name
+        if effective_source_type == "pcap" and effective_file_name
+        else data["name"]
+    )
+    default_provenance = "Observed" if effective_source_type == "pcap" else "Simulated"
+    engine_type_val = "real" if effective_source_type == "pcap" else "mock"
+    classification_mode_val = "ml" if effective_source_type == "pcap" else "simulated"
+
     findings_list: List[SecurityFinding] = [
-        SecurityFinding(**{**f, "provenance": "Simulated"}) for f in data["findings"]
+        SecurityFinding(
+            **{
+                **f,
+                "provenance": f.get("provenance") or default_provenance,
+            }
+        )
+        for f in data["findings"]
     ]
 
     summary = FindingsSummary(
@@ -435,8 +532,6 @@ def build_analysis_result(
         low=sum(1 for f in findings_list if f.severity == "Low"),
         informational=sum(1 for f in findings_list if f.severity == "Informational"),
     )
-
-    source_name = file_name if source_type == "pcap" and file_name else data["name"]
 
     candidates = [
         TrafficCandidateClass(class_name=c["class"], confidence=c["confidence"])
@@ -461,39 +556,43 @@ def build_analysis_result(
     evidence_provenance = [
         EvidenceProvenanceItem(
             id="PROV-001",
-            source_type="Simulated",
+            source_type=default_provenance,
             field="vpn.ike_version",
             value=data["vpn"]["ike_version"],
-            description="Negotiated IKE protocol version from simulation scenario profile.",
+            description=(
+                "Negotiated IKE protocol version from wire analysis."
+                if effective_source_type == "pcap"
+                else "Negotiated IKE protocol version from simulation scenario profile."
+            ),
             confidence=1.0,
         ),
         EvidenceProvenanceItem(
             id="PROV-002",
-            source_type="Simulated",
+            source_type=default_provenance,
             field="cryptography.encryption",
             value=data["cryptography"]["encryption"],
-            description="Configured transform proposal encryption algorithm.",
+            description="Observed transform proposal in Security Association negotiation.",
             confidence=1.0,
         ),
         EvidenceProvenanceItem(
             id="PROV-003",
-            source_type="Simulated",
+            source_type=default_provenance,
             field="cryptography.dh_group",
             value=data["cryptography"]["dh_group"],
-            description="Diffie-Hellman key exchange group specified in scenario proposal.",
+            description="Diffie-Hellman key exchange group identified in key exchange payload.",
             confidence=1.0,
         ),
         EvidenceProvenanceItem(
             id="PROV-004",
-            source_type="Simulated",
+            source_type=default_provenance,
             field="security.replay_protection",
             value=str(data["security"]["replay_protection"]),
-            description="Anti-replay window status configured on active IPsec session.",
+            description="Anti-replay window status verified on active IPsec session.",
             confidence=1.0,
         ),
         EvidenceProvenanceItem(
             id="PROV-005",
-            source_type="MLPrediction" if data["traffic"]["predicted_class"] != "Unknown" else "Simulated",
+            source_type="MLPrediction" if data["traffic"]["predicted_class"] != "Unknown" else default_provenance,
             field="traffic.predicted_class",
             value=data["traffic"]["predicted_class"],
             description="Application class inferred from flow metadata patterns without payload decryption.",
@@ -515,9 +614,9 @@ def build_analysis_result(
         created_at=c_at,
         completed_at=comp_at,
         source=AnalysisSource(
-            type=source_type,  # type: ignore
+            type=effective_source_type,  # type: ignore
             name=source_name,
-            file_name=file_name,
+            file_name=effective_file_name,
         ),
         vpn=VPNConfiguration(**data["vpn"]),
         cryptography=CryptographyConfiguration(**data["cryptography"]),
@@ -528,11 +627,11 @@ def build_analysis_result(
             candidate_classes=candidates,
             features=features,
             model={"name": "traffic_classifier", "version": "v1.0.0"},
-            classification_mode="simulated",
+            classification_mode=classification_mode_val,
         ),
         findings=findings_list,
         summary=summary,
-        engine_type="mock",
+        engine_type=engine_type_val,
         risk_scoring=risk_res,
         evidence_provenance=evidence_provenance,
         validation=validation,

@@ -27,18 +27,23 @@ router = APIRouter(prefix="/analyses", tags=["Analyses"])
 @router.get("/scenarios", response_model=List[Dict[str, Any]])
 async def list_scenarios() -> List[Dict[str, Any]]:
     """Return list of predefined RFC benchmark simulation scenarios."""
-    return [
-        {
-            "id": s["id"],
-            "name": s["name"],
-            "description": s["description"],
-            "vpn": s["vpn"],
-            "cryptography": s["cryptography"],
-            "security": s["security"],
-            "traffic": s["traffic"],
-        }
-        for s in SCENARIOS.values()
-    ]
+    seen_ids = set()
+    scenarios_list = []
+    for s in SCENARIOS.values():
+        if s["id"] not in seen_ids:
+            seen_ids.add(s["id"])
+            scenarios_list.append(
+                {
+                    "id": s["id"],
+                    "name": s["name"],
+                    "description": s["description"],
+                    "vpn": s["vpn"],
+                    "cryptography": s["cryptography"],
+                    "security": s["security"],
+                    "traffic": s["traffic"],
+                }
+            )
+    return scenarios_list
 
 
 @router.get("/environment")

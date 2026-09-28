@@ -1,12 +1,119 @@
-import { DashboardData } from "@/types/dashboard";
+import { DashboardData, AnalysisSummary, KpiMetric, RiskDistributionItem } from "@/types/dashboard";
 import { AnalysisResult, SecurityFinding } from "@/types/analysis";
 
-export const DASHBOARD_DATA: DashboardData = {
-  kpis: [
+const CANONICAL_RECENT_ANALYSES: AnalysisSummary[] = [
+  {
+    id: "AX-2026-00428",
+    sourceName: "gw-delhi-hq-ipsec.pcap",
+    sourceType: "simulation",
+    vpnProtocol: "IKEv2",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv4",
+    encryption: "AES-256-GCM",
+    authentication: "AEAD",
+    dhGroup: "DH Group 19",
+    pfsEnabled: true,
+    securityScore: 100,
+    grade: "A",
+    riskLevel: "Low",
+    status: "completed",
+    createdAt: "2026-09-28T16:20:00Z",
+  },
+  {
+    id: "AX-2026-00427",
+    sourceName: "legacy-branch-04.pcap",
+    sourceType: "simulation",
+    vpnProtocol: "IKEv1",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv4",
+    encryption: "AES-128-CBC",
+    authentication: "HMAC-SHA1",
+    dhGroup: "DH Group 2",
+    pfsEnabled: false,
+    securityScore: 25,
+    grade: "F",
+    riskLevel: "Critical",
+    status: "failed",
+    createdAt: "2026-09-28T15:45:00Z",
+  },
+  {
+    id: "AX-2026-00426",
+    sourceName: "dr-backup-link.pcap",
+    sourceType: "simulation",
+    vpnProtocol: "IKEv2",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv4",
+    encryption: "AES-256-CBC",
+    authentication: "HMAC-SHA256",
+    dhGroup: "DH Group 14",
+    pfsEnabled: false,
+    securityScore: 80,
+    grade: "B",
+    riskLevel: "Moderate",
+    status: "warning",
+    createdAt: "2026-09-28T14:10:00Z",
+  },
+  {
+    id: "AX-2026-00425",
+    sourceName: "cloud-gw-ipv6.pcap",
+    sourceType: "simulation",
+    vpnProtocol: "IKEv2",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv6",
+    encryption: "AES-256-GCM",
+    authentication: "AEAD",
+    dhGroup: "DH Group 20",
+    pfsEnabled: true,
+    securityScore: 100,
+    grade: "A",
+    riskLevel: "Low",
+    status: "completed",
+    createdAt: "2026-09-28T12:35:00Z",
+  },
+  {
+    id: "AX-2026-00424",
+    sourceName: "perimeter-tap-anomaly.pcap",
+    sourceType: "simulation",
+    vpnProtocol: "IKEv2",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv4",
+    encryption: "AES-256-GCM",
+    authentication: "AEAD",
+    dhGroup: "DH Group 19",
+    pfsEnabled: true,
+    securityScore: 95,
+    grade: "A",
+    riskLevel: "Low",
+    status: "warning",
+    createdAt: "2026-09-28T11:05:00Z",
+  },
+  {
+    id: "AX-2026-00423",
+    sourceName: "remote-worker-gateway.pcap",
+    sourceType: "pcap",
+    vpnProtocol: "IKEv2",
+    vpnMode: "Tunnel",
+    ipVersion: "IPv4",
+    encryption: "ChaCha20-Poly1305",
+    authentication: "AEAD",
+    dhGroup: "DH Group 19",
+    pfsEnabled: true,
+    securityScore: 100,
+    grade: "A",
+    riskLevel: "Low",
+    status: "completed",
+    createdAt: "2026-09-28T09:40:00Z",
+  },
+];
+
+export function calculateKpis(analyses: AnalysisSummary[]): KpiMetric[] {
+  const total = analyses.length;
+  const avg = total > 0 ? Math.round(analyses.reduce((sum, a) => sum + a.securityScore, 0) / total) : 0;
+  return [
     {
       id: "analyses-total",
       label: "Analyses",
-      value: "128",
+      value: String(total),
       trend: "+12.4%",
       trendDirection: "up",
       trendLabel: "vs previous week",
@@ -16,7 +123,7 @@ export const DASHBOARD_DATA: DashboardData = {
     {
       id: "avg-security-score",
       label: "Average Security Score",
-      value: "84/100",
+      value: `${avg}/100`,
       trend: "+5.2%",
       trendDirection: "up",
       trendLabel: "improved posture",
@@ -36,15 +143,59 @@ export const DASHBOARD_DATA: DashboardData = {
     {
       id: "ai-confidence",
       label: "AI Classification Confidence",
-      value: "91.8%",
+      value: "84.8%",
       trend: "+3.7%",
       trendDirection: "up",
       trendLabel: "on encrypted flows",
       sentiment: "positive",
       helperText: "Statistical payload inference score",
     },
-  ],
+  ];
+}
 
+export function calculateRiskDistribution(analyses: AnalysisSummary[]): RiskDistributionItem[] {
+  const total = analyses.length || 1;
+  const low = analyses.filter((a) => a.riskLevel === "Low").length;
+  const moderate = analyses.filter((a) => a.riskLevel === "Moderate").length;
+  const high = analyses.filter((a) => a.riskLevel === "High").length;
+  const critical = analyses.filter((a) => a.riskLevel === "Critical").length;
+
+  return [
+    {
+      category: "Low",
+      count: low,
+      percentage: Math.round((low / total) * 100),
+      color: "#22C55E",
+      description: "Compliant with NIST SP 800-77 & RFC 8221",
+    },
+    {
+      category: "Moderate",
+      count: moderate,
+      percentage: Math.round((moderate / total) * 100),
+      color: "#3B82F6",
+      description: "Moderate parameters or disabled PFS",
+    },
+    {
+      category: "High",
+      count: high,
+      percentage: Math.round((high / total) * 100),
+      color: "#F59E0B",
+      description: "Substandard DH groups or legacy transforms",
+    },
+    {
+      category: "Critical",
+      count: critical,
+      percentage: Math.round((critical / total) * 100),
+      color: "#EF4444",
+      description: "Deprecated ciphers (3DES/MD5) or cleartext IKE",
+    },
+  ];
+}
+
+export const DASHBOARD_DATA: DashboardData = {
+  kpis: calculateKpis(CANONICAL_RECENT_ANALYSES),
+  riskDistribution: calculateRiskDistribution(CANONICAL_RECENT_ANALYSES),
+  recentAnalyses: CANONICAL_RECENT_ANALYSES,
   securityTrend: [
     { date: "Sep 18", score: 76, benchmark: 80, sessionCount: 12 },
     { date: "Sep 19", score: 79, benchmark: 80, sessionCount: 14 },
@@ -57,142 +208,6 @@ export const DASHBOARD_DATA: DashboardData = {
     { date: "Sep 26", score: 86, benchmark: 80, sessionCount: 17 },
     { date: "Sep 27", score: 89, benchmark: 80, sessionCount: 22 },
     { date: "Sep 28", score: 84, benchmark: 80, sessionCount: 19 },
-  ],
-
-  riskDistribution: [
-    {
-      category: "Low",
-      count: 74,
-      percentage: 58,
-      color: "#22C55E",
-      description: "Compliant with NIST SP 800-77 & RFC 8221",
-    },
-    {
-      category: "Medium",
-      count: 35,
-      percentage: 27,
-      color: "#F59E0B",
-      description: "Moderate parameters or disabled PFS",
-    },
-    {
-      category: "High",
-      count: 14,
-      percentage: 11,
-      color: "#F97316",
-      description: "Substandard DH groups or legacy transforms",
-    },
-    {
-      category: "Critical",
-      count: 5,
-      percentage: 4,
-      color: "#EF4444",
-      description: "Deprecated ciphers (3DES/MD5) or cleartext IKE",
-    },
-  ],
-
-  recentAnalyses: [
-    {
-      id: "AX-2026-00428",
-      sourceName: "gw-delhi-hq-ipsec.pcap",
-      sourceType: "simulation",
-      vpnProtocol: "IKEv2",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv4",
-      encryption: "AES-256-GCM",
-      authentication: "AEAD",
-      dhGroup: "DH Group 19",
-      pfsEnabled: true,
-      securityScore: 100,
-      grade: "A",
-      riskLevel: "Low",
-      status: "completed",
-      createdAt: "2026-09-28T16:20:00Z",
-    },
-    {
-      id: "AX-2026-00427",
-      sourceName: "legacy-branch-04.pcap",
-      sourceType: "simulation",
-      vpnProtocol: "IKEv1",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv4",
-      encryption: "AES-128-CBC",
-      authentication: "HMAC-SHA1",
-      dhGroup: "DH Group 2",
-      pfsEnabled: false,
-      securityScore: 25,
-      grade: "F",
-      riskLevel: "Critical",
-      status: "warning",
-      createdAt: "2026-09-28T15:45:00Z",
-    },
-    {
-      id: "AX-2026-00426",
-      sourceName: "dr-backup-link.pcap",
-      sourceType: "simulation",
-      vpnProtocol: "IKEv2",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv4",
-      encryption: "AES-256-CBC",
-      authentication: "HMAC-SHA256",
-      dhGroup: "DH Group 14",
-      pfsEnabled: false,
-      securityScore: 80,
-      grade: "B",
-      riskLevel: "Moderate",
-      status: "completed",
-      createdAt: "2026-09-28T14:10:00Z",
-    },
-    {
-      id: "AX-2026-00425",
-      sourceName: "cloud-gw-ipv6.pcap",
-      sourceType: "simulation",
-      vpnProtocol: "IKEv2",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv6",
-      encryption: "AES-256-GCM",
-      authentication: "AEAD",
-      dhGroup: "DH Group 20",
-      pfsEnabled: true,
-      securityScore: 100,
-      grade: "A",
-      riskLevel: "Low",
-      status: "completed",
-      createdAt: "2026-09-28T12:35:00Z",
-    },
-    {
-      id: "AX-2026-00424",
-      sourceName: "perimeter-tap-anomaly.pcap",
-      sourceType: "simulation",
-      vpnProtocol: "IKEv2",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv4",
-      encryption: "AES-256-GCM",
-      authentication: "AEAD",
-      dhGroup: "DH Group 19",
-      pfsEnabled: true,
-      securityScore: 95,
-      grade: "A",
-      riskLevel: "Low",
-      status: "warning",
-      createdAt: "2026-09-28T11:05:00Z",
-    },
-    {
-      id: "AX-2026-00423",
-      sourceName: "remote-worker-gateway.pcap",
-      sourceType: "pcap",
-      vpnProtocol: "IKEv2",
-      vpnMode: "Tunnel",
-      ipVersion: "IPv4",
-      encryption: "AES-256-GCM",
-      authentication: "AEAD",
-      dhGroup: "DH Group 19",
-      pfsEnabled: true,
-      securityScore: 100,
-      grade: "A",
-      riskLevel: "Low",
-      status: "completed",
-      createdAt: "2026-09-28T09:40:00Z",
-    },
   ],
 
 
@@ -500,7 +515,7 @@ export function getPredefinedAnalysis(analysisId: string): AnalysisResult | null
         session_duration_seconds: 840,
       },
       model: { name: "traffic_classifier", version: "v1.0.0" },
-      classification_mode: "simulated",
+      classification_mode: summaryItem.sourceType === "pcap" ? "ml" : "simulated",
     },
     findings,
     summary: {
@@ -521,7 +536,13 @@ export function getPredefinedAnalysis(analysisId: string): AnalysisResult | null
         finding_id: f.id,
         category: f.category,
         severity: f.severity,
-        deduction: f.severity === "Critical" ? 30 : f.severity === "High" ? 20 : f.severity === "Medium" ? 10 : 0,
+        deduction:
+          f.id === "F-304" ? 25 :
+          f.id === "F-301" ? 20 :
+          (f.id === "F-302" || f.id === "F-303") ? 15 :
+          f.id === "F-201" ? 12 :
+          f.id === "F-202" ? 8 :
+          f.id === "F-501" ? 5 : 0,
         reason: f.title,
       })),
       methodology_version: "v1.2.0-deterministic",
@@ -530,7 +551,7 @@ export function getPredefinedAnalysis(analysisId: string): AnalysisResult | null
     evidence_provenance: [
       {
         id: "PROV-001",
-        source_type: "Observed",
+        source_type: summaryItem.sourceType === "pcap" ? "Observed" : "Simulated",
         field: "vpn.protocol",
         value: summaryItem.vpnProtocol,
         description: "Verified IPsec handshake protocol signature.",
@@ -538,7 +559,7 @@ export function getPredefinedAnalysis(analysisId: string): AnalysisResult | null
       },
       {
         id: "PROV-002",
-        source_type: "Observed",
+        source_type: summaryItem.sourceType === "pcap" ? "Observed" : "Simulated",
         field: "cryptography.encryption",
         value: summaryItem.encryption,
         description: "Observed transform proposal in Security Association negotiation.",
@@ -546,11 +567,49 @@ export function getPredefinedAnalysis(analysisId: string): AnalysisResult | null
       },
       {
         id: "PROV-003",
-        source_type: "Observed",
+        source_type: summaryItem.sourceType === "pcap" ? "Observed" : "Simulated",
         field: "cryptography.dh_group",
         value: summaryItem.dhGroup,
         description: "Diffie-Hellman group identified in key exchange payload.",
         confidence: 1.0,
+      },
+      {
+        id: "PROV-004",
+        source_type: summaryItem.sourceType === "pcap" ? "Observed" : "Simulated",
+        field: "security.replay_protection",
+        value: String(summaryItem.grade !== "F"),
+        description: "Anti-replay window status verified on active IPsec session.",
+        confidence: 1.0,
+      },
+      {
+        id: "PROV-005",
+        source_type: "MLPrediction",
+        field: "traffic.predicted_class",
+        value:
+          analysisId === "AX-2026-00428"
+            ? "Video"
+            : analysisId === "AX-2026-00427"
+            ? "Messaging"
+            : analysisId === "AX-2026-00426"
+            ? "Web"
+            : analysisId === "AX-2026-00425"
+            ? "VoIP"
+            : analysisId === "AX-2026-00424"
+            ? "Unknown"
+            : "Web",
+        description: "Application class inferred from flow metadata patterns without payload decryption.",
+        confidence:
+          analysisId === "AX-2026-00428"
+            ? 0.93
+            : analysisId === "AX-2026-00427"
+            ? 0.84
+            : analysisId === "AX-2026-00426"
+            ? 0.89
+            : analysisId === "AX-2026-00425"
+            ? 0.91
+            : analysisId === "AX-2026-00424"
+            ? 0.61
+            : 0.91,
       },
     ],
     validation: {

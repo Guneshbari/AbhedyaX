@@ -19,7 +19,7 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
       pfs: true,
     },
     security: {
-      score: 94,
+      score: 100,
       grade: "A",
       risk_level: "Low",
       replay_protection: true,
@@ -33,7 +33,7 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
   {
     id: "moderate-security",
     name: "Moderate Security VPN",
-    description: "Modern IKEv2 configuration with several security trade-offs (disabled PFS)",
+    description: "Enterprise IPsec configuration with operational trade-offs (disabled PFS, CBC mode)",
     vpn: {
       protocol: "IPsec",
       ike_version: "IKEv2",
@@ -48,9 +48,9 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
       pfs: false,
     },
     security: {
-      score: 72,
-      grade: "C",
-      risk_level: "Medium",
+      score: 80,
+      grade: "B",
+      risk_level: "Moderate",
       replay_protection: true,
       sa_lifetime_seconds: 86400,
     },
@@ -60,9 +60,9 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
     },
   },
   {
-    id: "weak-configuration",
+    id: "legacy-critical",
     name: "Legacy Weak Configuration",
-    description: "Legacy configuration containing multiple security weaknesses (IKEv1, 3DES/AES-128, DH Group 2)",
+    description: "Deprecated IPsec deployment containing severe protocol and cryptographic vulnerabilities (IKEv1, 1024-bit DH, SHA-1)",
     vpn: {
       protocol: "IPsec",
       ike_version: "IKEv1",
@@ -77,9 +77,9 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
       pfs: false,
     },
     security: {
-      score: 43,
+      score: 25,
       grade: "F",
-      risk_level: "High",
+      risk_level: "Critical",
       replay_protection: false,
       sa_lifetime_seconds: 86400,
     },
@@ -91,7 +91,7 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
   {
     id: "secure-ipv6",
     name: "Secure IPv6 VPN",
-    description: "Modern IPv6 IPsec tunnel with strong cryptographic parameters and DH Group 20",
+    description: "High-assurance native IPv6 IPsec tunnel with CNSA / Suite B cryptographic parameters (DH Group 20)",
     vpn: {
       protocol: "IPsec",
       ike_version: "IKEv2",
@@ -106,7 +106,7 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
       pfs: true,
     },
     security: {
-      score: 96,
+      score: 100,
       grade: "A",
       risk_level: "Low",
       replay_protection: true,
@@ -120,7 +120,7 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
   {
     id: "traffic-anomaly",
     name: "Traffic Anomaly",
-    description: "VPN session with unusual encrypted traffic behavior and anomalous burst profiles",
+    description: "Production IKEv2 session with compliant cryptography but statistically anomalous encrypted traffic flow characteristics",
     vpn: {
       protocol: "IPsec",
       ike_version: "IKEv2",
@@ -135,15 +135,44 @@ export const DEFAULT_SCENARIOS: ScenarioDefinition[] = [
       pfs: true,
     },
     security: {
-      score: 81,
-      grade: "B",
-      risk_level: "Medium",
+      score: 95,
+      grade: "A",
+      risk_level: "Low",
       replay_protection: true,
       sa_lifetime_seconds: 28800,
     },
     traffic: {
       predicted_class: "Unknown",
       confidence: 0.61,
+    },
+  },
+  {
+    id: "pcap-observed",
+    name: "Observed PCAP Capture",
+    description: "Decoded live packet capture from remote-worker gateway with ChaCha20-Poly1305 AEAD authenticated encryption",
+    vpn: {
+      protocol: "IPsec",
+      ike_version: "IKEv2",
+      mode: "Tunnel",
+      ip_version: "IPv4",
+      nat_traversal: true,
+    },
+    cryptography: {
+      encryption: "ChaCha20-Poly1305",
+      authentication: "AEAD",
+      dh_group: "DH Group 19",
+      pfs: true,
+    },
+    security: {
+      score: 100,
+      grade: "A",
+      risk_level: "Low",
+      replay_protection: true,
+      sa_lifetime_seconds: 28800,
+    },
+    traffic: {
+      predicted_class: "Web",
+      confidence: 0.91,
     },
   },
 ];

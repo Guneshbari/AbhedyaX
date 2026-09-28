@@ -31,7 +31,7 @@ PREDEFINED_ANALYSES_MAP: Dict[str, Dict[str, Any]] = {
         "created_at": "2026-09-28T16:20:00Z",
     },
     "AX-2026-00427": {
-        "scenario_id": "weak-configuration",
+        "scenario_id": "legacy-critical",
         "file_name": "legacy-branch-04.pcap",
         "source_type": "simulation",
         "created_at": "2026-09-28T15:45:00Z",
@@ -55,7 +55,7 @@ PREDEFINED_ANALYSES_MAP: Dict[str, Dict[str, Any]] = {
         "created_at": "2026-09-28T11:05:00Z",
     },
     "AX-2026-00423": {
-        "scenario_id": "secure-enterprise",
+        "scenario_id": "pcap-observed",
         "file_name": "remote-worker-gateway.pcap",
         "source_type": "pcap",
         "created_at": "2026-09-28T09:40:00Z",

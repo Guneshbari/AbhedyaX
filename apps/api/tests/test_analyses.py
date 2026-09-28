@@ -19,10 +19,11 @@ async def test_list_scenarios():
         response = await client.get("/api/v1/analyses/scenarios")
         assert response.status_code == 200
         scenarios = response.json()
-        assert len(scenarios) == 5
+        assert len(scenarios) == 6
         scenario_ids = [s["id"] for s in scenarios]
         assert "secure-enterprise" in scenario_ids
-        assert "weak-configuration" in scenario_ids
+        assert "legacy-critical" in scenario_ids or "weak-configuration" in scenario_ids
+        assert "pcap-observed" in scenario_ids
 
 
 @pytest.mark.asyncio

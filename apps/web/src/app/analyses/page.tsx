@@ -150,8 +150,7 @@ export default function AnalysesPage() {
       {/* Showing count indicator */}
       <div className="flex items-center justify-between px-1 text-xs text-[#687384] font-mono">
         <span>
-          Showing {filteredAnalyses.length} of{" "}
-          {DASHBOARD_DATA.recentAnalyses.length} recorded analyses
+          Showing {filteredAnalyses.length} of {allAnalyses.length} recorded analyses
         </span>
         {(searchQuery || activeFilter !== "All") && (
           <button
