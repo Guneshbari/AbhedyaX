@@ -1,117 +1,170 @@
-import React from "react";
-import { UploadCloud, PlayCircle, Cpu } from "lucide-react";
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Play, AlertCircle, ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
+import { SourceSelector } from "@/components/analyze/SourceSelector";
+import { ScenarioPicker } from "@/components/analyze/ScenarioPicker";
+import { PcapUploader } from "@/components/analyze/PcapUploader";
+import { ConfigurationSummary } from "@/components/analyze/ConfigurationSummary";
+import { createAnalysis, getScenarios } from "@/lib/api/analyses";
+import { DEFAULT_SCENARIOS } from "@/data/defaultScenarios";
+import { ScenarioDefinition } from "@/types/analysis";
 
 export default function AnalyzePage() {
+  const router = useRouter();
+
+  const [selectedSource, setSelectedSource] = useState<"simulation" | "pcap">(
+    "simulation"
+  );
+  const [selectedScenarioId, setSelectedScenarioId] =
+    useState<string>("secure-enterprise");
+  const [selectedFile, setSelectedFile] = useState<{
+    name: string;
+    size: number;
+  } | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  // Fetch scenarios from API with fallback
+  const { data: scenarios = DEFAULT_SCENARIOS } = useQuery<ScenarioDefinition[]>({
+    queryKey: ["scenarios"],
+    queryFn: getScenarios,
+    initialData: DEFAULT_SCENARIOS,
+  });
+
+  const activeScenario =
+    scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0];
+
+  // Validation
+  const isValid =
+    selectedSource === "simulation"
+      ? Boolean(selectedScenarioId)
+      : Boolean(selectedFile);
+
+  // Mutation for creating analysis
+  const createMutation = useMutation({
+    mutationFn: createAnalysis,
+    onSuccess: (data) => {
+      setFormError(null);
+      router.push(`/analyses/${data.analysis_id}/processing`);
+    },
+    onError: (error: Error) => {
+      setFormError(
+        error.message || "Failed to initiate analysis session. Verify backend connectivity."
+      );
+    },
+  });
+
+  const handleStartAnalysis = () => {
+    if (!isValid) return;
+
+    setFormError(null);
+    createMutation.mutate({
+      source_type: selectedSource,
+      scenario_id: selectedSource === "simulation" ? selectedScenarioId : undefined,
+      file_name: selectedSource === "pcap" ? selectedFile?.name : undefined,
+    });
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       <PageHeader
-        title="Analyze Capture & Scenarios"
-        subtitle="Submit PCAP/PCAPNG network captures or execute standardized RFC/NIST simulation scenarios for automated IPsec cryptographic auditing."
+        title="Configure & Start IPsec Analysis"
+        subtitle="Submit packet captures or select standardized simulation scenarios for deep protocol decoding, cryptographic assessment, and encrypted traffic inference."
         breadcrumbs={[
           { label: "Dashboard", href: "/" },
           { label: "Analyze" },
         ]}
         badge={<SimulationModeBadge />}
         actions={
-          <PrimaryButton variant="secondary" size="sm" href="/" icon={PlayCircle}>
-            Return to Dashboard
+          <PrimaryButton
+            variant="outline"
+            size="sm"
+            href="/"
+            icon={ArrowLeft}
+          >
+            Back to Dashboard
           </PrimaryButton>
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* PCAP Upload Preview */}
-        <div className="p-6 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <UploadCloud className="w-5 h-5" />
-              </div>
-              <h2 className="text-base font-semibold text-[#F4F7FA]">
-                PCAP / PCAPNG Ingestion
-              </h2>
-            </div>
-            <p className="text-xs text-[#9AA4B2] leading-relaxed mb-4">
-              Upload captured packets containing IKE (UDP 500/4500) and ESP (Proto 50) exchanges for deep decoding and security compliance checks.
-            </p>
-          </div>
-          <div className="p-8 border-2 border-dashed border-[#252B35] rounded-xl flex flex-col items-center justify-center text-center bg-[#141820]/30">
-            <UploadCloud className="w-8 h-8 text-[#687384] mb-2" />
-            <p className="text-xs font-medium text-[#F4F7FA]">
-              Drag and drop capture file here
-            </p>
-            <p className="text-[11px] text-[#687384] mt-1">
-              Supports .pcap, .pcapng, .cap up to 250MB
-            </p>
-            <div className="mt-4">
-              <PrimaryButton variant="secondary" size="sm">
-                Browse Files
-              </PrimaryButton>
-            </div>
-          </div>
+      {/* 1. Source Selector (Simulation vs PCAP) */}
+      <SourceSelector
+        selectedSource={selectedSource}
+        onSelectSource={(source) => {
+          setSelectedSource(source);
+          setFormError(null);
+        }}
+      />
+
+      {/* 2. Interactive Selection Panel */}
+      {selectedSource === "simulation" ? (
+        <ScenarioPicker
+          scenarios={scenarios}
+          selectedScenarioId={selectedScenarioId}
+          onSelectScenario={(id) => setSelectedScenarioId(id)}
+        />
+      ) : (
+        <PcapUploader
+          selectedFile={selectedFile}
+          onSelectFile={(file) => setSelectedFile(file)}
+        />
+      )}
+
+      {/* 3. Configuration Summary Matrix */}
+      <ConfigurationSummary
+        sourceType={selectedSource}
+        scenario={selectedSource === "simulation" ? activeScenario : null}
+        fileName={selectedFile?.name}
+      />
+
+      {/* Error Display */}
+      {formError && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{formError}</span>
+        </div>
+      )}
+
+      {/* 4. Action Bar */}
+      <div className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-xs text-[#9AA4B2]">
+          {selectedSource === "simulation" ? (
+            <span>
+              Target: <strong className="text-[#F4F7FA]">{activeScenario.name}</strong> • Deterministic execution with simulated telemetry
+            </span>
+          ) : selectedFile ? (
+            <span>
+              Target: <strong className="text-[#F4F7FA]">{selectedFile.name}</strong> • Ready for simulated capture processing
+            </span>
+          ) : (
+            <span className="text-amber-400">Please select or upload a capture file to proceed</span>
+          )}
         </div>
 
-        {/* Simulation Scenarios Preview */}
-        <div className="p-6 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <h2 className="text-base font-semibold text-[#F4F7FA]">
-                Standardized Simulation Scenarios
-              </h2>
-            </div>
-            <p className="text-xs text-[#9AA4B2] leading-relaxed mb-4">
-              Select one of the 5 pre-configured RFC benchmark profiles for immediate evaluation without requiring external packet files.
-            </p>
-          </div>
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <PrimaryButton
+            variant="outline"
+            size="md"
+            href="/"
+          >
+            Cancel
+          </PrimaryButton>
 
-          <div className="space-y-2">
-            {[
-              {
-                id: "secure-enterprise",
-                name: "Secure Enterprise VPN",
-                specs: "IKEv2, AES-256-GCM, DH-19, PFS Enabled",
-                badge: "High Security",
-                color: "text-emerald-400 border-emerald-500/30",
-              },
-              {
-                id: "moderate-security",
-                name: "Moderate Security Gateway",
-                specs: "IKEv2, AES-256-CBC, DH-14, PFS Disabled",
-                badge: "Moderate",
-                color: "text-amber-400 border-amber-500/30",
-              },
-              {
-                id: "weak-configuration",
-                name: "Weak Legacy Deployment",
-                specs: "IKEv1 Aggressive, 3DES, DH-2, Extended Lifetime",
-                badge: "Critical Flaws",
-                color: "text-red-400 border-red-500/30",
-              },
-            ].map((scen) => (
-              <div
-                key={scen.id}
-                className="p-3 rounded-lg bg-[#141820] border border-[#252B35] flex items-center justify-between"
-              >
-                <div>
-                  <div className="text-xs font-semibold text-[#F4F7FA]">
-                    {scen.name}
-                  </div>
-                  <div className="text-[11px] text-[#687384] font-mono mt-0.5">
-                    {scen.specs}
-                  </div>
-                </div>
-                <PrimaryButton variant="secondary" size="sm">
-                  Run
-                </PrimaryButton>
-              </div>
-            ))}
-          </div>
+          <PrimaryButton
+            variant="primary"
+            size="md"
+            icon={Play}
+            isLoading={createMutation.isPending}
+            disabled={!isValid || createMutation.isPending}
+            onClick={handleStartAnalysis}
+          >
+            {createMutation.isPending ? "Queuing Session..." : "Start Analysis"}
+          </PrimaryButton>
         </div>
       </div>
     </div>

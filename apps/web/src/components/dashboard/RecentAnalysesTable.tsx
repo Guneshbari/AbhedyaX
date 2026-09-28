@@ -23,7 +23,7 @@ export const RecentAnalysesTable: React.FC<RecentAnalysesTableProps> = ({
       header: "Analysis ID",
       render: (row) => (
         <Link
-          href={`/analyses?id=${row.id}`}
+          href={`/analyses/${row.id}`}
           className="font-mono font-medium text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1.5"
         >
           <FileCode2 className="w-3.5 h-3.5 text-[#687384]" />
@@ -107,7 +107,7 @@ export const RecentAnalysesTable: React.FC<RecentAnalysesTableProps> = ({
       className: "text-right",
       render: (row) => (
         <Link
-          href={`/analyses?id=${row.id}`}
+          href={`/analyses/${row.id}`}
           className="inline-flex items-center gap-1 text-xs text-[#9AA4B2] hover:text-[#F4F7FA] font-medium"
         >
           <span>View</span>
