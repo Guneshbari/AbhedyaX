@@ -92,3 +92,66 @@ async def test_get_active_ml_model():
             assert "metrics" in data
             assert "test_macro_f1" in data["metrics"]
             assert data["metrics"]["test_macro_f1"] > 0
+
+
+@pytest.mark.asyncio
+async def test_analysis_report_endpoints():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Create and complete an analysis
+        create_resp = await client.post(
+            "/api/v1/analyses",
+            json={
+                "source_type": "simulation",
+                "scenario_id": "secure-enterprise",
+            },
+        )
+        assert create_resp.status_code == 201
+        analysis_id = create_resp.json()["analysis_id"]
+
+        for _ in range(80):
+            st = await client.get(f"/api/v1/analyses/{analysis_id}/status")
+            if st.json()["status"] == "completed":
+                break
+            await asyncio.sleep(0.05)
+
+        # 1. Executive HTML report
+        exec_resp = await client.get(f"/api/v1/analyses/{analysis_id}/report/executive")
+        assert exec_resp.status_code == 200
+        assert "text/html" in exec_resp.headers["content-type"]
+        assert "<!DOCTYPE html>" in exec_resp.text
+        assert "Executive VPN Security Assessment" in exec_resp.text
+        assert analysis_id in exec_resp.text
+
+        # 2. Technical HTML report
+        tech_resp = await client.get(f"/api/v1/analyses/{analysis_id}/report/technical")
+        assert tech_resp.status_code == 200
+        assert "text/html" in tech_resp.headers["content-type"]
+        assert "<!DOCTYPE html>" in tech_resp.text
+        assert "Technical IPsec Protocol & Traffic Audit" in tech_resp.text
+        assert analysis_id in tech_resp.text
+
+        # 3. JSON Export
+        json_resp = await client.get(f"/api/v1/analyses/{analysis_id}/report/json")
+        assert json_resp.status_code == 200
+        assert "application/json" in json_resp.headers["content-type"]
+        assert f"abhedyax_analysis_{analysis_id}.json" in json_resp.headers.get("content-disposition", "")
+        json_data = json_resp.json()
+        assert json_data["analysis_id"] == analysis_id
+        assert "risk_scoring" in json_data
+        assert "evidence_provenance" in json_data
+
+
+@pytest.mark.asyncio
+async def test_report_endpoints_404():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        r1 = await client.get("/api/v1/analyses/AX-NONEXISTENT/report/executive")
+        assert r1.status_code == 404
+
+        r2 = await client.get("/api/v1/analyses/AX-NONEXISTENT/report/technical")
+        assert r2.status_code == 404
+
+        r3 = await client.get("/api/v1/analyses/AX-NONEXISTENT/report/json")
+        assert r3.status_code == 404
+

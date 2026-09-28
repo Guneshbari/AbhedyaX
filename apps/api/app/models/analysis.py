@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 SourceType = Literal["simulation", "pcap", "live"]
 AnalysisStatusType = Literal["queued", "processing", "completed", "failed"]
-RiskLevelType = Literal["Low", "Medium", "High", "Critical"]
+RiskLevelType = Literal["Low", "Moderate", "Medium", "High", "Critical"]
 GradeType = Literal["A", "B", "C", "D", "F"]
 FindingSeverityType = Literal["Critical", "High", "Medium", "Low", "Informational"]
 FindingCategoryType = Literal[
@@ -14,6 +14,7 @@ FindingCategoryType = Literal[
     "Replay Protection",
     "Configuration",
     "Metadata Exposure",
+    "Traffic Intelligence",
     "Protocol",
 ]
 
@@ -101,6 +102,7 @@ class SecurityFinding(BaseModel):
     evidence: List[str] = Field(default_factory=list)
     recommendation: str
     confidence: float = 0.95
+    provenance: Optional[Literal["Observed", "Inferred", "Simulated", "GroundTruth", "MLPrediction"]] = "Observed"
 
 
 class FindingsSummary(BaseModel):
@@ -127,6 +129,29 @@ class ProtocolObservations(BaseModel):
     ah_sessions: int = 0
     nat_traversal_detected: bool = False
     observed_spis: List[str] = Field(default_factory=list)
+
+
+from services.security_engine.src.models import (
+    ScoringDeduction,
+    RiskScoringResult,
+)
+
+
+class GroundTruthValidationResult(BaseModel):
+    status: Literal["passed", "failed", "partial", "not_available"]
+    ground_truth_available: bool = False
+    matched_fields: int = 0
+    total_fields: int = 0
+    mismatches: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class EvidenceProvenanceItem(BaseModel):
+    id: str
+    source_type: Literal["Observed", "Inferred", "Simulated", "GroundTruth", "MLPrediction"]
+    field: str
+    value: str
+    description: str
+    confidence: float = 1.0
 
 
 class ProtocolEvidence(BaseModel):
@@ -161,5 +186,9 @@ class AnalysisResult(BaseModel):
     protocol_observations: Optional[ProtocolObservations] = None
     evidence: List[ProtocolEvidence] = Field(default_factory=list)
     score_factors: List[ScoreFactor] = Field(default_factory=list)
+    # Phase 5 Enriched Fields
+    risk_scoring: Optional[RiskScoringResult] = None
+    evidence_provenance: List[EvidenceProvenanceItem] = Field(default_factory=list)
+    validation: Optional[GroundTruthValidationResult] = None
 
     model_config = ConfigDict(populate_by_name=True)

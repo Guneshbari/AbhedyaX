@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abhedyax-report-generator"
+version = "0.1.0"
+description = "Professional executive and technical HTML/PDF report generator for AbhedyaX"
+authors = [{ name = "AbhedyaX Team" }]
+requires-python = ">=3.11"
+dependencies = [
+    "jinja2>=3.1.2",
+    "pydantic>=2.6.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["../../", "."]

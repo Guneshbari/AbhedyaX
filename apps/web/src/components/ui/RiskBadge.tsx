@@ -24,6 +24,12 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({
       style: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25",
       text: "text-emerald-400",
     },
+    Moderate: {
+      label: "Moderate Risk",
+      icon: ShieldAlert,
+      style: "bg-amber-500/10 text-amber-400 border-amber-500/25",
+      text: "text-amber-400",
+    },
     Medium: {
       label: "Medium Risk",
       icon: ShieldAlert,

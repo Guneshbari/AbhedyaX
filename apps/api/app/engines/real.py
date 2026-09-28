@@ -24,7 +24,10 @@ from app.models.analysis import (
     TrafficIntelligence,
     TrafficCandidateClass,
     TrafficFeatures,
+    EvidenceProvenanceItem,
+    GroundTruthValidationResult,
 )
+from services.security_engine.src.risk_engine import risk_scoring_engine
 from app.packet.tshark import (
     is_tshark_available,
     get_tshark_version,
@@ -247,7 +250,40 @@ class RealAnalysisEngine(AnalysisEngine):
             session["progress"] = 100
             session["current_step"] = "Analysis Complete"
             session["message"] = f"Successfully analyzed {len(normalized_packets)} packets using TShark."
-            session["completed_at"] = now_iso
+            # Calculate deterministic risk score
+            risk_res = risk_scoring_engine.evaluate_findings(findings)
+
+            # Build evidence provenance trail from observed frames and ML inference
+            evidence_provenance = [
+                EvidenceProvenanceItem(
+                    id=f"PROV-OBS-{i+1:03d}",
+                    source_type="Observed",
+                    field=ev.field,
+                    value=ev.value,
+                    description=f"Directly observed on wire via {ev.source} frame dissection.",
+                    confidence=1.0,
+                )
+                for i, ev in enumerate(extraction.evidence[:6])
+            ]
+            if traffic_intel.model:
+                evidence_provenance.append(
+                    EvidenceProvenanceItem(
+                        id=f"PROV-ML-{len(evidence_provenance)+1:03d}",
+                        source_type="MLPrediction",
+                        field="traffic.predicted_class",
+                        value=traffic_intel.predicted_class,
+                        description=f"Inferred by {traffic_intel.model.get('name', 'traffic_classifier')} {traffic_intel.model.get('version', 'v1.0.0')} over 28 zero-payload flow features.",
+                        confidence=traffic_intel.confidence,
+                    )
+                )
+
+            validation = GroundTruthValidationResult(
+                status="not_available",
+                ground_truth_available=False,
+                matched_fields=0,
+                total_fields=0,
+                mismatches=[],
+            )
 
             result = AnalysisResult(
                 analysis_id=analysis_id,
@@ -270,6 +306,9 @@ class RealAnalysisEngine(AnalysisEngine):
                 protocol_observations=extraction.observations,
                 evidence=extraction.evidence,
                 score_factors=score_factors,
+                risk_scoring=risk_res,
+                evidence_provenance=evidence_provenance,
+                validation=validation,
             )
 
             self._results[analysis_id] = result

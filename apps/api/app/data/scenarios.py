@@ -11,7 +11,10 @@ from app.models.analysis import (
     TrafficFeatures,
     SecurityFinding,
     FindingsSummary,
+    EvidenceProvenanceItem,
+    GroundTruthValidationResult,
 )
+from services.security_engine.src.risk_engine import risk_scoring_engine
 
 SCENARIOS: Dict[str, Dict[str, Any]] = {
     "secure-enterprise": {
@@ -420,7 +423,7 @@ def build_analysis_result(
     data = SCENARIOS.get(scenario_id, SCENARIOS["secure-enterprise"])
 
     findings_list: List[SecurityFinding] = [
-        SecurityFinding(**f) for f in data["findings"]
+        SecurityFinding(**{**f, "provenance": "Simulated"}) for f in data["findings"]
     ]
 
     summary = FindingsSummary(
@@ -441,6 +444,61 @@ def build_analysis_result(
 
     features = TrafficFeatures(**data["traffic"]["features"])
 
+    # Compute deterministic risk scoring
+    risk_res = risk_scoring_engine.evaluate_findings(findings_list)
+
+    # Build evidence provenance trail
+    evidence_provenance = [
+        EvidenceProvenanceItem(
+            id="PROV-001",
+            source_type="Simulated",
+            field="vpn.ike_version",
+            value=data["vpn"]["ike_version"],
+            description="Negotiated IKE protocol version from simulation scenario profile.",
+            confidence=1.0,
+        ),
+        EvidenceProvenanceItem(
+            id="PROV-002",
+            source_type="Simulated",
+            field="cryptography.encryption",
+            value=data["cryptography"]["encryption"],
+            description="Configured transform proposal encryption algorithm.",
+            confidence=1.0,
+        ),
+        EvidenceProvenanceItem(
+            id="PROV-003",
+            source_type="Simulated",
+            field="cryptography.dh_group",
+            value=data["cryptography"]["dh_group"],
+            description="Diffie-Hellman key exchange group specified in scenario proposal.",
+            confidence=1.0,
+        ),
+        EvidenceProvenanceItem(
+            id="PROV-004",
+            source_type="Simulated",
+            field="security.replay_protection",
+            value=str(data["security"]["replay_protection"]),
+            description="Anti-replay window status configured on active IPsec session.",
+            confidence=1.0,
+        ),
+        EvidenceProvenanceItem(
+            id="PROV-005",
+            source_type="MLPrediction" if data["traffic"]["predicted_class"] != "Unknown" else "Simulated",
+            field="traffic.predicted_class",
+            value=data["traffic"]["predicted_class"],
+            description="Application class inferred from flow metadata patterns without payload decryption.",
+            confidence=data["traffic"]["confidence"],
+        ),
+    ]
+
+    validation = GroundTruthValidationResult(
+        status="passed",
+        ground_truth_available=True,
+        matched_fields=6,
+        total_fields=6,
+        mismatches=[],
+    )
+
     return AnalysisResult(
         analysis_id=analysis_id,
         status="completed",
@@ -459,7 +517,13 @@ def build_analysis_result(
             confidence=data["traffic"]["confidence"],
             candidate_classes=candidates,
             features=features,
+            model={"name": "traffic_classifier", "version": "v1.0.0"},
+            classification_mode="simulated",
         ),
         findings=findings_list,
         summary=summary,
+        engine_type="mock",
+        risk_scoring=risk_res,
+        evidence_provenance=evidence_provenance,
+        validation=validation,
     )

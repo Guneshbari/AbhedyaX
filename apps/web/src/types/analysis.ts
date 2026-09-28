@@ -1,6 +1,6 @@
 export type SourceType = "simulation" | "pcap" | "live";
 export type AnalysisStatusType = "queued" | "processing" | "completed" | "failed";
-export type RiskLevelType = "Low" | "Medium" | "High" | "Critical";
+export type RiskLevelType = "Low" | "Moderate" | "Medium" | "High" | "Critical";
 export type GradeType = "A" | "B" | "C" | "D" | "F";
 export type FindingSeverityType = "Critical" | "High" | "Medium" | "Low" | "Informational";
 export type FindingCategoryType =
@@ -11,7 +11,60 @@ export type FindingCategoryType =
   | "Replay Protection"
   | "Configuration"
   | "Metadata Exposure"
+  | "Traffic Intelligence"
   | "Protocol";
+
+export type EvidenceProvenanceSource =
+  | "Observed"
+  | "Inferred"
+  | "Simulated"
+  | "GroundTruth"
+  | "MLPrediction";
+
+export interface EvidenceProvenanceItem {
+  id: string;
+  source_type: EvidenceProvenanceSource;
+  field: string;
+  value: string;
+  packet_ref?: string | null;
+  description: string;
+  confidence: number;
+}
+
+export interface ScoringDeduction {
+  finding_id: string;
+  category: string;
+  severity: string;
+  deduction: number;
+  reason: string;
+  evidence_ref?: string | null;
+}
+
+export interface RiskScoringResult {
+  security_score: number;
+  risk_level: RiskLevelType;
+  base_score: number;
+  total_deduction: number;
+  scoring_breakdown: ScoringDeduction[];
+  methodology_version: string;
+  formula: string;
+}
+
+export interface ValidationMismatch {
+  field: string;
+  observed: string;
+  expected: string;
+  notes?: string;
+}
+
+export interface GroundTruthValidationResult {
+  status: "passed" | "failed" | "unverified";
+  ground_truth_available: boolean;
+  scenario_matched?: string | null;
+  matched_fields: number;
+  total_fields: number;
+  mismatches: ValidationMismatch[];
+}
 
 export interface CreateAnalysisRequest {
   source_type: "simulation" | "pcap";
@@ -106,6 +159,7 @@ export interface SecurityFinding {
   evidence: string[];
   recommendation: string;
   confidence: number;
+  provenance?: EvidenceProvenanceSource;
 }
 
 export interface FindingsSummary {
@@ -165,6 +219,9 @@ export interface AnalysisResult {
   protocol_observations?: ProtocolObservations;
   evidence?: ProtocolEvidence[];
   score_factors?: ScoreFactor[];
+  risk_scoring?: RiskScoringResult;
+  evidence_provenance?: EvidenceProvenanceItem[];
+  validation?: GroundTruthValidationResult;
 }
 
 export interface ScenarioDefinition {

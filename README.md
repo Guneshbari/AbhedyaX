@@ -130,10 +130,25 @@ abhedyax/
 
 ---
 
-## 🚦 Roadmap
+---
 
-- [ ] **Phase 1: Product UI & UX (Current)** - Complete Next.js dashboard with full interactive screens powered by `MockAnalysisEngine` and realistic simulation scenarios.
-- [ ] **Phase 2: Core Packet Engine** - Integration of Scapy & TShark for IKE SA and Child SA parameter parsing.
-- [ ] **Phase 3: Deterministic Security Evaluator** - Implementation of NIST/RFC compliance rules, cipher evaluation, and risk scoring.
-- [ ] **Phase 4: ML Encrypted Traffic Classifier** - Feature extraction pipeline and trained model inference for traffic classification.
-- [ ] **Phase 5: strongSwan Testbed & Reporting** - Netns automated testbed execution and automated PDF report generation.
+## 🚦 Roadmap & Implementation Status
+
+- [x] **Phase 1: Product UI & UX** - Complete Next.js dashboard with full interactive screens, Dark SOC design system, and canonical API contract.
+- [x] **Phase 2: Core Packet Engine** - Integration of TShark CLI for real PCAP dissection, IKE/ESP parameter extraction, and normalized wire parsing.
+- [x] **Phase 3: strongSwan Testbed & Dataset Generator** - Controlled Linux network namespaces, automated traffic generators (ping/curl/iperf3), and ground-truth metadata generation.
+- [x] **Phase 4: ML Encrypted Traffic Classifier** - Zero-payload 28-feature extraction pipeline, trained Random Forest model (F1: 77.8%), confidence abstention, and feature explainability.
+- [x] **Phase 5: End-to-End Validation, Risk Engine & Reporting Hardening** - Centralized deterministic risk scoring engine (`services/security-engine`), evidence provenance framework (`Observed`, `Inferred`, `Simulated`, `GroundTruth`, `MLPrediction`), testbed ground-truth validation, and executive/technical report generator (`services/report-generator`) with print-to-PDF CSS.
+
+---
+
+## 📚 Phase 5 Documentation & Runbooks
+Detailed implementation guides and verification records:
+- [Deterministic Risk Scoring Engine](docs/phase5/risk-scoring.md)
+- [Evidence Provenance & Zero-Payload Guarantee](docs/phase5/evidence-provenance.md)
+- [Executive & Technical Security Reporting](docs/phase5/reporting.md)
+- [End-to-End Validation & Ground-Truth Verification](docs/phase5/validation.md)
+- [Production & Hackathon Deployment Guide](docs/phase5/deployment.md)
+- [Security Architecture & Hardening Safeguards](docs/phase5/security-hardening.md)
+- [Hackathon Live Demonstration Runbook](docs/phase5/demo-runbook.md)
+

@@ -1,4 +1,4 @@
-export type RiskLevel = "Low" | "Medium" | "High" | "Critical";
+export type RiskLevel = "Low" | "Moderate" | "Medium" | "High" | "Critical";
 
 export type AnalysisStatus = "completed" | "processing" | "failed" | "warning";
 

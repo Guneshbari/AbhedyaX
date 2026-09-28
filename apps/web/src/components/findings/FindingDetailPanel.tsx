@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SecurityFinding } from "@/types/analysis";
+import { EvidenceBadge } from "@/components/analysis/EvidenceBadge";
 
 interface FindingDetailPanelProps {
   finding?: SecurityFinding | null;
@@ -96,6 +97,9 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
             >
               {finding.severity}
             </span>
+            {finding.provenance && (
+              <EvidenceBadge source={finding.provenance} />
+            )}
             <span className="text-xs px-2.5 py-0.5 rounded bg-[#141820] border border-[#252B35] text-[#9AA4B2] font-mono">
               {finding.category}
             </span>

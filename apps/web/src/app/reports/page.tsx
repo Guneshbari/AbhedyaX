@@ -8,13 +8,25 @@ import {
   Download,
   CheckCircle2,
   AlertTriangle,
+  ExternalLink,
+  FileText,
+  FileCode2,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { SecurityScore } from "@/components/ui/SecurityScore";
 import { RiskBadge } from "@/components/ui/RiskBadge";
-import { getAnalysisResult } from "@/lib/api/analyses";
+import { RiskScoreBreakdown } from "@/components/analysis/RiskScoreBreakdown";
+import { RiskMethodologyCard } from "@/components/analysis/RiskMethodologyCard";
+import { ValidationStatusCard } from "@/components/analysis/ValidationStatusCard";
+import { AssessmentProvenance } from "@/components/analysis/AssessmentProvenance";
+import {
+  getAnalysisResult,
+  getExecutiveReportUrl,
+  getTechnicalReportUrl,
+} from "@/lib/api/analyses";
+import { AnalysisResult, SecurityFinding } from "@/types/analysis";
 import { DASHBOARD_DATA } from "@/data/dashboardData";
 import { formatDate } from "@/lib/utils";
 
@@ -39,7 +51,7 @@ function ReportsContent() {
   });
 
   // Construct report data
-  const activeReport = useMemo(() => {
+  const activeReport: AnalysisResult = useMemo(() => {
     if (analysisResult) {
       return analysisResult;
     }
@@ -108,7 +120,7 @@ function ReportsContent() {
         low: 0,
         informational: 1,
       },
-    };
+    } as AnalysisResult;
   }, [analysisResult, selectedAnalysisId]);
 
   const handlePrint = () => {
@@ -140,7 +152,25 @@ function ReportsContent() {
           ]}
           badge={<SimulationModeBadge />}
           actions={
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href={
+                  reportType === "executive"
+                    ? getExecutiveReportUrl(selectedAnalysisId)
+                    : getTechnicalReportUrl(selectedAnalysisId)
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600/30 transition-colors"
+              >
+                {reportType === "executive" ? (
+                  <FileText className="w-3.5 h-3.5" />
+                ) : (
+                  <FileCode2 className="w-3.5 h-3.5" />
+                )}
+                <span>Open Standalone HTML</span>
+                <ExternalLink className="w-3 h-3 opacity-60" />
+              </a>
               <PrimaryButton
                 variant="outline"
                 size="sm"
@@ -313,7 +343,7 @@ function ReportsContent() {
                 </span>
                 <ul className="text-[#9AA4B2] space-y-1.5 list-disc list-inside">
                   {activeReport.findings.length > 0 ? (
-                    activeReport.findings.map((f, i) => (
+                    activeReport.findings.map((f: SecurityFinding, i: number) => (
                       <li key={i} className="truncate" title={f.recommendation}>
                         {f.recommendation}
                       </li>
@@ -324,10 +354,28 @@ function ReportsContent() {
                 </ul>
               </div>
             </div>
+
+            {/* Risk Methodology Card */}
+            <RiskMethodologyCard />
           </div>
         ) : (
           /* Content for Technical IPsec Audit Report */
           <div className="space-y-6">
+            {/* Ground Truth Validation Status */}
+            {activeReport.validation && (
+              <ValidationStatusCard
+                validation={activeReport.validation}
+                engineType={activeReport.engine_type}
+              />
+            )}
+
+            {/* Assessment Evidence Provenance */}
+            {activeReport.evidence_provenance && activeReport.evidence_provenance.length > 0 && (
+              <AssessmentProvenance
+                provenance={activeReport.evidence_provenance}
+              />
+            )}
+
             {/* Technical Transform Matrix Table */}
             <div className="space-y-2">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-[#687384]">
@@ -395,7 +443,7 @@ function ReportsContent() {
                 Audited Security Findings ({activeReport.findings.length})
               </h3>
               <div className="space-y-2 text-xs">
-                {activeReport.findings.map((f) => (
+                {activeReport.findings.map((f: SecurityFinding) => (
                   <div
                     key={f.id}
                     className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] space-y-1.5"
@@ -417,6 +465,15 @@ function ReportsContent() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Deterministic Risk Scoring Breakdown */}
+        {activeReport.risk_scoring && (
+          <RiskScoreBreakdown
+            scoring={activeReport.risk_scoring}
+            fallbackScore={activeReport.security.score}
+            fallbackRiskLevel={activeReport.security.risk_level}
+          />
         )}
 
         {/* Report Footer */}

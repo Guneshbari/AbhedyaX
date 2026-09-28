@@ -8,6 +8,7 @@ import os
 import uuid
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, status, UploadFile, File, Form
+from fastapi.responses import HTMLResponse, JSONResponse
 from app.models.analysis import (
     CreateAnalysisRequest,
     CreateAnalysisResponse,
@@ -215,3 +216,70 @@ async def get_analysis_result(analysis_id: str) -> AnalysisResult:
             detail=f"Analysis result for '{analysis_id}' not found.",
         )
     return result
+
+
+@router.get("/{analysis_id}/report/executive", response_class=HTMLResponse)
+async def get_executive_report(analysis_id: str) -> HTMLResponse:
+    """Generate self-contained Executive Security Assessment HTML report with print CSS."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        status_resp = await analysis_service.get_status(analysis_id)
+        if status_resp and status_resp.status != "completed":
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Analysis session '{analysis_id}' is still in status '{status_resp.status}'.",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis result for '{analysis_id}' not found.",
+        )
+    from services.report_generator.src.executive_report import generate_executive_report
+
+    html_content = generate_executive_report(result)
+    return HTMLResponse(content=html_content, status_code=200)
+
+
+@router.get("/{analysis_id}/report/technical", response_class=HTMLResponse)
+async def get_technical_report(analysis_id: str) -> HTMLResponse:
+    """Generate self-contained Technical Cryptographic & Flow Audit HTML report with print CSS."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        status_resp = await analysis_service.get_status(analysis_id)
+        if status_resp and status_resp.status != "completed":
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Analysis session '{analysis_id}' is still in status '{status_resp.status}'.",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis result for '{analysis_id}' not found.",
+        )
+    from services.report_generator.src.technical_report import generate_technical_report
+
+    html_content = generate_technical_report(result)
+    return HTMLResponse(content=html_content, status_code=200)
+
+
+@router.get("/{analysis_id}/report/json", response_class=JSONResponse)
+async def get_json_report(analysis_id: str) -> JSONResponse:
+    """Export complete canonical AnalysisResult as a downloadable JSON document."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        status_resp = await analysis_service.get_status(analysis_id)
+        if status_resp and status_resp.status != "completed":
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Analysis session '{analysis_id}' is still in status '{status_resp.status}'.",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis result for '{analysis_id}' not found.",
+        )
+
+    filename = f"abhedyax_analysis_{analysis_id}.json"
+    return JSONResponse(
+        content=result.model_dump(mode="json"),
+        status_code=200,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+

@@ -2,6 +2,7 @@ import React from "react";
 import { Terminal, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SecurityFinding } from "@/types/analysis";
+import { EvidenceBadge } from "@/components/analysis/EvidenceBadge";
 
 interface FindingCardProps {
   finding: SecurityFinding;
@@ -51,9 +52,14 @@ export const FindingCard: React.FC<FindingCardProps> = ({
             </span>
           </div>
 
-          <span className="text-[11px] px-2 py-0.5 rounded bg-[#141820] border border-[#252B35] text-[#9AA4B2] font-mono">
-            {finding.category}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {finding.provenance && (
+              <EvidenceBadge source={finding.provenance} />
+            )}
+            <span className="text-[11px] px-2 py-0.5 rounded bg-[#141820] border border-[#252B35] text-[#9AA4B2] font-mono">
+              {finding.category}
+            </span>
+          </div>
         </div>
 
         {/* Title */}

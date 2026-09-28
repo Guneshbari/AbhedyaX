@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AbhedyaX Executive Security Assessment - {{ result.analysis_id }}</title>
+  <style>
+    {{ get_report_css() }}
+  </style>
+</head>
+<body>
+  <div class="report-container">
+
+    <!-- Action Bar for Screen Viewing -->
+    <div class="action-bar">
+      <div>
+        <span class="brand-badge">AbhedyaX Security Intelligence</span>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-left: 10px;">
+          Executive Assessment Report
+        </span>
+      </div>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print / Save as PDF
+      </button>
+    </div>
+
+    <!-- Header & Cover Section -->
+    <header class="report-header">
+      <div class="brand-badge">National Cyber Security Framework • Problem 26160</div>
+      <h1 class="report-title">Executive VPN Security Assessment</h1>
+      <p class="report-subtitle">
+        Automated IPsec posture evaluation, cryptographic compliance audit, and encrypted flow intelligence derived from observable network wire metadata.
+      </p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Analysis Session ID</span>
+          <span class="meta-val">{{ result.analysis_id }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Evaluation Date (UTC)</span>
+          <span class="meta-val">{{ result.created_at[:19].replace("T", " ") }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Capture Source</span>
+          <span class="meta-val">{{ result.source.name }} ({{ result.source.type | upper }})</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Analysis Pipeline</span>
+          <span class="meta-val">
+            {% if result.engine_type == "real" %}
+              TShark Wire Dissection + ML
+            {% else %}
+              Deterministic Scenario Simulation
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Executive Scorecard Hero -->
+    {% set score = (result.risk_scoring and result.risk_scoring.security_score) or result.security.score %}
+    {% set risk_level = (result.risk_scoring and result.risk_scoring.risk_level) or result.security.risk_level %}
+    <div class="score-hero">
+      <div class="score-visual">
+        <div class="score-circle">
+          <span class="score-num">{{ score }}</span>
+          <span class="score-max">/ 100</span>
+        </div>
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim); margin-bottom: 4px;">
+            Overall Security Posture
+          </div>
+          <div style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+            {% if score >= 90 %}
+              Robust Defense Posture
+            {% elif score >= 75 %}
+              Moderate Risk Configuration
+            {% elif score >= 50 %}
+              Elevated Vulnerability Exposure
+            {% else %}
+              Critical Remediation Required
+            {% endif %}
+          </div>
+          <span class="risk-badge risk-{{ risk_level | lower }}">
+            {{ risk_level }} Risk
+          </span>
+        </div>
+      </div>
+
+      <div style="text-align: right;">
+        <div style="font-size: 11px; font-family: var(--font-mono); color: var(--text-dim);">DETERMINISTIC SCORING</div>
+        <div style="font-size: 14px; font-family: var(--font-mono); color: var(--text-main); margin-top: 4px;">
+          Base: 100 | Deductions: -{{ (result.risk_scoring and result.risk_scoring.total_deduction) or (100 - score) }}
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+          Auditable methodology {{ (result.risk_scoring and result.risk_scoring.methodology_version) or "v1.2.0" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Executive Summary -->
+    <section class="section">
+      <h2 class="section-header">1. Executive Summary</h2>
+      <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
+        AbhedyaX conducted an automated, zero-payload security evaluation of the IPsec VPN tunnel associated with
+        <strong>{{ result.analysis_id }}</strong>. The assessment examined protocol negotiation parameters, cryptographic primitives,
+        Diffie-Hellman key exchange groups, Perfect Forward Secrecy (PFS), anti-replay enforcement, and statistical flow behavior.
+      </p>
+      <p style="color: var(--text-muted); line-height: 1.7;">
+        {% if risk_level == "Low" %}
+          The assessed IPsec configuration complies with NIST SP 800-77 Rev. 1 guidelines. Strong authenticated encryption
+          (<strong>{{ result.cryptography.encryption }}</strong>) is active alongside robust key exchange (<strong>{{ result.cryptography.dh_group }}</strong>).
+          No critical vulnerabilities or deprecated protocols were detected.
+        {% elif risk_level == "Moderate" %}
+          The IPsec tunnel exhibits an acceptable baseline security posture, but contains non-critical trade-offs
+          (such as disabled Child SA Perfect Forward Secrecy or extended rekey lifetimes). Remediation should be planned in the next maintenance window.
+        {% else %}
+          <strong>Urgent security intervention is required.</strong> The configuration relies on deprecated or insecure mechanisms
+          (such as IKEv1, weak Diffie-Hellman groups, or disabled anti-replay protection), creating vulnerabilities to credential interception,
+          replay attacks, or precomputation cryptanalysis.
+        {% endif %}
+      </p>
+    </section>
+
+    <!-- Section 2: VPN Configuration Snapshot -->
+    <section class="section">
+      <h2 class="section-header">2. VPN Configuration Architecture</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Mode</th>
+            <th>IP Family</th>
+            <th>Encryption Cipher</th>
+            <th>Integrity / Hash</th>
+            <th>Key Exchange</th>
+            <th>PFS</th>
+            <th>Anti-Replay</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>{{ result.vpn.ike_version }}</strong></td>
+            <td>{{ result.vpn.mode }}</td>
+            <td>{{ result.vpn.ip_version }}</td>
+            <td>{{ result.cryptography.encryption }}</td>
+            <td>{{ result.cryptography.authentication }}</td>
+            <td>{{ result.cryptography.dh_group }}</td>
+            <td>{{ "Enforced" if result.cryptography.pfs else "Disabled" }}</td>
+            <td>{{ "Active" if result.security.replay_protection else "Disabled" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 3: Key Security Findings -->
+    <section class="section">
+      <h2 class="section-header">3. Critical & High Priority Security Findings</h2>
+      {% set important_findings = result.findings | selectattr("severity", "in", ["Critical", "High"]) | list %}
+      {% if important_findings | length > 0 %}
+        {% for f in important_findings %}
+          <div class="finding-card">
+            <div class="finding-header">
+              <span class="finding-title">{{ f.id }}: {{ f.title }}</span>
+              <span class="risk-badge risk-{{ 'critical' if f.severity == 'Critical' else 'high' }}">
+                {{ f.severity }}
+              </span>
+            </div>
+            <p class="finding-desc">{{ f.description }}</p>
+            <div class="finding-rec">
+              <strong>Recommendation:</strong> {{ f.recommendation }}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style="padding: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; color: #34D399; font-size: 13px;">
+          ✓ No Critical or High severity findings detected. The evaluated tunnel satisfies baseline cryptographic compliance.
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- Section 4: Traffic Intelligence Summary -->
+    <section class="section">
+      <h2 class="section-header">4. AI Encrypted Traffic Intelligence</h2>
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim);">
+            Inferred Application Profile
+          </div>
+          <div style="font-size: 24px; font-weight: 700; font-family: var(--font-mono); color: var(--text-main); margin-top: 4px;">
+            {{ result.traffic.predicted_class }}
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.5;">
+            Inferred strictly from statistical burst timing, packet length variance, and directionality without inspecting or decrypting ESP tunnel payloads.
+          </p>
+        </div>
+
+        <div style="border-left: 1px solid var(--border-color); padding-left: 20px;">
+          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim);">
+            Model Confidence
+          </div>
+          <div style="font-size: 24px; font-weight: 700; font-family: var(--font-mono); color: var(--color-blue); margin-top: 4px;">
+            {{ "%.1f" | format(result.traffic.confidence * 100) }}%
+          </div>
+          <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">
+            {% if result.traffic.confidence >= 0.55 %}
+              ✓ Confidence threshold satisfied (≥55%)
+            {% else %}
+              ⚠ Below operational threshold; abstained to Unknown
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Strategic Remediation Roadmap -->
+    <section class="section">
+      <h2 class="section-header">5. Recommended Remediation Roadmap</h2>
+      <ol style="padding-left: 20px; color: var(--text-muted); line-height: 1.8; font-size: 13px;">
+        {% for f in result.findings %}
+          {% if f.severity != "Informational" %}
+            <li>
+              <strong>{{ f.category }}:</strong> {{ f.recommendation }}
+            </li>
+          {% endif %}
+        {% endfor %}
+        <li><strong>Continuous Monitoring:</strong> Re-audit IPsec configurations following any gateway firmware upgrade or network topology change.</li>
+      </ol>
+    </section>
+
+    <!-- Operational Disclaimers -->
+    <div class="disclaimer-box">
+      <strong>Zero-Payload Inspection & Research Scope:</strong>
+      This assessment was generated by AbhedyaX without decrypting IPsec ESP tunnel payload data.
+      {% if result.source.type == "simulation" or result.engine_type == "mock" %}
+        This report reflects <strong>Simulation Mode</strong> using verified ground-truth scenario models. No live tunnel packets were intercepted.
+      {% else %}
+        This report reflects <strong>Live PCAP Wire Dissection</strong> using TShark and active Random Forest ML inference.
+      {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="report-footer">
+      <span>AbhedyaX Assessment Platform • NTRO Problem 26160</span>
+      <span>Analysis ID: {{ result.analysis_id }}</span>
+      <span>Confidential Cybersecurity Assessment</span>
+    </footer>
+
+  </div>
+</body>
+</html>

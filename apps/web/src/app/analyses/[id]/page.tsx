@@ -8,7 +8,6 @@ import {
   Lock,
   Layers,
   BrainCircuit,
-  FileText,
   PlusCircle,
   AlertTriangle,
   Terminal,
@@ -19,6 +18,11 @@ import { SecurityScore } from "@/components/ui/SecurityScore";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { AnalysisNavTabs } from "@/components/analysis/AnalysisNavTabs";
+import { RiskScoreBreakdown } from "@/components/analysis/RiskScoreBreakdown";
+import { ValidationStatusCard } from "@/components/analysis/ValidationStatusCard";
+import { AssessmentProvenance } from "@/components/analysis/AssessmentProvenance";
+import { ReportActions } from "@/components/analysis/ReportActions";
+import { EvidenceBadge } from "@/components/analysis/EvidenceBadge";
 import { getAnalysisResult } from "@/lib/api/analyses";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -98,22 +102,15 @@ export default function AnalysisResultPage() {
           )
         }
         actions={
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <ReportActions analysisId={analysisId} variant="compact" />
             <PrimaryButton
               variant="outline"
               size="sm"
               href={`/analyses/${analysisId}/findings`}
               icon={AlertTriangle}
             >
-              Investigate Findings ({summary.total_findings})
-            </PrimaryButton>
-            <PrimaryButton
-              variant="secondary"
-              size="sm"
-              href={`/reports?analysisId=${analysisId}`}
-              icon={FileText}
-            >
-              View Report
+              Findings ({summary.total_findings})
             </PrimaryButton>
             <PrimaryButton
               variant="primary"
@@ -176,6 +173,14 @@ export default function AnalysisResultPage() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Ground Truth Validation Status */}
+      {result.validation && (
+        <ValidationStatusCard
+          validation={result.validation}
+          engineType={result.engine_type}
+        />
       )}
 
       {/* 2. Security Hero & Risk Summary */}
@@ -272,6 +277,13 @@ export default function AnalysisResultPage() {
           </div>
         </div>
       </div>
+
+      {/* Deterministic Risk Scoring Breakdown */}
+      <RiskScoreBreakdown
+        scoring={result.risk_scoring}
+        fallbackScore={security.score}
+        fallbackRiskLevel={security.risk_level}
+      />
 
       {/* 3. Protocol & Cryptographic Configuration Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -512,6 +524,9 @@ export default function AnalysisResultPage() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
+                      {f.provenance && (
+                        <EvidenceBadge source={f.provenance} />
+                      )}
                       <span
                         className={cn(
                           "text-xs px-2 py-0.5 rounded font-mono font-semibold uppercase tracking-wider border",
@@ -565,6 +580,14 @@ export default function AnalysisResultPage() {
           </div>
         )}
       </div>
+
+      {/* Evidence Provenance Trail */}
+      {result.evidence_provenance && result.evidence_provenance.length > 0 && (
+        <AssessmentProvenance provenance={result.evidence_provenance} />
+      )}
+
+      {/* Automated Reports & Export Actions */}
+      <ReportActions analysisId={analysisId} />
 
       {/* 6. Metadata Footer Card */}
       <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-[#687384]">
