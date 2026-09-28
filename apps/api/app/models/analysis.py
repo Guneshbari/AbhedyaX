@@ -46,9 +46,9 @@ class AnalysisSource(BaseModel):
 
 class VPNConfiguration(BaseModel):
     protocol: str = "IPsec"
-    ike_version: Literal["IKEv1", "IKEv2"] = "IKEv2"
-    mode: Literal["Tunnel", "Transport"] = "Tunnel"
-    ip_version: Literal["IPv4", "IPv6"] = "IPv4"
+    ike_version: Literal["IKEv1", "IKEv2", "Unknown"] = "IKEv2"
+    mode: Literal["Tunnel", "Transport", "Unknown"] = "Tunnel"
+    ip_version: Literal["IPv4", "IPv6", "Dual-Stack", "Unknown"] = "IPv4"
     nat_traversal: bool = True
     protocols_detected: List[str] = Field(default_factory=lambda: ["IKEv2", "ESP"])
 
@@ -109,6 +109,37 @@ class FindingsSummary(BaseModel):
     informational: int
 
 
+class CaptureMetadata(BaseModel):
+    file_name: str
+    file_size_bytes: int
+    packet_count: int
+    duration_seconds: float
+    first_packet_time: Optional[str] = None
+    last_packet_time: Optional[str] = None
+
+
+class ProtocolObservations(BaseModel):
+    ike_sessions: int = 0
+    esp_sessions: int = 0
+    ah_sessions: int = 0
+    nat_traversal_detected: bool = False
+    observed_spis: List[str] = Field(default_factory=list)
+
+
+class ProtocolEvidence(BaseModel):
+    source: str = "TShark"
+    field: str
+    value: str
+    packet_numbers: List[int] = Field(default_factory=list)
+
+
+class ScoreFactor(BaseModel):
+    category: str
+    weight: int
+    score: int
+    description: str
+
+
 class AnalysisResult(BaseModel):
     analysis_id: str
     status: AnalysisStatusType
@@ -121,5 +152,11 @@ class AnalysisResult(BaseModel):
     traffic: TrafficIntelligence
     findings: List[SecurityFinding] = Field(default_factory=list)
     summary: FindingsSummary
+    # Phase 2 Extensions
+    engine_type: Optional[str] = "mock"
+    capture_metadata: Optional[CaptureMetadata] = None
+    protocol_observations: Optional[ProtocolObservations] = None
+    evidence: List[ProtocolEvidence] = Field(default_factory=list)
+    score_factors: List[ScoreFactor] = Field(default_factory=list)
 
     model_config = ConfigDict(populate_by_name=True)

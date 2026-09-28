@@ -41,9 +41,9 @@ export interface AnalysisSource {
 
 export interface VPNConfiguration {
   protocol: string;
-  ike_version: "IKEv1" | "IKEv2";
-  mode: "Tunnel" | "Transport";
-  ip_version: "IPv4" | "IPv6";
+  ike_version: "IKEv1" | "IKEv2" | "Unknown" | string;
+  mode: "Tunnel" | "Transport" | "Unknown" | string;
+  ip_version: "IPv4" | "IPv6" | "Dual-Stack" | "Unknown" | string;
   nat_traversal: boolean;
   protocols_detected: string[];
 }
@@ -102,6 +102,37 @@ export interface FindingsSummary {
   informational: number;
 }
 
+export interface CaptureMetadata {
+  file_name: string;
+  file_size_bytes: number;
+  packet_count: number;
+  duration_seconds: number;
+  first_packet_time?: string | null;
+  last_packet_time?: string | null;
+}
+
+export interface ProtocolObservations {
+  ike_sessions: number;
+  esp_sessions: number;
+  ah_sessions: number;
+  nat_traversal_detected: boolean;
+  observed_spis: string[];
+}
+
+export interface ProtocolEvidence {
+  source: string;
+  field: string;
+  value: string;
+  packet_numbers: number[];
+}
+
+export interface ScoreFactor {
+  category: string;
+  weight: number;
+  score: number;
+  description: string;
+}
+
 export interface AnalysisResult {
   analysis_id: string;
   status: AnalysisStatusType;
@@ -114,6 +145,11 @@ export interface AnalysisResult {
   traffic: TrafficIntelligence;
   findings: SecurityFinding[];
   summary: FindingsSummary;
+  engine_type?: string;
+  capture_metadata?: CaptureMetadata;
+  protocol_observations?: ProtocolObservations;
+  evidence?: ProtocolEvidence[];
+  score_factors?: ScoreFactor[];
 }
 
 export interface ScenarioDefinition {

@@ -42,13 +42,15 @@ async def test_create_and_poll_analysis():
         analysis_id = create_data["analysis_id"]
         assert analysis_id.startswith("AX-2026-")
 
-        # 2. Wait for completion
-        await asyncio.sleep(0.05)
+        # 2. Poll status until completed
+        for _ in range(80):
+            status_resp = await client.get(f"/api/v1/analyses/{analysis_id}/status")
+            assert status_resp.status_code == 200
+            status_data = status_resp.json()
+            if status_data["status"] == "completed":
+                break
+            await asyncio.sleep(0.05)
 
-        # 3. Poll status
-        status_resp = await client.get(f"/api/v1/analyses/{analysis_id}/status")
-        assert status_resp.status_code == 200
-        status_data = status_resp.json()
         assert status_data["status"] == "completed"
         assert status_data["progress"] == 100
 

@@ -85,7 +85,18 @@ export default function AnalysisResultPage() {
           { label: "Analyses", href: "/analyses" },
           { label: result.analysis_id },
         ]}
-        badge={<SimulationModeBadge />}
+        badge={
+          result.engine_type === "real" ? (
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Real Analysis Engine (TShark)
+              </span>
+            </div>
+          ) : (
+            <SimulationModeBadge />
+          )
+        }
         actions={
           <div className="flex items-center gap-2.5">
             <PrimaryButton
@@ -123,6 +134,49 @@ export default function AnalysisResultPage() {
         findingsCount={findings.length}
         confidenceScore={traffic.confidence}
       />
+
+      {/* Capture Telemetry Card (for Real PCAP Analyses) */}
+      {result.capture_metadata && (
+        <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <Terminal className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#F4F7FA]">
+                  {result.capture_metadata.file_name}
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  TShark Structured Dissection
+                </span>
+              </div>
+              <div className="text-[11px] text-[#687384] font-mono mt-0.5">
+                {result.capture_metadata.packet_count} frames dissected • {((result.capture_metadata.file_size_bytes || 0) / 1024).toFixed(1)} KB • {result.capture_metadata.duration_seconds}s capture span
+              </div>
+            </div>
+          </div>
+
+          {result.protocol_observations && (
+            <div className="flex items-center gap-4 text-xs font-mono text-[#9AA4B2]">
+              <div>
+                <span className="text-[#687384]">IKE Handshakes: </span>
+                <strong className="text-[#F4F7FA]">{result.protocol_observations.ike_sessions}</strong>
+              </div>
+              <div>
+                <span className="text-[#687384]">ESP Sessions: </span>
+                <strong className="text-[#F4F7FA]">{result.protocol_observations.esp_sessions}</strong>
+              </div>
+              <div>
+                <span className="text-[#687384]">NAT-T: </span>
+                <strong className={result.protocol_observations.nat_traversal_detected ? "text-emerald-400" : "text-[#687384]"}>
+                  {result.protocol_observations.nat_traversal_detected ? "Active (UDP 4500)" : "Inactive"}
+                </strong>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 2. Security Hero & Risk Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -5,9 +5,15 @@ import { UploadCloud, FileText, X, AlertCircle } from "lucide-react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { cn } from "@/lib/utils";
 
+export interface SelectedPcapFile {
+  name: string;
+  size: number;
+  rawFile?: File;
+}
+
 interface PcapUploaderProps {
-  selectedFile: { name: string; size: number } | null;
-  onSelectFile: (file: { name: string; size: number } | null) => void;
+  selectedFile: SelectedPcapFile | null;
+  onSelectFile: (file: SelectedPcapFile | null) => void;
 }
 
 export const PcapUploader: React.FC<PcapUploaderProps> = ({
@@ -43,14 +49,11 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
   };
 
   const validateAndSetFile = (file: File) => {
-    const validExts = [".pcap", ".pcapng", ".cap"];
-    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
-    if (validExts.includes(ext) || file.type.includes("pcap")) {
-      onSelectFile({ name: file.name, size: file.size });
-    } else {
-      // Allow fallback if user wants to test with generic capture name
-      onSelectFile({ name: file.name, size: file.size });
-    }
+    onSelectFile({
+      name: file.name,
+      size: file.size,
+      rawFile: file,
+    });
   };
 
   const formatFileSize = (bytes: number) => {
@@ -147,6 +150,65 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
           </PrimaryButton>
         </div>
       )}
+
+      {/* Benchmark Captures Selection */}
+      <div className="pt-2">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-mono text-[#687384] uppercase">
+            Or analyze a pre-configured benchmark capture from datasets:
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {[
+            {
+              name: "modern-ikev2-aes256gcm.pcap",
+              label: "Modern IKEv2 Suite",
+              desc: "AES-256-GCM • DH Group 19 (ECP-256) • ESP",
+              size: 1024,
+            },
+            {
+              name: "legacy-ikev1-3des-sha1.pcap",
+              label: "Legacy IKEv1 Baseline",
+              desc: "3DES-CBC • HMAC-SHA1 • DH Group 2 • 24h SA",
+              size: 800,
+            },
+            {
+              name: "natt-esp-traffic.pcap",
+              label: "NAT-T Encapsulated ESP",
+              desc: "UDP Port 4500 • Non-zero SPI • Traversal",
+              size: 512,
+            },
+            {
+              name: "weak-ikev2-des-md5.pcap",
+              label: "Weak IKEv2 Cryptanalysis",
+              desc: "Single DES • HMAC-MD5-96 • DH Group 1",
+              size: 720,
+            },
+          ].map((sample) => (
+            <button
+              key={sample.name}
+              type="button"
+              onClick={() => onSelectFile({ name: sample.name, size: sample.size })}
+              className={cn(
+                "p-3 rounded-lg border text-left transition-colors flex flex-col justify-between",
+                selectedFile?.name === sample.name
+                  ? "border-blue-500/50 bg-blue-500/10 text-[#F4F7FA]"
+                  : "border-[#252B35] bg-[#141820]/60 hover:border-[#3B4252] hover:bg-[#141820] text-[#9AA4B2]"
+              )}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-semibold text-[#F4F7FA]">
+                  {sample.label}
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#252B35] text-[#9AA4B2]">
+                  {sample.name.split(".")[0]}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#687384] font-mono">{sample.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

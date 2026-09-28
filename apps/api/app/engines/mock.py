@@ -49,6 +49,8 @@ class MockAnalysisEngine(AnalysisEngine):
         source_type: str,
         scenario_id: Optional[str] = None,
         file_name: Optional[str] = None,
+        pcap_path: Optional[str] = None,
+        **kwargs,
     ) -> CreateAnalysisResponse:
         resolved_scenario = scenario_id or "secure-enterprise"
         if resolved_scenario not in SCENARIOS:

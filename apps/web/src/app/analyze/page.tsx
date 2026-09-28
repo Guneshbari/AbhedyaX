@@ -9,9 +9,16 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { SourceSelector } from "@/components/analyze/SourceSelector";
 import { ScenarioPicker } from "@/components/analyze/ScenarioPicker";
-import { PcapUploader } from "@/components/analyze/PcapUploader";
+import {
+  PcapUploader,
+  SelectedPcapFile,
+} from "@/components/analyze/PcapUploader";
 import { ConfigurationSummary } from "@/components/analyze/ConfigurationSummary";
-import { createAnalysis, getScenarios } from "@/lib/api/analyses";
+import {
+  createAnalysis,
+  uploadAnalysisPcap,
+  getScenarios,
+} from "@/lib/api/analyses";
 import { DEFAULT_SCENARIOS } from "@/data/defaultScenarios";
 import { ScenarioDefinition } from "@/types/analysis";
 
@@ -23,10 +30,7 @@ export default function AnalyzePage() {
   );
   const [selectedScenarioId, setSelectedScenarioId] =
     useState<string>("secure-enterprise");
-  const [selectedFile, setSelectedFile] = useState<{
-    name: string;
-    size: number;
-  } | null>(null);
+  const [selectedFile, setSelectedFile] = useState<SelectedPcapFile | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   // Fetch scenarios from API with fallback
@@ -45,7 +49,7 @@ export default function AnalyzePage() {
       ? Boolean(selectedScenarioId)
       : Boolean(selectedFile);
 
-  // Mutation for creating analysis
+  // Mutation for creating simulation or server-side benchmark analysis
   const createMutation = useMutation({
     mutationFn: createAnalysis,
     onSuccess: (data) => {
@@ -59,15 +63,41 @@ export default function AnalyzePage() {
     },
   });
 
+  // Mutation for uploading real PCAP
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => uploadAnalysisPcap(file),
+    onSuccess: (data) => {
+      setFormError(null);
+      router.push(`/analyses/${data.analysis_id}/processing`);
+    },
+    onError: (error: Error) => {
+      setFormError(
+        error.message || "Failed to upload capture. Verify TShark is available and file is a valid PCAP."
+      );
+    },
+  });
+
+  const isSubmitting = createMutation.isPending || uploadMutation.isPending;
+
   const handleStartAnalysis = () => {
     if (!isValid) return;
 
     setFormError(null);
-    createMutation.mutate({
-      source_type: selectedSource,
-      scenario_id: selectedSource === "simulation" ? selectedScenarioId : undefined,
-      file_name: selectedSource === "pcap" ? selectedFile?.name : undefined,
-    });
+    if (selectedSource === "pcap" && selectedFile) {
+      if (selectedFile.rawFile) {
+        uploadMutation.mutate(selectedFile.rawFile);
+      } else {
+        createMutation.mutate({
+          source_type: "pcap",
+          file_name: selectedFile.name,
+        });
+      }
+    } else {
+      createMutation.mutate({
+        source_type: "simulation",
+        scenario_id: selectedScenarioId,
+      });
+    }
   };
 
   return (
@@ -139,7 +169,7 @@ export default function AnalyzePage() {
             </span>
           ) : selectedFile ? (
             <span>
-              Target: <strong className="text-[#F4F7FA]">{selectedFile.name}</strong> • Ready for simulated capture processing
+              Target: <strong className="text-[#F4F7FA]">{selectedFile.name}</strong> • Real TShark deep packet dissection & cryptographic audit
             </span>
           ) : (
             <span className="text-amber-400">Please select or upload a capture file to proceed</span>
@@ -159,11 +189,11 @@ export default function AnalyzePage() {
             variant="primary"
             size="md"
             icon={Play}
-            isLoading={createMutation.isPending}
-            disabled={!isValid || createMutation.isPending}
+            isLoading={isSubmitting}
+            disabled={!isValid || isSubmitting}
             onClick={handleStartAnalysis}
           >
-            {createMutation.isPending ? "Queuing Session..." : "Start Analysis"}
+            {isSubmitting ? "Queuing Session..." : "Start Analysis"}
           </PrimaryButton>
         </div>
       </div>

@@ -17,6 +17,15 @@ class Settings(BaseSettings):
     step_delay_seconds: float = 0.4
     log_level: str = "INFO"
 
+    # Phase 2: Engine & TShark Configuration
+    analysis_engine: str = "mock"  # "mock" or "real" (ABHEDYAX_ANALYSIS_ENGINE)
+    tshark_binary: str = "tshark"  # TSHARK_BINARY
+    tshark_timeout_seconds: int = 120  # TSHARK_TIMEOUT_SECONDS
+    max_pcap_size_mb: int = 250  # MAX_PCAP_SIZE_MB
+    storage_dir: str = "storage"
+    pcaps_dir: str = "storage/pcaps"
+    datasets_dir: str = "datasets/scenarios/pcaps"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
