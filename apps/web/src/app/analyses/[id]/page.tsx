@@ -605,9 +605,9 @@ export default function AnalysisResultPage() {
           <span className="text-amber-400">Simulation</span>
         </div>
         <div>
-          <span>Created: {formatDate(result.created_at)}</span>
+          <span suppressHydrationWarning>Created: {formatDate(result.created_at)}</span>
           {result.completed_at && (
-            <span> • Completed: {formatDate(result.completed_at)}</span>
+            <span suppressHydrationWarning> • Completed: {formatDate(result.completed_at)}</span>
           )}
         </div>
       </div>

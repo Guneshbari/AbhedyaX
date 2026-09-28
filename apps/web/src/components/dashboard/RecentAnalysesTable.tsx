@@ -106,7 +106,7 @@ export const RecentAnalysesTable: React.FC<RecentAnalysesTableProps> = ({
       key: "createdAt",
       header: "Timestamp",
       render: (row) => (
-        <span className="text-[#687384] font-mono text-[11px]">
+        <span className="text-[#687384] font-mono text-[11px]" suppressHydrationWarning>
           {formatDate(row.createdAt)}
         </span>
       ),

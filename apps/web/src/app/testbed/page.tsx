@@ -385,7 +385,7 @@ export default function TestbedPage() {
 
               <div className="flex items-center gap-4 text-[#687384]">
                 <span>Score: {run.securityScore}/100</span>
-                <span>{formatDate(run.createdAt)}</span>
+                <span suppressHydrationWarning>{formatDate(run.createdAt)}</span>
                 <Link
                   href={`/analyses/${run.id}`}
                   className="text-blue-400 hover:text-blue-300 flex items-center gap-0.5"

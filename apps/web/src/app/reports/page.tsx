@@ -265,7 +265,7 @@ function ReportsContent() {
 
           <div className="text-right text-xs font-mono text-[#687384] space-y-0.5">
             <div>Report ID: REP-{activeReport.analysis_id}</div>
-            <div>Date: {formatDate(activeReport.created_at)}</div>
+            <div suppressHydrationWarning>Date: {formatDate(activeReport.created_at)}</div>
             <div>Classification: RESTRICTED // SECURITY AUDIT</div>
           </div>
         </div>

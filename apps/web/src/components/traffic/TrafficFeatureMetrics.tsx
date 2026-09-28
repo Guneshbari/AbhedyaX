@@ -155,8 +155,8 @@ export const TrafficFeatureMetrics: React.FC<TrafficFeatureMetricsProps> = ({
               <Layers className="w-3.5 h-3.5 text-blue-400" />
               <span className="text-[10px] uppercase font-mono">Total Packets</span>
             </div>
-            <div className="text-base font-bold font-mono text-[#F4F7FA]">
-              {Number(raw.packet_count).toLocaleString()}
+            <div className="text-base font-bold font-mono text-[#F4F7FA]" suppressHydrationWarning>
+              {Number(raw.packet_count).toLocaleString("en-US")}
             </div>
           </div>
           <div className="p-3 rounded-lg bg-[#0D1016] border border-[#202530]">
