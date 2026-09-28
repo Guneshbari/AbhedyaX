@@ -18,6 +18,11 @@ flowchart TD
     G --> I["Canonical AnalysisResult Object"]
     H --> I
     I --> J["FastAPI REST Contract & React SOC UI"]
+    I --> K["USP: Security Twin Engine (Policy vs Wire Alignment)"]
+    I --> L["USP: Configuration Drift Engine (Session vs Session Delta)"]
+    I --> M["USP: Auditable Reasoning Engine (5-Step Wire-to-Score Chain)"]
+    I --> N["USP: Zero-Payload Metadata Exposure Engine"]
+    I --> O["USP: Posture Timeline Aggregator"]
 ```
 
 ---
@@ -65,3 +70,24 @@ AbhedyaX strictly distinguishes verified cryptographic facts from inferred or un
 - **Encrypted Payload Decryption:** AbhedyaX does not require or attempt to decrypt the inner ESP payload. Confidentiality of user traffic is fully respected.
 - **Single-File Scope:** The current implementation analyzes one capture at a time per analysis ID.
 - **TShark Dependency:** In production, the host environment must have `wireshark-cli` installed. If absent, the backend returns an explicit `503 Service Unavailable` error rather than generating false data.
+
+---
+
+## 5. Downstream USP Extensions (Phase 6 Architecture)
+
+The canonical `AnalysisResult` serves as the foundational data contract consumed by the AbhedyaX USP layer:
+
+1. **Security Twin Engine (`services/security-twin/src/builder.py`):**
+   - Synthesizes an expected enterprise policy baseline against observed wire attributes.
+   - Evaluates a 6-attribute alignment matrix (`aligned`, `deviated`, `missing`, `unauthorized`) with exact security impact and provenance attribution.
+2. **Configuration Drift Comparator (`services/security-twin/src/drift_engine.py`):**
+   - Calculates mathematical deltas between two analyses ($\Delta s = S_{target} - S_{baseline}$).
+   - Classifies parameter transitions (`weakened`, `strengthened`, `changed`, `unchanged`) and tracks finding lifecycle (introduced, resolved, persistent).
+3. **Auditable Security Reasoning (`services/security-twin/src/impact_mapper.py`):**
+   - Assembles an auditable 5-step deduction chain for every triggered finding:
+     `Wire Evidence` $\rightarrow$ `Protocol Observation` $\rightarrow$ `Security Finding` $\rightarrow$ `NIST/RFC Risk Rule` $\rightarrow$ `Score Deduction` $\rightarrow$ `Recommendation`.
+4. **Metadata Exposure Indicator (`services/security-twin/src/metadata_engine.py`):**
+   - Computes behavioral leakage scores across 5 observable dimensions (Timing, Size Pattern, Directionality, Burst Pattern, Flow Duration) without inspecting inner ciphertext payloads.
+5. **Security Posture Timeline (`services/security-twin/src/posture_engine.py`):**
+   - Ingests canonical analysis history to construct an auditable chronological timeline of network health transitions and security milestones.
+

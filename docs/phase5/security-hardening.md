@@ -34,3 +34,9 @@ Implemented in `services/report-generator/src/template_loader.py`:
 ### E. API Security & CORS Policy
 1. **Explicit CORS Origins:** Only trusted frontend domains configured in `ABHEDYAX_CORS_ORIGINS` are granted access with credentials.
 2. **Pydantic Validation:** All input payloads and output responses are validated against strict Pydantic v2 schemas.
+
+### F. Security Twin & Metadata Exposure Safeguards
+1. **Zero Payload Decryption Guarantee:** The Metadata Exposure engine operates strictly on 5 observable outer network dimensions (packet timing, sizes, directionality, burst cadences, and session duration). Inner ESP packet payloads are never inspected, decrypted, or decrypted keys required.
+2. **Strict Provenance Labeling:** The Security Twin engine transparently tags every data field with an auditable provenance indicator (`wire_observed`, `inferred_from_headers`, `derived_rule`, `simulated_benchmark`), ensuring synthetic data or administrative policies are never falsely presented as wire-observed ground truth.
+3. **No Key Storage:** The Security Twin models administrative cryptographic policy baselines abstractly (e.g. cipher names, DH groups) without accepting, storing, or handling actual private keys, certificates, or pre-shared keys.
+

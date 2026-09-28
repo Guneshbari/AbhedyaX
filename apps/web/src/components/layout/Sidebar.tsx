@@ -12,6 +12,10 @@ import {
   FileText,
   Settings,
   Shield,
+  ShieldCheck,
+  GitCompare,
+  TrendingUp,
+  Eye,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,6 +31,10 @@ const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   LayoutDashboard,
   ShieldAlert,
   Files,
+  ShieldCheck,
+  GitCompare,
+  TrendingUp,
+  Eye,
   Network,
   BrainCircuit,
   FileText,

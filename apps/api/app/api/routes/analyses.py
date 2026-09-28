@@ -294,3 +294,63 @@ async def get_json_report(analysis_id: str) -> JSONResponse:
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
+
+@router.get("/{analysis_id}/security-twin")
+async def get_analysis_security_twin(analysis_id: str):
+    """Retrieve canonical Security Twin comparing expected enterprise policy against observed state."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis '{analysis_id}' not found.",
+        )
+    from services.security_twin.src.builder import build_security_twin
+    return build_security_twin(result)
+
+
+@router.get("/{analysis_id}/drift")
+async def get_analysis_drift(analysis_id: str, baseline_id: Optional[str] = "AX-2026-00428"):
+    """Retrieve configuration drift comparing this analysis against a baseline (defaults to AX-2026-00428)."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis '{analysis_id}' not found.",
+        )
+    target_baseline_id = baseline_id or "AX-2026-00428"
+    baseline = await analysis_service.get_result(target_baseline_id)
+    if not baseline:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Baseline analysis '{target_baseline_id}' not found.",
+        )
+    from services.security_twin.src.drift_engine import compute_configuration_drift
+    return compute_configuration_drift(baseline, result)
+
+
+@router.get("/{analysis_id}/metadata-exposure")
+async def get_analysis_metadata_exposure(analysis_id: str):
+    """Retrieve zero-payload encrypted traffic metadata exposure indicator and dimensions."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis '{analysis_id}' not found.",
+        )
+    from services.security_twin.src.metadata_engine import evaluate_metadata_exposure
+    return evaluate_metadata_exposure(result)
+
+
+@router.get("/{analysis_id}/reasoning")
+async def get_analysis_reasoning(analysis_id: str):
+    """Retrieve explainable, auditable reasoning chain connecting wire evidence to final risk score."""
+    result = await analysis_service.get_result(analysis_id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Analysis '{analysis_id}' not found.",
+        )
+    from services.security_twin.src.impact_mapper import build_auditable_reasoning
+    return build_auditable_reasoning(result)
+
+

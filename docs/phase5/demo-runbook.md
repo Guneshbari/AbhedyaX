@@ -68,6 +68,27 @@
    - Show the Ground-Truth Validation status (6/6 parameters verified against strongSwan Linux namespace).
 4. Click **"Export JSON"** to demonstrate SIEM/SOAR machine-readability.
 
+### Minute 5:30 – 7:00 | The AbhedyaX USP Layer (Judge Highlights)
+1. **Security Twin (`/security-twin`):**
+   - Click **Security Twin** in the sidebar.
+   - Highlight the **Intended Policy vs Observed Wire State** alignment matrix:
+     *"We do not just find issues; we model the intended enterprise cryptographic policy as a digital twin and compare real wire observations against it with clear provenance tags."*
+2. **Configuration Drift (`/compare`):**
+   - Click **Compare Analyses** or use the dashboard's 1-click **Judge Presets**.
+   - Select **"Crypto Downgrade (Enterprise vs Legacy)"** preset.
+   - Point out the exact score delta ($\Delta s = -75$), cryptographic parameter transitions (`weakened`), and introduced critical vulnerabilities.
+3. **Auditable Security Reasoning (`/analyses/{id}`):**
+   - Open the **Weak Legacy VPN** analysis detail page.
+   - Expand the **Auditable Security Reasoning** panel.
+   - Walk the judges through the 5-step deduction chain:
+     *Wire Packet Evidence* $\rightarrow$ *Observation* $\rightarrow$ *Finding* $\rightarrow$ *NIST SP 800-77 Rule* $\rightarrow$ *Score Penalty (-25)* $\rightarrow$ *Remediation*.
+4. **Metadata Exposure Indicator (`/metadata-exposure`):**
+   - Navigate to **Metadata Exposure**.
+   - Show the 5 leakage dimensions (Timing, Size Pattern, Directionality, Burst Pattern, Flow Duration).
+   - Reiterate to judges: *"Zero payload decryption. All leakage scoring is mathematically derived from observable metadata."*
+5. **Security Posture Timeline (`/posture`):**
+   - Show longitudinal tracking across all historical sessions, average fleet posture score, and chronological transition deltas.
+
 ---
 
 ## 4. Judges Q&A Defense Cheat Sheet
@@ -80,3 +101,10 @@
 
 ### Q3: "How do you prove your analyzer doesn't have false positives?"
 > **Answer:** "We built a dedicated strongSwan testbed using Linux network namespaces that generates ground-truth datasets. Every parameter extracted by our TShark dissection pipeline is validated against the exact kernel configuration that established the tunnel."
+
+### Q4: "What is the Security Twin and why is it useful?"
+> **Answer:** "A Security Twin bridges the gap between administrative intent and runtime reality. In large organizations, VPN policies are documented in security standards, but field configurations frequently drift or suffer unauthorized downgrades. The Security Twin models intended policy alongside observed wire state and flags deviations with auditable provenance."
+
+### Q5: "How is Configuration Drift calculated?"
+> **Answer:** "Drift compares two canonical analyses without running a second scoring engine. It computes parameter-by-parameter transitions (classified as weakened, strengthened, changed, or unchanged) and calculates exact score deltas based strictly on canonical assessment scores."
+

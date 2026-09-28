@@ -1,7 +1,7 @@
 import { DashboardData, AnalysisSummary, KpiMetric, RiskDistributionItem } from "@/types/dashboard";
 import { AnalysisResult, SecurityFinding } from "@/types/analysis";
 
-const CANONICAL_RECENT_ANALYSES: AnalysisSummary[] = [
+export const CANONICAL_RECENT_ANALYSES: AnalysisSummary[] = [
   {
     id: "AX-2026-00428",
     sourceName: "gw-delhi-hq-ipsec.pcap",

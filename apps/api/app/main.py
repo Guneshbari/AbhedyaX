@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.core.logging import setup_logging, logger
-from app.api.routes import health, analyses, testbed
+from app.api.routes import health, analyses, testbed, security_twin, posture
 
 
 @asynccontextmanager
@@ -47,6 +47,8 @@ app.include_router(health.router)
 # API v1 Endpoints
 app.include_router(analyses.router, prefix=settings.api_prefix)
 app.include_router(testbed.router, prefix=settings.api_prefix)
+app.include_router(security_twin.router, prefix=settings.api_prefix)
+app.include_router(posture.router, prefix=settings.api_prefix)
 
 
 @app.get("/", tags=["Root"])

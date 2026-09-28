@@ -228,6 +228,22 @@ npm run build
 3. Click **Print / Save as PDF** to generate an official PDF assessment.
 4. Click **Download JSON** for raw machine-readable data.
 
+### Exploring the AbhedyaX USP Layer
+1. **Security Twin (`/security-twin`):**
+   - Navigate to **Security Twin** in the sidebar.
+   - Compare observed wire/session state directly against intended enterprise security policies.
+   - Review alignment status (`aligned`, `deviated`, `missing`, `unauthorized`), security impact, and provenance tags.
+2. **Configuration Drift (`/compare`):**
+   - Navigate to **Compare Analyses** or use the 1-click **Judge Presets** on the Dashboard.
+   - Select baseline and target analyses to see exact property deltas, cryptographic transitions (`weakened`, `strengthened`, `changed`), and canonical score differences ($\Delta s$).
+3. **Auditable Security Reasoning (`/analyses/{id}`):**
+   - Open any analysis detail page and expand the **Auditable Security Reasoning** card.
+   - Step through the 5-stage deduction chain tracing raw wire evidence directly to NIST risk rule triggers and score penalties.
+4. **Metadata Exposure Indicator (`/metadata-exposure`):**
+   - Inspect the 5 observable traffic dimensions (Timing, Size Pattern, Directionality, Burst Pattern, Flow Duration) analyzed with zero payload decryption.
+5. **Security Posture Timeline (`/posture`):**
+   - Track longitudinal fleet and tunnel health, historical score trends, and inter-session posture transitions over time.
+
 ---
 
 ## 🛠️ Troubleshooting & Common Questions

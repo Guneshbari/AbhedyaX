@@ -19,6 +19,7 @@ import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { AnalysisNavTabs } from "@/components/analysis/AnalysisNavTabs";
 import { RiskScoreBreakdown } from "@/components/analysis/RiskScoreBreakdown";
+import { AuditableReasoningPanel } from "@/components/analysis/AuditableReasoningPanel";
 import { ValidationStatusCard } from "@/components/analysis/ValidationStatusCard";
 import { AssessmentProvenance } from "@/components/analysis/AssessmentProvenance";
 import { ReportActions } from "@/components/analysis/ReportActions";
@@ -293,6 +294,9 @@ export default function AnalysisResultPage() {
         fallbackScore={security.score}
         fallbackRiskLevel={security.risk_level}
       />
+
+      {/* USP-03: Auditable Security Reasoning Chain */}
+      <AuditableReasoningPanel analysisId={analysisId} />
 
       {/* 3. Protocol & Cryptographic Configuration Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

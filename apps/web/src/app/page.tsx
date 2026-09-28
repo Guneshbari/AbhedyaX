@@ -1,6 +1,7 @@
 import React from "react";
 import { DASHBOARD_DATA } from "@/data/dashboardData";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { UspShowcaseBanner } from "@/components/dashboard/UspShowcaseBanner";
 import { KpiGrid } from "@/components/dashboard/KpiGrid";
 import { SecurityTrendChart } from "@/components/dashboard/SecurityTrendChart";
 import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
@@ -12,6 +13,9 @@ export default function DashboardPage() {
     <div className="space-y-6 sm:space-y-8">
       {/* Header with Title, Status, and Actions */}
       <DashboardHeader />
+
+      {/* AbhedyaX Phase 6 USP Layer Showcase */}
+      <UspShowcaseBanner />
 
       {/* KPI Summary Cards */}
       <KpiGrid kpis={DASHBOARD_DATA.kpis} />
