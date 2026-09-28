@@ -74,3 +74,21 @@ async def test_unknown_analysis_returns_404():
 
         result_resp = await client.get("/api/v1/analyses/AX-NONEXISTENT")
         assert result_resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_get_active_ml_model():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/v1/analyses/ml/model")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] in ["ready", "unloaded"]
+        if data["status"] == "ready":
+            assert data["model_name"] == "traffic_classifier"
+            assert data["model_version"] == "v1.0.0"
+            assert len(data["classes"]) == 6
+            assert data["feature_count"] == 28
+            assert "metrics" in data
+            assert "test_macro_f1" in data["metrics"]
+            assert data["metrics"]["test_macro_f1"] > 0

@@ -1,0 +1,143 @@
+{
+  "validation_macro_f1": 0.7778,
+  "test_accuracy": 0.6667,
+  "test_balanced_accuracy": 0.6667,
+  "test_macro_f1": 0.6111,
+  "test_weighted_f1": 0.6111,
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ]
+  ],
+  "per_class_metrics": {
+    "Email": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 1
+    },
+    "ICMP": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 1
+    },
+    "Messaging": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1_score": 0.6667,
+      "support": 1
+    },
+    "Video": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 1
+    },
+    "VoIP": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 1
+    },
+    "Web": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "support": 1
+    }
+  },
+  "feature_importance": {
+    "direction_ratio": 0.0636,
+    "burst_rate": 0.058,
+    "forward_bytes": 0.054,
+    "mean_packet_size": 0.0516,
+    "packet_size_p10": 0.0505,
+    "packet_size_p75": 0.049,
+    "packet_size_p90": 0.0481,
+    "packet_size_p50": 0.0475,
+    "packet_size_p25": 0.0474,
+    "packet_count": 0.0468,
+    "reverse_bytes": 0.0457,
+    "flow_duration": 0.0437,
+    "byte_rate": 0.0422,
+    "max_packet_size": 0.0386,
+    "std_inter_arrival_time": 0.0356,
+    "burst_count": 0.0337,
+    "median_packet_size": 0.0336,
+    "iat_p75": 0.0327,
+    "std_packet_size": 0.0302,
+    "median_inter_arrival_time": 0.0273,
+    "forward_packet_count": 0.0266,
+    "packet_rate": 0.0213,
+    "iat_p25": 0.0211,
+    "mean_inter_arrival_time": 0.0201,
+    "iat_p50": 0.0185,
+    "reverse_packet_count": 0.0111,
+    "min_packet_size": 0.0016,
+    "mean_burst_size": 0.0
+  },
+  "candidate_comparisons": {
+    "DummyBaseline": {
+      "accuracy": 0.1667,
+      "macro_f1": 0.0476
+    },
+    "LogisticRegression": {
+      "accuracy": 0.6667,
+      "macro_f1": 0.5556
+    },
+    "RandomForest": {
+      "accuracy": 0.8333,
+      "macro_f1": 0.7778
+    },
+    "XGBoost": {
+      "accuracy": 0.5,
+      "macro_f1": 0.3611
+    }
+  }
+}

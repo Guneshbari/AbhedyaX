@@ -56,6 +56,34 @@ async def get_environment_status() -> Dict[str, Any]:
     }
 
 
+@router.get("/ml/model")
+async def get_active_ml_model() -> Dict[str, Any]:
+    """Retrieve active ML model metadata, evaluation metrics, and feature importance."""
+    from services.ml.src.inference.classifier import traffic_classifier
+
+    if not traffic_classifier.is_ready or not traffic_classifier.bundle:
+        return {
+            "status": "unavailable",
+            "active_model": None,
+            "message": "No serialized model artifact available in artifacts/models/",
+        }
+
+    meta = traffic_classifier.bundle.metadata
+    return {
+        "status": "ready",
+        "model_name": meta.model_name,
+        "model_version": meta.model_version,
+        "algorithm": meta.algorithm,
+        "dataset_version": meta.dataset_version,
+        "feature_count": meta.feature_count,
+        "classes": meta.classes,
+        "abstention_threshold": meta.abstention_threshold,
+        "metrics": meta.metrics,
+        "created_at": meta.created_at,
+        "feature_names": meta.feature_names,
+    }
+
+
 @router.post("", response_model=CreateAnalysisResponse, status_code=status.HTTP_201_CREATED)
 async def create_analysis(request: CreateAnalysisRequest) -> CreateAnalysisResponse:
     """Create a new IPsec session analysis (simulation or PCAP ingestion)."""

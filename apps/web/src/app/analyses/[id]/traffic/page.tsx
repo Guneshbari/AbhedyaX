@@ -7,6 +7,7 @@ import {
   BrainCircuit,
   ArrowLeft,
   AlertCircle,
+  Cpu,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
@@ -57,6 +58,10 @@ export default function TrafficIntelligencePage() {
   }
 
   const { traffic } = result;
+  const isMl = traffic.classification_mode === "ml" || Boolean(traffic.model?.name);
+  const isPassed = traffic.confidence >= 0.55 && traffic.predicted_class !== "Unknown";
+  const rawFeatures = (traffic.features || {}) as Record<string, unknown>;
+  const durationSec = Number(rawFeatures.session_duration_seconds ?? rawFeatures.flow_duration ?? 600);
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -70,7 +75,16 @@ export default function TrafficIntelligencePage() {
           { label: analysisId, href: `/analyses/${analysisId}` },
           { label: "Traffic Intelligence" },
         ]}
-        badge={<SimulationModeBadge />}
+        badge={
+          isMl ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+              <Cpu className="w-3.5 h-3.5" />
+              ML Engine ({traffic.model?.name ?? "traffic_classifier"} v{traffic.model?.version ?? "1.0.0"})
+            </span>
+          ) : (
+            <SimulationModeBadge />
+          )
+        }
         actions={
           <PrimaryButton
             variant="outline"
@@ -102,15 +116,23 @@ export default function TrafficIntelligencePage() {
               <span className="text-[10px] uppercase font-mono tracking-wider text-[#687384]">
                 Inferred Application Profile
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
-                High Confidence Match
-              </span>
+              {isPassed ? (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                  High Confidence Match
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
+                  Abstained (Low Confidence)
+                </span>
+              )}
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold font-mono text-[#F4F7FA]">
               {traffic.predicted_class}
             </h2>
             <p className="text-xs text-[#9AA4B2] mt-1 max-w-xl leading-relaxed">
-              Statistical inference derived from packet size distributions, burst timing, and session duration vectors over ESP protocol streams.
+              {isMl
+                ? `Statistical inference evaluated by ${traffic.model?.name ?? "traffic_classifier"} v${traffic.model?.version ?? "1.0.0"} across 28 zero-payload flow vectors over ESP protocol streams.`
+                : "Statistical inference derived from packet size distributions, burst timing, and session duration vectors over ESP protocol streams."}
             </p>
           </div>
         </div>
@@ -122,8 +144,12 @@ export default function TrafficIntelligencePage() {
           <div className="text-3xl font-mono font-bold text-blue-400">
             {(traffic.confidence * 100).toFixed(1)}%
           </div>
-          <span className="text-[11px] font-mono text-emerald-400 block">
-            Statistical Threshold Passed
+          <span
+            className={`text-[11px] font-mono block ${
+              isPassed ? "text-emerald-400" : "text-amber-400"
+            }`}
+          >
+            {isPassed ? "Confidence Threshold Passed (≥55%)" : "Abstention Threshold Triggered"}
           </span>
         </div>
       </div>
@@ -145,7 +171,7 @@ export default function TrafficIntelligencePage() {
         <div className="lg:col-span-6">
           <TrafficTimeline
             predictedClass={traffic.predicted_class}
-            durationSeconds={traffic.features?.session_duration_seconds ?? 600}
+            durationSeconds={durationSec}
           />
         </div>
         <div className="lg:col-span-6">

@@ -69,17 +69,32 @@ export interface TrafficCandidateClass {
 }
 
 export interface TrafficFeatures {
-  packet_size_pattern: string;
-  directionality: string;
-  inter_arrival_pattern: string;
-  session_duration_seconds: number;
+  packet_size_pattern?: string;
+  directionality?: string;
+  inter_arrival_pattern?: string;
+  session_duration_seconds?: number;
+  [key: string]: unknown;
+}
+
+export interface SupportingFeature {
+  feature: string;
+  value: number;
+  importance: number;
 }
 
 export interface TrafficIntelligence {
   predicted_class: string;
+  traffic_class?: string;
   confidence: number;
   candidate_classes: TrafficCandidateClass[];
   features?: TrafficFeatures;
+  model?: {
+    name: string;
+    version: string;
+  };
+  explanation?: SupportingFeature[];
+  classification_mode?: "ml" | "simulated" | "unknown";
+  reasoning?: string[];
 }
 
 export interface SecurityFinding {

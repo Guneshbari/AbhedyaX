@@ -415,19 +415,43 @@ export default function AnalysisResultPage() {
           <div className="pt-3 border-t border-[#252B35] grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
             <div>
               <span className="text-[#687384] block text-[10px]">Packet Size Vector</span>
-              <span className="text-[#F4F7FA]">{traffic.features.packet_size_pattern}</span>
+              <span className="text-[#F4F7FA]">
+                {traffic.features.packet_size_pattern
+                  ? String(traffic.features.packet_size_pattern)
+                  : typeof traffic.features.mean_packet_size === "number"
+                  ? `${Math.round(traffic.features.mean_packet_size as number)}B avg`
+                  : "Standard Variance"}
+              </span>
             </div>
             <div>
               <span className="text-[#687384] block text-[10px]">Directionality</span>
-              <span className="text-[#F4F7FA]">{traffic.features.directionality}</span>
+              <span className="text-[#F4F7FA]">
+                {traffic.features.directionality
+                  ? String(traffic.features.directionality)
+                  : typeof traffic.features.direction_ratio === "number"
+                  ? `${(traffic.features.direction_ratio as number).toFixed(2)} ratio`
+                  : "Bidirectional"}
+              </span>
             </div>
             <div>
               <span className="text-[#687384] block text-[10px]">Burst Cadence</span>
-              <span className="text-[#F4F7FA]">{traffic.features.inter_arrival_pattern}</span>
+              <span className="text-[#F4F7FA]">
+                {traffic.features.inter_arrival_pattern
+                  ? String(traffic.features.inter_arrival_pattern)
+                  : typeof traffic.features.burst_rate === "number"
+                  ? `${(traffic.features.burst_rate as number).toFixed(1)} bursts/s`
+                  : "Continuous Burst"}
+              </span>
             </div>
             <div>
               <span className="text-[#687384] block text-[10px]">Session Duration</span>
-              <span className="text-[#F4F7FA]">{traffic.features.session_duration_seconds}s</span>
+              <span className="text-[#F4F7FA]">
+                {typeof traffic.features.session_duration_seconds === "number"
+                  ? `${traffic.features.session_duration_seconds}s`
+                  : typeof traffic.features.flow_duration === "number"
+                  ? `${Math.round(traffic.features.flow_duration as number)}s`
+                  : "N/A"}
+              </span>
             </div>
           </div>
         )}

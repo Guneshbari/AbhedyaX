@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, Field
 
 SourceType = Literal["simulation", "pcap", "live"]
@@ -86,7 +86,10 @@ class TrafficIntelligence(BaseModel):
     predicted_class: str
     confidence: float
     candidate_classes: List[TrafficCandidateClass] = Field(default_factory=list)
-    features: Optional[TrafficFeatures] = None
+    features: Optional[Union[TrafficFeatures, Dict[str, Any]]] = None
+    model: Optional[Dict[str, str]] = None
+    explanation: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    classification_mode: Optional[Literal["ml", "simulated", "unknown"]] = "simulated"
 
 
 class SecurityFinding(BaseModel):

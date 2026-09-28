@@ -291,70 +291,52 @@ class RealAnalysisEngine(AnalysisEngine):
                 break
 
     def _build_traffic_intelligence(self, packets: List[Any]) -> TrafficIntelligence:
-        """Derive deterministic heuristic traffic intelligence from real packet features."""
+        """Execute real ML traffic classification from encrypted metadata features."""
         total = len(packets)
         if total == 0:
             return TrafficIntelligence(
                 predicted_class="Unknown",
-                confidence=0.5,
+                confidence=0.0,
                 candidate_classes=[],
+                classification_mode="unknown",
             )
 
-        lengths = [p.length for p in packets]
-        avg_len = sum(lengths) / total
-        max_len = max(lengths)
+        try:
+            from services.ml.src.features.extractor import UnifiedFeatureExtractor
+            from services.ml.src.inference.classifier import traffic_classifier
 
-        # Count directional ratio
-        outbound = sum(1 for p in packets if getattr(p, "direction", "") == "outbound")
-        inbound = total - outbound
-        ratio_str = f"{round(outbound / max(1, total) * 100)}% Outbound / {round(inbound / max(1, total) * 100)}% Inbound"
+            if traffic_classifier.is_ready:
+                extractor = UnifiedFeatureExtractor()
+                feat_dict = extractor.extract_from_packets(packets)
+                pred = traffic_classifier.predict(feat_dict)
 
-        if avg_len > 1000 or max_len >= 1400:
-            predicted = "Bulk Data / File Transfer"
-            confidence = 0.91
-            pattern = "Bimodal / High MTU Distribution"
-            cadence = "Continuous High-Throughput Burst"
-            candidates = [
-                TrafficCandidateClass(class_name="Bulk Data / File Transfer", confidence=0.91),
-                TrafficCandidateClass(class_name="Video Streaming", confidence=0.68),
-                TrafficCandidateClass(class_name="Web Browsing", confidence=0.32),
-                TrafficCandidateClass(class_name="Interactive Shell", confidence=0.08),
-            ]
-        elif avg_len < 300:
-            predicted = "Interactive Shell / VoIP"
-            confidence = 0.88
-            pattern = "Small Frame Clustered (< 300B)"
-            cadence = "Low-Latency Periodic / Keystroke"
-            candidates = [
-                TrafficCandidateClass(class_name="Interactive Shell", confidence=0.88),
-                TrafficCandidateClass(class_name="VoIP Audio", confidence=0.74),
-                TrafficCandidateClass(class_name="Web Browsing", confidence=0.45),
-                TrafficCandidateClass(class_name="Bulk Data", confidence=0.05),
-            ]
-        else:
-            predicted = "Web Browsing (HTTPS/Tunnel)"
-            confidence = 0.85
-            pattern = "Mixed Variable Payload (300-1100B)"
-            cadence = "Asynchronous Request-Response"
-            candidates = [
-                TrafficCandidateClass(class_name="Web Browsing", confidence=0.85),
-                TrafficCandidateClass(class_name="Video Streaming", confidence=0.52),
-                TrafficCandidateClass(class_name="Bulk Data", confidence=0.41),
-                TrafficCandidateClass(class_name="Interactive Shell", confidence=0.22),
-            ]
+                candidates = [
+                    TrafficCandidateClass(class_name=c.traffic_class, confidence=c.probability)
+                    for c in pred.candidate_classes
+                ]
 
-        features = TrafficFeatures(
-            packet_size_pattern=pattern,
-            directionality=ratio_str,
-            inter_arrival_pattern=cadence,
-            session_duration_seconds=max(1, int(total * 0.05)),
-        )
+                explanations = [
+                    {"feature": e.feature, "value": e.value, "importance": e.importance}
+                    for e in pred.explanation
+                ]
+
+                return TrafficIntelligence(
+                    predicted_class=pred.predicted_class,
+                    confidence=pred.confidence,
+                    candidate_classes=candidates,
+                    model={"name": pred.model.name, "version": pred.model.version},
+                    features=pred.features,
+                    explanation=explanations,
+                    classification_mode=pred.classification_mode,
+                )
+        except Exception as e:
+            logger.warning("ML inference failed in RealAnalysisEngine (%s), returning Unknown", e)
 
         return TrafficIntelligence(
-            predicted_class=predicted,
-            confidence=confidence,
-            candidate_classes=candidates,
-            features=features,
+            predicted_class="Unknown",
+            confidence=0.0,
+            candidate_classes=[],
+            classification_mode="unknown",
         )
 
     async def get_status(self, analysis_id: str) -> Optional[AnalysisStatusResponse]:

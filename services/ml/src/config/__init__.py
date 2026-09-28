@@ -1,0 +1,33 @@
+"""Configuration package for AbhedyaX ML service."""
+
+from services.ml.src.config.settings import (
+    ARTIFACTS_DIR,
+    CANONICAL_FEATURES,
+    DATASET_GT_DIR,
+    DATASET_MANIFEST_FILE,
+    DATASET_PCAPS_DIR,
+    DEFAULT_ABSTENTION_THRESHOLD,
+    METRICS_DIR,
+    ML_BASE_DIR,
+    MODELS_DIR,
+    PREPROCESSORS_DIR,
+    REPORTS_DIR,
+    TARGET_CLASSES,
+    UNKNOWN_CLASS,
+)
+
+__all__ = [
+    "ARTIFACTS_DIR",
+    "CANONICAL_FEATURES",
+    "DATASET_GT_DIR",
+    "DATASET_MANIFEST_FILE",
+    "DATASET_PCAPS_DIR",
+    "DEFAULT_ABSTENTION_THRESHOLD",
+    "METRICS_DIR",
+    "ML_BASE_DIR",
+    "MODELS_DIR",
+    "PREPROCESSORS_DIR",
+    "REPORTS_DIR",
+    "TARGET_CLASSES",
+    "UNKNOWN_CLASS",
+]
