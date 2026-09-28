@@ -3,6 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import {
   Lock,
   Layers,
@@ -17,6 +18,7 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecurityScore } from "@/components/ui/SecurityScore";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
+import { AnalysisNavTabs } from "@/components/analysis/AnalysisNavTabs";
 import { getAnalysisResult } from "@/lib/api/analyses";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -89,18 +91,18 @@ export default function AnalysisResultPage() {
             <PrimaryButton
               variant="outline"
               size="sm"
-              href="#findings"
+              href={`/analyses/${analysisId}/findings`}
               icon={AlertTriangle}
             >
-              View Findings ({summary.total_findings})
+              Investigate Findings ({summary.total_findings})
             </PrimaryButton>
             <PrimaryButton
               variant="secondary"
               size="sm"
-              href="/reports"
+              href={`/reports?analysisId=${analysisId}`}
               icon={FileText}
             >
-              Generate Report
+              View Report
             </PrimaryButton>
             <PrimaryButton
               variant="primary"
@@ -112,6 +114,14 @@ export default function AnalysisResultPage() {
             </PrimaryButton>
           </div>
         }
+      />
+
+      {/* Context Navigation Tabs */}
+      <AnalysisNavTabs
+        analysisId={analysisId}
+        activeTab="overview"
+        findingsCount={findings.length}
+        confidenceScore={traffic.confidence}
       />
 
       {/* 2. Security Hero & Risk Summary */}
@@ -295,9 +305,17 @@ export default function AnalysisResultPage() {
               AI Encrypted Traffic Intelligence
             </h3>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/25">
-            Zero-Decryption ML Inference
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/25">
+              Zero-Decryption ML Inference
+            </span>
+            <Link
+              href={`/analyses/${analysisId}/traffic`}
+              className="text-xs font-medium text-blue-400 hover:text-blue-300"
+            >
+              Explore AI Traffic &rarr;
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
@@ -363,7 +381,7 @@ export default function AnalysisResultPage() {
 
       {/* 5. Security Findings Section */}
       <div id="findings" className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-semibold tracking-tight text-[#F4F7FA]">
               Security Findings & Policy Violations ({findings.length})
@@ -372,6 +390,12 @@ export default function AnalysisResultPage() {
               Deterministic rule evaluations with auditable cryptographic evidence and actionable remediation steps
             </p>
           </div>
+          <Link
+            href={`/analyses/${analysisId}/findings`}
+            className="text-xs font-medium text-blue-400 hover:text-blue-300 self-start sm:self-auto shrink-0"
+          >
+            Open Investigation Workspace &rarr;
+          </Link>
         </div>
 
         {findings.length === 0 ? (
