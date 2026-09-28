@@ -33,13 +33,13 @@ export function DataTable<T>({
       )}
     >
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="w-full min-w-[760px] text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-[#252B35] bg-[#141820]/70 text-[#9AA4B2] select-none font-medium">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={cn("px-4 py-3 font-semibold uppercase tracking-wider", col.className)}
+                  className={cn("px-4 py-3 font-semibold uppercase tracking-wider whitespace-nowrap text-[11px]", col.className)}
                 >
                   {col.header}
                 </th>

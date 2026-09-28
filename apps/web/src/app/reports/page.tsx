@@ -199,14 +199,14 @@ function ReportsContent() {
       {/* 2. Controls Bar (Analysis Selector & Report Type Toggle) */}
       <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 print:hidden">
         {/* Analysis Target Selector */}
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-[#687384] uppercase font-mono text-[11px] shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs min-w-0">
+          <span className="text-[#687384] uppercase font-mono text-[11px] shrink-0 font-semibold">
             Target Analysis:
           </span>
           <select
             value={selectedAnalysisId}
             onChange={(e) => setSelectedAnalysisId(e.target.value)}
-            className="bg-[#141820] border border-[#252B35] rounded-lg px-3 py-1.5 text-xs text-[#F4F7FA] font-mono focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="w-full sm:w-auto max-w-full bg-[#141820] border border-[#252B35] rounded-lg px-3 py-1.5 text-xs text-[#F4F7FA] font-mono focus:outline-none focus:border-blue-500 cursor-pointer truncate"
           >
             {DASHBOARD_DATA.recentAnalyses.map((item) => (
               <option key={item.id} value={item.id}>
@@ -217,7 +217,7 @@ function ReportsContent() {
         </div>
 
         {/* Report Type Tabs */}
-        <div className="flex items-center p-1 rounded-lg bg-[#141820] border border-[#252B35] text-xs">
+        <div className="flex items-center p-1 rounded-lg bg-[#141820] border border-[#252B35] text-xs shrink-0 self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setReportType("executive")}

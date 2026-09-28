@@ -129,7 +129,7 @@ export default function AnalysesPage() {
           )}
         </div>
 
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <span className="text-xs text-[#687384]">Filter:</span>
           {FILTERS.map((filter) => (
             <button

@@ -23,19 +23,19 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-[#090B10]/90 backdrop-blur-md border-b border-[#252B35]">
       {/* Left: Mobile Toggle & Page Title */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820] focus:outline-none"
+          className="lg:hidden p-2 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820] focus:outline-none shrink-0"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-[#F4F7FA]">{title}</span>
-          <span className="text-[#3B4252] hidden sm:inline">/</span>
-          <span className="text-xs text-[#687384] hidden sm:inline">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-semibold text-[#F4F7FA] truncate">{title}</span>
+          <span className="text-[#3B4252] hidden sm:inline shrink-0">/</span>
+          <span className="text-xs text-[#687384] hidden sm:inline truncate">
             AbhedyaX Protocol Analyzer
           </span>
         </div>

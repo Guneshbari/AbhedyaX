@@ -156,28 +156,30 @@ export default function AiIntelligencePage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#252B35] overflow-hidden">
-            <div className="grid grid-cols-5 bg-[#141820] px-3 py-2 text-[10px] font-mono uppercase text-[#687384] border-b border-[#252B35]">
-              <span className="col-span-2">Traffic Class</span>
-              <span className="text-right">Precision</span>
-              <span className="text-right">Recall</span>
-              <span className="text-right">F1 Score</span>
-            </div>
-            <div className="divide-y divide-[#252B35]/60 text-xs font-mono">
-              {classes.map((cls) => {
-                const row = perClass[cls] || { precision: 0.0, recall: 0.0, f1_score: 0.0 };
-                return (
-                  <div
-                    key={cls}
-                    className="grid grid-cols-5 px-3 py-2.5 items-center hover:bg-[#141820]/40 transition-colors"
-                  >
-                    <span className="col-span-2 text-[#F4F7FA] font-medium">{cls}</span>
-                    <span className="text-right text-[#9AA4B2]">{row.precision.toFixed(2)}</span>
-                    <span className="text-right text-[#9AA4B2]">{row.recall.toFixed(2)}</span>
-                    <span className="text-right text-emerald-400 font-bold">{row.f1_score.toFixed(2)}</span>
-                  </div>
-                );
-              })}
+          <div className="rounded-xl border border-[#252B35] overflow-x-auto">
+            <div className="min-w-[440px]">
+              <div className="grid grid-cols-5 bg-[#141820] px-3 py-2 text-[10px] font-mono uppercase text-[#687384] border-b border-[#252B35]">
+                <span className="col-span-2">Traffic Class</span>
+                <span className="text-right">Precision</span>
+                <span className="text-right">Recall</span>
+                <span className="text-right">F1 Score</span>
+              </div>
+              <div className="divide-y divide-[#252B35]/60 text-xs font-mono">
+                {classes.map((cls) => {
+                  const row = perClass[cls] || { precision: 0.0, recall: 0.0, f1_score: 0.0 };
+                  return (
+                    <div
+                      key={cls}
+                      className="grid grid-cols-5 px-3 py-2.5 items-center hover:bg-[#141820]/40 transition-colors"
+                    >
+                      <span className="col-span-2 text-[#F4F7FA] font-medium">{cls}</span>
+                      <span className="text-right text-[#9AA4B2]">{row.precision.toFixed(2)}</span>
+                      <span className="text-right text-[#9AA4B2]">{row.recall.toFixed(2)}</span>
+                      <span className="text-right text-emerald-400 font-bold">{row.f1_score.toFixed(2)}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -194,8 +196,8 @@ export default function AiIntelligencePage() {
           </div>
 
           {cm.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs font-mono border-collapse">
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[440px] text-xs font-mono border-collapse">
                 <thead>
                   <tr className="border-b border-[#252B35] text-[10px] text-[#687384] uppercase">
                     <th className="py-2 text-left">Actual \ Pred</th>
