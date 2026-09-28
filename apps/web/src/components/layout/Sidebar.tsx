@@ -49,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden print:hidden"
           onClick={onClose}
         />
       )}
@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <aside
         className={cn(
           "fixed top-0 bottom-0 left-0 z-50 flex flex-col w-64 bg-white border-r-2 sm:border-r-[3px] border-black",
-          "transition-transform duration-200 ease-in-out lg:translate-x-0 shadow-[4px_0px_0px_0px_#000]",
+          "transition-transform duration-200 ease-in-out lg:translate-x-0 shadow-[4px_0px_0px_0px_#000] print:hidden",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >

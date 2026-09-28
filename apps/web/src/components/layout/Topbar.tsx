@@ -21,7 +21,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const title = currentItem ? currentItem.label : "Overview";
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b-2 sm:border-b-[3px] border-black shadow-[0px_3px_0px_0px_#000]">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b-2 sm:border-b-[3px] border-black shadow-[0px_3px_0px_0px_#000] print:hidden">
       {/* Left: Mobile Toggle & Page Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button

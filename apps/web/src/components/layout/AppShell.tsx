@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 
@@ -10,6 +11,16 @@ interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Standalone pages (e.g. standalone audit reports) render without sidebar/topbar shell
+  if (pathname?.startsWith("/reports/standalone")) {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] text-black print:bg-white">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-black">
@@ -20,15 +31,15 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       />
 
       {/* Main Content Area */}
-      <div className="lg:pl-64 flex flex-col min-h-screen w-full min-w-0 overflow-x-hidden">
+      <div className="lg:pl-64 flex flex-col min-h-screen w-full min-w-0 overflow-x-hidden print:pl-0 print:min-h-0 print:overflow-visible">
         <Topbar onMenuToggle={() => setIsSidebarOpen((prev) => !prev)} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl 2xl:max-w-[1600px] w-full min-w-0 mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl 2xl:max-w-[1600px] w-full min-w-0 mx-auto print:p-0 print:m-0 print:max-w-none">
           {children}
         </main>
 
         {/* Global Footer info bar - Neubrutalism */}
-        <footer className="px-6 py-4 border-t-2 border-black bg-white text-xs text-black font-mono flex flex-col sm:flex-row items-center justify-between gap-2 shadow-[0px_-2px_0px_0px_#000]">
+        <footer className="px-6 py-4 border-t-2 border-black bg-white text-xs text-black font-mono flex flex-col sm:flex-row items-center justify-between gap-2 shadow-[0px_-2px_0px_0px_#000] print:hidden">
           <div className="flex items-center gap-2 font-medium">
             <span className="font-black bg-[#FFE600] px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
               AbhedyaX

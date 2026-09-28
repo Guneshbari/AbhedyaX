@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import {
   Printer,
@@ -157,6 +158,20 @@ function ReportsContent() {
           badge={<SimulationModeBadge />}
           actions={
             <div className="flex flex-wrap items-center gap-2.5">
+              <Link
+                href={`/reports/standalone?analysisId=${selectedAnalysisId}&type=${reportType}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-black bg-[#FFE600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+              >
+                {reportType === "executive" ? (
+                  <FileText className="w-3.5 h-3.5 text-black" />
+                ) : (
+                  <FileCode2 className="w-3.5 h-3.5 text-black" />
+                )}
+                <span>Open Standalone Dossier</span>
+                <ExternalLink className="w-3 h-3 text-black" />
+              </Link>
               <a
                 href={
                   reportType === "executive"
@@ -165,14 +180,10 @@ function ReportsContent() {
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-black bg-[#C084FC] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-black bg-[#FAF8F5] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+                title="View self-contained HTML generated directly by backend Python engine"
               >
-                {reportType === "executive" ? (
-                  <FileText className="w-3.5 h-3.5 text-black" />
-                ) : (
-                  <FileCode2 className="w-3.5 h-3.5 text-black" />
-                )}
-                <span>Open Standalone HTML</span>
+                <span>Backend HTML</span>
                 <ExternalLink className="w-3 h-3 text-black" />
               </a>
               <PrimaryButton
@@ -244,7 +255,14 @@ function ReportsContent() {
       </div>
 
       {/* 3. Printable / Preview Document Container */}
-      <div className="p-6 sm:p-10 bg-white border-2 sm:border-[3px] border-black shadow-[8px_8px_0px_0px_#000] space-y-8 print:border-none print:p-0 print:bg-white print:text-black">
+      <div className="p-6 sm:p-10 bg-white border-2 sm:border-[3px] border-black shadow-[8px_8px_0px_0px_#000] space-y-8 print:border-2 print:border-black print:p-6 print:bg-white print:text-black print:shadow-none print:m-0">
+        {/* Official Document Classification Banner */}
+        <div className="bg-black text-[#FFE600] px-4 py-2 border-2 border-black text-xs font-mono font-black flex items-center justify-between shadow-[2px_2px_0px_0px_#000] print:border print:shadow-none print:mb-3">
+          <span>CLASSIFICATION: RESTRICTED // CYBERSECURITY AUDIT</span>
+          <span className="hidden sm:inline">NATIONAL FRAMEWORK • NTRO SIH-26160</span>
+          <span>STATUS: OFFICIAL DOSSIER</span>
+        </div>
+
         {/* Document Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b-2 border-black gap-4">
           <div>
@@ -274,7 +292,7 @@ function ReportsContent() {
         {reportType === "executive" ? (
           <div className="space-y-6">
             {/* Executive Summary Hero */}
-            <div className="p-6 bg-[#FAF8F5] border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="p-6 bg-[#FAF8F5] border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col md:flex-row md:items-center justify-between gap-6 break-inside-avoid print:break-inside-avoid print:shadow-none">
               <div className="space-y-2">
                 <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-700 font-black">
                   Overall Cryptographic Posture
@@ -297,7 +315,7 @@ function ReportsContent() {
                 </p>
               </div>
 
-              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] text-xs font-mono space-y-2 min-w-[200px]">
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] text-xs font-mono space-y-2 min-w-[200px] print:shadow-none">
                 <div className="text-zinc-700 uppercase text-[10px] font-black">
                   Executive Highlights
                 </div>
@@ -323,8 +341,8 @@ function ReportsContent() {
             </div>
 
             {/* Strategic Strengths & Gaps */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs break-inside-avoid print:break-inside-avoid">
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2 print:shadow-none">
                 <span className="font-black text-emerald-800 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                   <span>Security Strengths Verified</span>
@@ -340,7 +358,7 @@ function ReportsContent() {
                 </ul>
               </div>
 
-              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2">
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2 print:shadow-none">
                 <span className="font-black text-amber-800 flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-700" />
                   <span>Priority Remediation Items</span>
@@ -348,7 +366,7 @@ function ReportsContent() {
                 <ul className="text-zinc-800 font-medium space-y-1.5 list-disc list-inside">
                   {activeReport.findings.length > 0 ? (
                     activeReport.findings.map((f: SecurityFinding, i: number) => (
-                      <li key={i} className="truncate" title={f.recommendation}>
+                      <li key={i} className="truncate print:whitespace-normal print:overflow-visible" title={f.recommendation}>
                         {f.recommendation}
                       </li>
                     ))
@@ -381,11 +399,11 @@ function ReportsContent() {
             )}
 
             {/* Technical Transform Matrix Table */}
-            <div className="space-y-2">
+            <div className="space-y-2 break-inside-avoid print:break-inside-avoid">
               <h3 className="text-xs font-black uppercase tracking-wider text-black">
                 Phase 1 & Phase 2 Cryptographic Matrix
               </h3>
-              <div className="overflow-x-auto border-2 border-black shadow-[4px_4px_0px_0px_#000]">
+              <div className="overflow-x-auto border-2 border-black shadow-[4px_4px_0px_0px_#000] print:shadow-none">
                 <table className="w-full text-left text-xs font-mono border-collapse">
                   <thead className="bg-[#FFE600] text-black border-b-2 border-black font-black uppercase">
                     <tr>
@@ -450,7 +468,7 @@ function ReportsContent() {
                 {activeReport.findings.map((f: SecurityFinding) => (
                   <div
                     key={f.id}
-                    className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-1.5"
+                    className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-1.5 break-inside-avoid print:break-inside-avoid print:shadow-none"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-mono font-black text-black">
@@ -473,11 +491,13 @@ function ReportsContent() {
 
         {/* Deterministic Risk Scoring Breakdown */}
         {activeReport.risk_scoring && (
-          <RiskScoreBreakdown
-            scoring={activeReport.risk_scoring}
-            fallbackScore={activeReport.security.score}
-            fallbackRiskLevel={activeReport.security.risk_level}
-          />
+          <div className="break-inside-avoid print:break-inside-avoid">
+            <RiskScoreBreakdown
+              scoring={activeReport.risk_scoring}
+              fallbackScore={activeReport.security.score}
+              fallbackRiskLevel={activeReport.security.risk_level}
+            />
+          </div>
         )}
 
         {/* Report Footer */}

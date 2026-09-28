@@ -12,21 +12,28 @@
   <div class="report-container">
 
     <!-- Action Bar for Screen Viewing -->
-    <div class="action-bar">
-      <div>
+    <div class="action-bar screen-only">
+      <div class="action-bar-info">
         <span class="brand-badge">AbhedyaX Security Intelligence</span>
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-left: 10px;">
-          Technical Cryptographic & Flow Audit Report
+        <span style="font-family: var(--font-mono); font-size: 12px; font-weight: 800; text-transform: uppercase;">
+          Technical Cryptographic & Flow Audit • {{ result.analysis_id }}
         </span>
       </div>
       <button class="btn-print" onclick="window.print()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="6 9 6 2 18 2 18 9"></polyline>
           <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
           <rect x="6" y="14" width="12" height="8"></rect>
         </svg>
         Print / Save as PDF
       </button>
+    </div>
+
+    <!-- Official Document Classification Bar -->
+    <div class="classification-bar">
+      <span>Classification: Restricted // Technical Cryptographic Audit</span>
+      <span>National Cyber Security Framework • Problem 26160</span>
+      <span>Audit Level: Deep Wire Inspection</span>
     </div>
 
     <!-- Header Section -->
@@ -63,214 +70,225 @@
     {% set risk_level = (result.risk_scoring and result.risk_scoring.risk_level) or result.security.risk_level %}
     <div class="score-hero">
       <div class="score-visual">
-        <div class="score-circle">
+        <div class="score-box">
           <span class="score-num">{{ score }}</span>
           <span class="score-max">/ 100</span>
         </div>
-        <div>
-          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim); margin-bottom: 4px;">
-            Deterministic Security Score
-          </div>
-          <div style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+        <div class="score-details">
+          <div class="meta-label">Deterministic Security Score</div>
+          <div class="score-status-title">
             Risk Classification: {{ risk_level }}
           </div>
-          <span class="risk-badge risk-{{ risk_level | lower }}">
-            {{ risk_level }} Risk Level
-          </span>
+          <div>
+            <span class="risk-badge risk-{{ risk_level | lower }}">
+              {{ risk_level }} Risk Level
+            </span>
+          </div>
         </div>
       </div>
 
-      <div style="text-align: right; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
-        <div>Methodology: {{ (result.risk_scoring and result.risk_scoring.methodology_version) or "v1.2.0-deterministic" }}</div>
-        <div style="margin-top: 4px;">Total Deductions Applied: -{{ (result.risk_scoring and result.risk_scoring.total_deduction) or (100 - score) }}</div>
+      <div class="score-methodology-box">
+        <div class="meta-label">Audit Engine Methodology</div>
+        <div style="font-size: 13px; font-weight: 800; margin-top: 4px;">
+          Version: {{ (result.risk_scoring and result.risk_scoring.methodology_version) or "v1.2.0-deterministic" }}
+        </div>
+        <div style="font-size: 11px; font-weight: 800; color: var(--color-red); margin-top: 4px;">
+          Total Deductions Applied: -{{ (result.risk_scoring and result.risk_scoring.total_deduction) or (100 - score) }} pts
+        </div>
       </div>
     </div>
 
     <!-- Section 1: Capture & Protocol Observations -->
     <section class="section">
       <h2 class="section-header">1. Protocol Observations & Transport Telemetry</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Parameter</th>
-            <th>Observed Value</th>
-            <th>Standard Reference</th>
-            <th>Assessment Impact</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>IKE Version</strong></td>
-            <td><code>{{ result.vpn.ike_version }}</code></td>
-            <td>RFC 7296 (IKEv2) / RFC 2409 (IKEv1)</td>
-            <td>{{ "Compliant" if result.vpn.ike_version == "IKEv2" else "Deprecated (RFC 7296 superseded)" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Tunnel Encapsulation Mode</strong></td>
-            <td><code>{{ result.vpn.mode }}</code></td>
-            <td>RFC 4301 §5.1</td>
-            <td>{{ "Tunnel mode preserves internal addressing" if result.vpn.mode == "Tunnel" else "Transport mode" }}</td>
-          </tr>
-          <tr>
-            <td><strong>IP Protocol Family</strong></td>
-            <td><code>{{ result.vpn.ip_version }}</code></td>
-            <td>IPv4 / IPv6 Specification</td>
-            <td>Native IP layer encapsulation</td>
-          </tr>
-          <tr>
-            <td><strong>NAT Traversal (NAT-T)</strong></td>
-            <td><code>{{ "UDP 4500 Detected" if result.vpn.nat_traversal else "Disabled / Native ESP (Proto 50)" }}</code></td>
-            <td>RFC 3948</td>
-            <td>{{ "Encapsulated across NAT boundary" if result.vpn.nat_traversal else "Direct ESP framing" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Observed SPI Count</strong></td>
-            <td><code>{{ (result.protocol_observations and result.protocol_observations.observed_spis | length) or 2 }}</code></td>
-            <td>RFC 4303 §2.1</td>
-            <td>Security Parameter Indices allocated for unidirectional Child SAs</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Observed Value</th>
+              <th>Standard Reference</th>
+              <th>Assessment Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>IKE Version</strong></td>
+              <td><code>{{ result.vpn.ike_version }}</code></td>
+              <td>RFC 7296 (IKEv2) / RFC 2409 (IKEv1)</td>
+              <td><strong>{{ "Compliant" if result.vpn.ike_version == "IKEv2" else "Deprecated (RFC 7296 superseded)" }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Tunnel Encapsulation Mode</strong></td>
+              <td><code>{{ result.vpn.mode }}</code></td>
+              <td>RFC 4301 §5.1</td>
+              <td>{{ "Tunnel mode preserves internal addressing" if result.vpn.mode == "Tunnel" else "Transport mode" }}</td>
+            </tr>
+            <tr>
+              <td><strong>IP Protocol Family</strong></td>
+              <td><code>{{ result.vpn.ip_version }}</code></td>
+              <td>IPv4 / IPv6 Specification</td>
+              <td>Native IP layer encapsulation</td>
+            </tr>
+            <tr>
+              <td><strong>NAT Traversal (NAT-T)</strong></td>
+              <td><code>{{ "UDP 4500 Detected" if result.vpn.nat_traversal else "Disabled / Native ESP (Proto 50)" }}</code></td>
+              <td>RFC 3948</td>
+              <td>{{ "Encapsulated across NAT boundary" if result.vpn.nat_traversal else "Direct ESP framing" }}</td>
+            </tr>
+            <tr>
+              <td><strong>Observed SPI Count</strong></td>
+              <td><code>{{ (result.protocol_observations and result.protocol_observations.observed_spis | length) or 2 }}</code></td>
+              <td>RFC 4303 §2.1</td>
+              <td>Security Parameter Indices allocated for unidirectional Child SAs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Section 2: Cryptographic Parameters & Key Exchange -->
     <section class="section">
       <h2 class="section-header">2. Cryptographic Parameters & Security Association Attributes</h2>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Cryptographic Layer</th>
-            <th>Negotiated Proposal</th>
-            <th>Security Bits Equivalent</th>
-            <th>Compliance Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Bulk Encryption Cipher</strong></td>
-            <td><code>{{ result.cryptography.encryption }}</code></td>
-            <td>{{ "256 bits" if "256" in result.cryptography.encryption else ("128 bits" if "128" in result.cryptography.encryption else "Deficient (<112)") }}</td>
-            <td>{{ "NIST Compliant AEAD" if "GCM" in result.cryptography.encryption else ("Legacy CBC Mode" if "CBC" in result.cryptography.encryption else "Non-Compliant") }}</td>
-          </tr>
-          <tr>
-            <td><strong>Authentication / Integrity</strong></td>
-            <td><code>{{ result.cryptography.authentication }}</code></td>
-            <td>{{ "Integrated AEAD Tag" if "AEAD" in result.cryptography.authentication else ("HMAC-SHA-256" if "256" in result.cryptography.authentication else "Weak (SHA-1/MD5)") }}</td>
-            <td>{{ "Robust" if ("AEAD" in result.cryptography.authentication or "256" in result.cryptography.authentication) else "Deprecated" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Diffie-Hellman Key Exchange</strong></td>
-            <td><code>{{ result.cryptography.dh_group }}</code></td>
-            <td>{{ "128 bits (ECP-256)" if "19" in result.cryptography.dh_group else ("192 bits (ECP-384)" if "20" in result.cryptography.dh_group else ("112 bits (MODP-2048)" if "14" in result.cryptography.dh_group else "Insecure (<80 bits)")) }}</td>
-            <td>{{ "Compliant" if ("19" in result.cryptography.dh_group or "20" in result.cryptography.dh_group or "14" in result.cryptography.dh_group) else "Vulnerable to Logjam / Precomputation" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Perfect Forward Secrecy (PFS)</strong></td>
-            <td><code>{{ "Enforced (Fresh KE payload in Child SA)" if result.cryptography.pfs else "Disabled" }}</code></td>
-            <td>Ephemerality Assurance</td>
-            <td>{{ "Protects past sessions against retrospective compromise" if result.cryptography.pfs else "Vulnerable: key compromise decrypts all historical traffic" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Anti-Replay Window</strong></td>
-            <td><code>{{ "Enabled (Active Sequence Checking)" if result.security.replay_protection else "Disabled (Window Size 0)" }}</code></td>
-            <td>RFC 4303 §3.4.3</td>
-            <td>{{ "Blocks duplicate / injected packets" if result.security.replay_protection else "Severe: session vulnerable to packet injection" }}</td>
-          </tr>
-          <tr>
-            <td><strong>Configured SA Lifetime</strong></td>
-            <td><code>{{ result.security.sa_lifetime_seconds }}s ({{ "%.1f" | format(result.security.sa_lifetime_seconds / 3600) }} hours)</code></td>
-            <td>NIST SP 800-77</td>
-            <td>{{ "Within recommended limits (<= 8h)" if result.security.sa_lifetime_seconds <= 28800 else "Extended cryptoperiod window (> 8h)" }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Cryptographic Layer</th>
+              <th>Negotiated Proposal</th>
+              <th>Security Bits Equivalent</th>
+              <th>Compliance Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Bulk Encryption Cipher</strong></td>
+              <td><code>{{ result.cryptography.encryption }}</code></td>
+              <td>{{ "256 bits" if "256" in result.cryptography.encryption else ("128 bits" if "128" in result.cryptography.encryption else "Deficient (<112)") }}</td>
+              <td><strong>{{ "NIST Compliant AEAD" if "GCM" in result.cryptography.encryption else ("Legacy CBC Mode" if "CBC" in result.cryptography.encryption else "Non-Compliant") }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Authentication / Integrity</strong></td>
+              <td><code>{{ result.cryptography.authentication }}</code></td>
+              <td>{{ "Integrated AEAD Tag" if "AEAD" in result.cryptography.authentication else ("HMAC-SHA-256" if "256" in result.cryptography.authentication else "Weak (SHA-1/MD5)") }}</td>
+              <td><strong>{{ "Robust" if ("AEAD" in result.cryptography.authentication or "256" in result.cryptography.authentication) else "Deprecated" }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Diffie-Hellman Key Exchange</strong></td>
+              <td><code>{{ result.cryptography.dh_group }}</code></td>
+              <td>{{ "128 bits (ECP-256)" if "19" in result.cryptography.dh_group else ("192 bits (ECP-384)" if "20" in result.cryptography.dh_group else ("112 bits (MODP-2048)" if "14" in result.cryptography.dh_group else "Insecure (<80 bits)")) }}</td>
+              <td><strong>{{ "Compliant" if ("19" in result.cryptography.dh_group or "20" in result.cryptography.dh_group or "14" in result.cryptography.dh_group) else "Vulnerable to Logjam / Precomputation" }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Perfect Forward Secrecy (PFS)</strong></td>
+              <td><code>{{ "Enforced (Fresh KE payload in Child SA)" if result.cryptography.pfs else "Disabled" }}</code></td>
+              <td>Ephemerality Assurance</td>
+              <td><strong>{{ "Protects past sessions against retrospective compromise" if result.cryptography.pfs else "Vulnerable: key compromise decrypts all historical traffic" }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Anti-Replay Window</strong></td>
+              <td><code>{{ "Enabled (Active Sequence Checking)" if result.security.replay_protection else "Disabled (Window Size 0)" }}</code></td>
+              <td>RFC 4303 §3.4.3</td>
+              <td><strong>{{ "Blocks duplicate / injected packets" if result.security.replay_protection else "Severe: session vulnerable to packet injection" }}</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Configured SA Lifetime</strong></td>
+              <td><code>{{ result.security.sa_lifetime_seconds }}s ({{ "%.1f" | format(result.security.sa_lifetime_seconds / 3600) }} hours)</code></td>
+              <td>NIST SP 800-77</td>
+              <td>{{ "Within recommended limits (<= 8h)" if result.security.sa_lifetime_seconds <= 28800 else "Extended cryptoperiod window (> 8h)" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Section 3: Encrypted Traffic Features (Zero-Payload Flow Vector) -->
     <section class="section">
       <h2 class="section-header">3. Encrypted Traffic Feature Matrix (Zero-Payload Dissection)</h2>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-        The following 28 canonical flow features were computed exclusively from packet lengths, arrival timestamps, directionality, and micro-burst dynamics.
+      <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; font-weight: 500;">
+        The following canonical flow features were computed exclusively from packet lengths, arrival timestamps, directionality, and micro-burst dynamics.
         No plaintext inspection or payload decryption was performed.
       </p>
       {% set feats = result.traffic.features or {} %}
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Feature Group</th>
-            <th>Extracted Metrics</th>
-            <th>Observed Values</th>
-            <th>Behavioral Inference</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Packet Length Distribution</strong></td>
-            <td>
-              <code>mean_packet_size</code><br>
-              <code>median_packet_size</code><br>
-              <code>packet_size_p10 / p90</code>
-            </td>
-            <td>
-              {{ "%.1f" | format(feats.mean_packet_size) if feats.mean_packet_size else (feats.packet_size_pattern or "N/A") }} B<br>
-              {{ "%.1f" | format(feats.median_packet_size) if feats.median_packet_size else "N/A" }} B<br>
-              {{ feats.packet_size_p10 if feats.packet_size_p10 else "N/A" }} / {{ feats.packet_size_p90 if feats.packet_size_p90 else "N/A" }} B
-            </td>
-            <td>Corresponds to MTU framing, TCP ACK signaling, or voice codec frame sizes.</td>
-          </tr>
-          <tr>
-            <td><strong>Temporal Dynamics</strong></td>
-            <td>
-              <code>flow_duration</code><br>
-              <code>mean_inter_arrival_time</code><br>
-              <code>packet_rate</code>
-            </td>
-            <td>
-              {{ "%.2f" | format(feats.flow_duration) if feats.flow_duration else (feats.session_duration_seconds or 0) }} s<br>
-              {{ "%.4f" | format(feats.mean_inter_arrival_time) if feats.mean_inter_arrival_time else "N/A" }} s<br>
-              {{ "%.1f" | format(feats.packet_rate) if feats.packet_rate else "N/A" }} pkts/s
-            </td>
-            <td>Reflects packet spacing regularity, human think-time idle gaps, or continuous stream pacing.</td>
-          </tr>
-          <tr>
-            <td><strong>Direction & Micro-Bursts</strong></td>
-            <td>
-              <code>direction_ratio</code><br>
-              <code>burst_count</code><br>
-              <code>burst_rate</code>
-            </td>
-            <td>
-              {{ "%.3f" | format(feats.direction_ratio) if feats.direction_ratio else (feats.directionality or "N/A") }}<br>
-              {{ feats.burst_count if feats.burst_count else "N/A" }} bursts<br>
-              {{ "%.1f" | format(feats.burst_rate) if feats.burst_rate else "N/A" }} bursts/s
-            </td>
-            <td>Client-to-server asymmetry ratio and cluster frequency.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Feature Group</th>
+              <th>Extracted Metrics</th>
+              <th>Observed Values</th>
+              <th>Behavioral Inference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Packet Length Distribution</strong></td>
+              <td>
+                <code>mean_packet_size</code><br>
+                <code>median_packet_size</code><br>
+                <code>packet_size_p10 / p90</code>
+              </td>
+              <td>
+                {{ "%.1f" | format(feats.mean_packet_size) if feats.mean_packet_size else (feats.packet_size_pattern or "N/A") }} B<br>
+                {{ "%.1f" | format(feats.median_packet_size) if feats.median_packet_size else "N/A" }} B<br>
+                {{ feats.packet_size_p10 if feats.packet_size_p10 else "N/A" }} / {{ feats.packet_size_p90 if feats.packet_size_p90 else "N/A" }} B
+              </td>
+              <td>Corresponds to MTU framing, TCP ACK signaling, or voice codec frame sizes.</td>
+            </tr>
+            <tr>
+              <td><strong>Temporal Dynamics</strong></td>
+              <td>
+                <code>flow_duration</code><br>
+                <code>mean_inter_arrival_time</code><br>
+                <code>packet_rate</code>
+              </td>
+              <td>
+                {{ "%.2f" | format(feats.flow_duration) if feats.flow_duration else (feats.session_duration_seconds or 0) }} s<br>
+                {{ "%.4f" | format(feats.mean_inter_arrival_time) if feats.mean_inter_arrival_time else "N/A" }} s<br>
+                {{ "%.1f" | format(feats.packet_rate) if feats.packet_rate else "N/A" }} pkts/s
+              </td>
+              <td>Reflects packet spacing regularity, human think-time idle gaps, or continuous stream pacing.</td>
+            </tr>
+            <tr>
+              <td><strong>Direction & Micro-Bursts</strong></td>
+              <td>
+                <code>direction_ratio</code><br>
+                <code>burst_count</code><br>
+                <code>burst_rate</code>
+              </td>
+              <td>
+                {{ "%.3f" | format(feats.direction_ratio) if feats.direction_ratio else (feats.directionality or "N/A") }}<br>
+                {{ feats.burst_count if feats.burst_count else "N/A" }} bursts<br>
+                {{ "%.1f" | format(feats.burst_rate) if feats.burst_rate else "N/A" }} bursts/s
+              </td>
+              <td>Client-to-server asymmetry ratio and cluster frequency.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Section 4: Machine Learning Classification & Attribution -->
     <section class="section">
       <h2 class="section-header">4. ML Traffic Classification & Attribution</h2>
-      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <div class="section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1.5px solid #000000;">
           <div>
-            <span style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim);">Active Classifier</span>
-            <div style="font-size: 16px; font-weight: 700; color: var(--text-main); font-family: var(--font-mono);">
+            <div class="meta-label">Active Inference Classifier</div>
+            <div style="font-size: 16px; font-weight: 900; font-family: var(--font-mono);">
               {{ result.traffic.model.name if result.traffic.model else "traffic_classifier" }} ({{ result.traffic.model.version if result.traffic.model else "v1.0.0" }})
             </div>
           </div>
           <div style="text-align: right;">
-            <span style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim);">Operational Confidence</span>
-            <div style="font-size: 20px; font-weight: 700; color: var(--color-blue); font-family: var(--font-mono);">
+            <div class="meta-label">Operational Confidence</div>
+            <div style="font-size: 20px; font-weight: 900; font-family: var(--font-mono);">
               {{ "%.1f" | format(result.traffic.confidence * 100) }}%
             </div>
           </div>
         </div>
 
-        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
-          <strong>Predicted Class:</strong> <code style="color: #60A5FA;">{{ result.traffic.predicted_class }}</code> |
+        <div style="font-size: 12.5px; line-height: 1.6; font-family: var(--font-mono);">
+          <strong>Predicted Class:</strong> <span style="background: var(--color-yellow); padding: 2px 6px; border: 1px solid #000000; font-weight: 900;">{{ result.traffic.predicted_class }}</span> |
           <strong>Abstention Threshold:</strong> <code>0.55</code> |
           <strong>Classification Mode:</strong> <code>{{ result.traffic.classification_mode or "simulated" }}</code>
         </div>
@@ -278,36 +296,38 @@
 
       <!-- Candidate Classes Distribution -->
       {% if result.traffic.candidate_classes %}
-        <table class="data-table" style="margin-bottom: 16px;">
-          <thead>
-            <tr>
-              <th>Candidate Class</th>
-              <th>Probability</th>
-              <th>Threshold Verification</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for c in result.traffic.candidate_classes %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
               <tr>
-                <td><strong>{{ c.class_name }}</strong></td>
-                <td>{{ "%.2f" | format(c.confidence * 100) }}%</td>
-                <td>{{ "✓ Top Prediction" if loop.first else "Secondary Candidate" }}</td>
+                <th>Candidate Class</th>
+                <th>Probability</th>
+                <th>Threshold Verification</th>
               </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {% for c in result.traffic.candidate_classes %}
+                <tr>
+                  <td><strong>{{ c.class_name }}</strong></td>
+                  <td>{{ "%.2f" | format(c.confidence * 100) }}%</td>
+                  <td>{{ "✓ Top Prediction" if loop.first else "Secondary Candidate" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       {% endif %}
 
       <!-- Top Feature Explanations -->
       {% if result.traffic.explanation %}
-        <div style="background: var(--bg-card-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px;">
-          <div style="font-size: 11px; text-transform: uppercase; font-family: var(--font-mono); color: var(--color-blue); margin-bottom: 8px;">
+        <div class="section-card" style="background: var(--bg-card-subtle);">
+          <div class="meta-label" style="margin-bottom: 8px; font-size: 11px;">
             Top Contributing Flow Features (Model Attribution):
           </div>
-          <ul style="font-size: 12px; color: var(--text-muted); padding-left: 18px; line-height: 1.6;">
+          <ul style="font-size: 12px; padding-left: 18px; line-height: 1.7; font-family: var(--font-mono);">
             {% for exp in result.traffic.explanation %}
               <li>
-                <strong>{{ exp.feature }}:</strong> value = <code>{{ "%.2f" | format(exp.value) if exp.value is number else exp.value }}</code> (Relative weight: {{ "%.1f" | format(exp.importance * 100) }}%)
+                <strong>{{ exp.feature }}:</strong> value = <code>{{ "%.2f" | format(exp.value) if exp.value is number else exp.value }}</code> (Relative weight: <strong>{{ "%.1f" | format(exp.importance * 100) }}%</strong>)
               </li>
             {% endfor %}
           </ul>
@@ -322,7 +342,7 @@
         <div class="finding-card">
           <div class="finding-header">
             <div>
-              <span style="font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); margin-right: 8px;">[{{ f.id }}]</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; font-weight: 900; margin-right: 8px;">[{{ f.id }}]</span>
               <span class="finding-title">{{ f.title }}</span>
             </div>
             <span class="risk-badge risk-{{ 'critical' if f.severity == 'Critical' else ('high' if f.severity == 'High' else ('moderate' if f.severity == 'Medium' else 'low')) }}">
@@ -332,11 +352,11 @@
           <p class="finding-desc">{{ f.description }}</p>
 
           {% if f.evidence %}
-            <div style="margin-bottom: 10px;">
-              <span style="font-size: 10px; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-dim); display: block; margin-bottom: 4px;">
+            <div class="finding-evidence">
+              <div class="finding-evidence-title">
                 Verified Packet / Configuration Evidence:
-              </span>
-              <ul style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); padding-left: 16px;">
+              </div>
+              <ul style="padding-left: 16px; line-height: 1.5;">
                 {% for ev in f.evidence %}
                   <li>{{ ev }}</li>
                 {% endfor %}
@@ -355,35 +375,37 @@
     <section class="section">
       <h2 class="section-header">6. Auditable Risk Scoring Breakdown</h2>
       {% if result.risk_scoring and result.risk_scoring.scoring_breakdown %}
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Finding Ref</th>
-              <th>Category</th>
-              <th>Condition Severity</th>
-              <th>Deduction</th>
-              <th>Mathematical Rationale</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in result.risk_scoring.scoring_breakdown %}
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
               <tr>
-                <td><code>{{ item.finding_id }}</code></td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.severity }}</td>
-                <td style="color: var(--color-red); font-weight: 700; font-family: var(--font-mono);">-{{ item.deduction }}</td>
-                <td>{{ item.reason }}</td>
+                <th>Finding Ref</th>
+                <th>Category</th>
+                <th>Condition Severity</th>
+                <th>Deduction</th>
+                <th>Mathematical Rationale</th>
               </tr>
-            {% endfor %}
-            <tr style="background: var(--bg-card-subtle); font-weight: 700;">
-              <td colspan="3"><strong>Base Score: {{ result.risk_scoring.base_score }}</strong></td>
-              <td style="color: var(--color-red); font-family: var(--font-mono);">-{{ result.risk_scoring.total_deduction }}</td>
-              <td><strong>Final Clamped Posture Score: {{ result.risk_scoring.security_score }} ({{ result.risk_scoring.risk_level }} Risk)</strong></td>
-            </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {% for item in result.risk_scoring.scoring_breakdown %}
+                <tr>
+                  <td><code>{{ item.finding_id }}</code></td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.severity }}</td>
+                  <td style="color: var(--color-red); font-weight: 900; font-family: var(--font-mono);">-{{ item.deduction }} pts</td>
+                  <td>{{ item.reason }}</td>
+                </tr>
+              {% endfor %}
+              <tr style="background: var(--color-yellow); font-weight: 900; border-top: 2px solid #000000;">
+                <td colspan="3"><strong>Base Score: {{ result.risk_scoring.base_score }} pts</strong></td>
+                <td style="color: var(--color-red); font-family: var(--font-mono);">-{{ result.risk_scoring.total_deduction }} pts</td>
+                <td><strong>Final Clamped Posture Score: {{ result.risk_scoring.security_score }} / 100 ({{ result.risk_scoring.risk_level }} Risk)</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       {% else %}
-        <div style="padding: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; color: var(--text-muted);">
+        <div class="section-card" style="font-size: 12.5px;">
           No deductions recorded. Starting base score: 100 → Final Score: {{ score }} ({{ risk_level }} Risk).
         </div>
       {% endif %}
@@ -393,12 +415,12 @@
     {% if result.validation and result.validation.ground_truth_available %}
       <section class="section">
         <h2 class="section-header">7. Ground-Truth Validation Verification</h2>
-        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; font-size: 12px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span><strong>Validation Status:</strong> <span style="color: #34D399; font-weight: 700; text-transform: uppercase;">{{ result.validation.status }}</span></span>
-            <span>Matched Fields: <strong>{{ result.validation.matched_fields }} / {{ result.validation.total_fields }}</strong></span>
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <span><strong>Validation Status:</strong> <span class="risk-badge risk-low">{{ result.validation.status }}</span></span>
+            <span style="font-family: var(--font-mono); font-weight: 800;">Matched Fields: <strong>{{ result.validation.matched_fields }} / {{ result.validation.total_fields }}</strong></span>
           </div>
-          <p style="color: var(--text-muted);">
+          <p style="color: var(--text-muted); font-size: 12px; margin-top: 6px;">
             Extracted protocol parameters were cross-verified against controlled testbed scenario ground truth. Zero discrepancies detected.
           </p>
         </div>
@@ -417,7 +439,7 @@
     <footer class="report-footer">
       <span>AbhedyaX Technical Audit Subsystem • NTRO Problem 26160</span>
       <span>Session: {{ result.analysis_id }}</span>
-      <span>Classification: Technical Audit Log</span>
+      <span>Classification: Restricted Technical Audit Dossier</span>
     </footer>
 
   </div>
