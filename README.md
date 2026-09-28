@@ -113,18 +113,20 @@ abhedyax/
 │   │   ├── main.py              # Application entrypoint
 │   │   └── requirements.txt     # Backend dependencies
 │   └── web/                     # Next.js frontend SOC dashboard
-│       ├── src/app/             # Pages: Dashboard, Analyze, Analyses, Findings, Traffic, Reports, Testbed
-│       ├── src/components/      # Reusable UI components, tables, scorecards, charts
+│       ├── src/app/             # Pages: Dashboard, Analyze, Analyses, Security Twin, Compare,
+│       │                        #         Metadata Exposure, Posture, Reports, Testbed, AI Intelligence
+│       ├── src/components/      # Reusable UI components, tables, scorecards, charts, USP panels
 │       ├── src/lib/api/         # Typed API clients for backend communication
 │       └── src/data/            # Synchronized canonical telemetry and fallback datasets
 ├── services/
 │   ├── security-engine/         # Centralized deterministic risk scoring engine & grading
 │   ├── report-generator/        # Executive & technical HTML/PDF report generators
 │   ├── ml/                      # ML pipeline: 28-feature extractor, model registry, inference
-│   └── testbed/                 # strongSwan IPsec testbed, Linux namespaces, capture orchestrator
+│   ├── testbed/                 # strongSwan IPsec testbed, Linux namespaces, capture orchestrator
+│   └── security-twin/           # USP Layer: Security Twin, Drift, Reasoning, Metadata Exposure, Posture
 ├── datasets/
 │   └── scenarios/
-│       └── pcaps/               # Benchmark test captures (IKEv2 AES-GCM, IKEv1 3DES, NAT-T, etc.)
+│       └── pcaps/               # Benchmark test captures (IKEv2 AES-GCM, legacy IKEv1, NAT-T, etc.)
 ├── docs/                        # Comprehensive documentation and runbooks
 │   ├── RUNBOOK.md               # Detailed developer and execution runbook
 │   ├── api/api-reference.md     # Complete REST API specification
@@ -148,27 +150,29 @@ abhedyax/
 All test suites can be executed with standard commands:
 
 ```bash
-# 1. API and Cross-Surface Consistency Tests (31 tests)
+# 1. API, Consistency, USP Feature & Engine Tests (54 tests)
 cd apps/api
 .venv/bin/pytest tests
 
-# 2. Deterministic Risk Engine & Report Generator Tests (17 tests)
+# 2. Deterministic Risk Engine & Report Generator Tests (14 tests)
 cd ../..
 PYTHONPATH=.:apps/api apps/api/.venv/bin/pytest \
   services/security-engine/tests \
   services/report-generator/tests
 
-# 3. Machine Learning & Testbed Pipeline Tests (28 tests)
+# 3. Machine Learning & Testbed Pipeline Tests (31 tests)
 PYTHONPATH=.:apps/api apps/api/.venv/bin/pytest \
   services/ml/tests \
   services/testbed/tests
 
-# 4. Frontend TypeScript Typing, Linting & Build Verification
+# 4. Frontend TypeScript Typing, Linting & Build Verification (17 routes)
 cd apps/web
 npx tsc --noEmit
 npm run lint
 npm run build
 ```
+
+Total: **99 backend tests passing** | **17 Next.js routes compiled (0 errors, 0 warnings)**
 
 ---
 
@@ -178,9 +182,12 @@ npm run build
 - **[REST API Reference](docs/api/api-reference.md)** — Comprehensive endpoint schemas, requests, and responses.
 - **[Benchmark Datasets & PCAP Catalog](docs/dataset/overview.md)** — Sample capture files and wire validation profiles.
 - **[Quickstart & Live Demo Guide](docs/demo/quickstart.md)** — Demonstration script for presentations and hackathons.
+- **[Hackathon Demo Runbook](docs/phase5/demo-runbook.md)** — Live 5-7 minute judge walkthrough with Q&A cheat sheet.
 - **[Deterministic Risk Scoring Methodology](docs/phase5/risk-scoring.md)** — Mathematical deduction formula and risk bands.
 - **[Evidence Provenance Framework](docs/phase5/evidence-provenance.md)** — Wire verification and zero-payload guarantee.
 - **[Executive & Technical Reporting](docs/phase5/reporting.md)** — Print-to-PDF reports architecture.
 - **[End-to-End Validation](docs/phase5/validation.md)** — Testbed ground-truth verification.
+- **[USP Layer Architecture](docs/usp-features.md)** — Security Twin, Configuration Drift, Auditable Reasoning, Metadata Exposure, Posture Timeline.
 - **[ML Architecture & 28-Feature Pipeline](docs/ml/architecture.md)** — Encrypted traffic classification without payload decryption.
 - **[strongSwan Testbed Architecture](docs/testbed/architecture.md)** — Linux network namespaces and VPN provisioning.
+

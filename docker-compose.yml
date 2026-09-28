@@ -1,3 +1,8 @@
+# AbhedyaX — Docker Compose Demo Stack
+# Usage: docker compose up --build
+# For production deployment with real PCAP analysis:
+#   ABHEDYAX_ANALYSIS_ENGINE=real docker compose up --build
+
 services:
   api:
     build:
@@ -8,22 +13,20 @@ services:
     ports:
       - "${API_PORT:-8000}:8000"
     environment:
-      - APP_ENV=${APP_ENV:-development}
+      - APP_ENV=${APP_ENV:-production}
       - SIMULATION_MODE=${SIMULATION_MODE:-true}
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-abhedyax}:${POSTGRES_PASSWORD:-abhedyax_secret}@postgres:5432/${POSTGRES_DB:-abhedyax_db}
-      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - ABHEDYAX_ANALYSIS_ENGINE=${ABHEDYAX_ANALYSIS_ENGINE:-mock}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000","http://web:3000"]
     volumes:
-      - ./apps/api:/workspace/apps/api
-      - ./services:/workspace/services
-      - ./packages:/workspace/packages
-      - ./configs:/workspace/configs
-      - ./storage:/workspace/storage
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - pcap_uploads:/workspace/storage/pcaps
+      - reports_cache:/workspace/storage/reports
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     networks:
       - abhedyax-net
 
@@ -31,56 +34,19 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.web
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
     container_name: abhedyax-web
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-3000}:3000"
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
+      - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
       - NEXT_PUBLIC_SIMULATION_MODE=${NEXT_PUBLIC_SIMULATION_MODE:-true}
-    volumes:
-      - ./apps/web:/workspace/apps/web
-      - ./packages:/workspace/packages
-      - /workspace/apps/web/node_modules
     depends_on:
-      - api
-    networks:
-      - abhedyax-net
-
-  postgres:
-    image: postgres:16-alpine
-    container_name: abhedyax-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-abhedyax}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-abhedyax_secret}
-      POSTGRES_DB: ${POSTGRES_DB:-abhedyax_db}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-abhedyax} -d ${POSTGRES_DB:-abhedyax_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - abhedyax-net
-
-  redis:
-    image: redis:7-alpine
-    container_name: abhedyax-redis
-    restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      api:
+        condition: service_healthy
     networks:
       - abhedyax-net
 
@@ -89,5 +55,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
-  redis_data:
+  pcap_uploads:
+  reports_cache:

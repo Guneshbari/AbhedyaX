@@ -190,13 +190,16 @@ Encrypted payload traffic is classified by the ML subsystem into 7 canonical cat
 
 ---
 
-## 8. Simulation Scenarios (Phase 1)
+## 8. Canonical Demo Scenarios
 
-1. **`secure-enterprise`**: IKEv2, AES-256-GCM, DH Group 19 (ECP-256), PFS enabled, replay protection enabled. High Score (95+, Grade A, Low Risk).
-2. **`moderate-security`**: IKEv2, AES-256-CBC with HMAC-SHA256, DH Group 14 (MODP-2048), PFS disabled. Moderate Score (70-79, Grade C, Medium Risk).
-3. **`weak-configuration`**: IKEv1 Aggressive Mode, 3DES-CBC / MD5, DH Group 2 (MODP-1024), PFS disabled, extended SA lifetime. Critical Score (<50, Grade F, Critical Risk).
-4. **`secure-ipv6`**: IPv6 IKEv2 tunnel, modern AEAD ciphers, clean header hygiene. High Score (92+, Grade A, Low Risk).
-5. **`traffic-anomaly`**: Encrypted tunnel exhibiting abnormal metadata variance, packet burst anomalies, and high-frequency retransmissions. Elevated Risk (Grade D, High Risk).
+Six canonical benchmark scenarios covering the full security risk spectrum:
+
+1. **`secure-enterprise`** (`AX-2026-00428`): IKEv2, AES-256-GCM, DH Group 19 (ECP-256), PFS enabled, replay protection enabled. **Score: 100/100, Grade A, Low Risk.**
+2. **`moderate-security`** (`AX-2026-00426`): IKEv2, AES-256-CBC with HMAC-SHA256, DH Group 14 (MODP-2048), PFS disabled, 24h SA lifetime. **Score: 80/100, Grade B, Moderate Risk.**
+3. **`legacy-critical`** (`AX-2026-00427`): IKEv1, AES-128-CBC with HMAC-SHA1, DH Group 2 (MODP-1024), PFS disabled, replay protection disabled. **Score: 25/100, Grade F, Critical Risk.** USP judge preset: Crypto Downgrade comparison baseline.
+4. **`secure-ipv6`** (`AX-2026-00425`): IKEv2 over IPv6, AES-256-GCM, DH Group 20 (ECP-384), PFS enabled. **Score: 100/100, Grade A, Low Risk.**
+5. **`traffic-anomaly`** (`AX-2026-00424`): IKEv2, AES-256-GCM, cryptographically compliant; observed flow cadence anomaly triggers -5 deduction. **Score: 95/100, Grade A, Low Risk.**
+6. **`pcap-observed`** (`AX-2026-00423`): Real PCAP ingestion path (ChaCha20-Poly1305, DH Group 19). **Score: 100/100, Grade A, Low Risk.** Provenance: `Observed Wire`.
 
 ---
 

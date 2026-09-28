@@ -1,20 +1,43 @@
-FROM node:20-alpine
+# Stage 1: Builder
+FROM node:20-alpine AS builder
 
 WORKDIR /workspace/apps/web
 
-# Install build dependencies if needed
 RUN apk add --no-cache libc6-compat
 
-# Copy package descriptors and install dependencies
-COPY apps/web/package.json ./
-RUN npm install
+# Install dependencies (layer cache)
+COPY apps/web/package.json apps/web/package-lock.json* ./
+RUN npm ci --prefer-offline
 
-# Copy frontend source code
+# Copy source and build
 COPY apps/web ./
+
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SIMULATION_MODE=true
+
+RUN npm run build
+
+# Stage 2: Production runner
+FROM node:20-alpine AS runner
+
+WORKDIR /workspace/apps/web
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+COPY --from=builder /workspace/apps/web/public ./public
+COPY --from=builder --chown=nextjs:nodejs /workspace/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /workspace/apps/web/.next/static ./.next/static
+
+USER nextjs
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+    CMD wget -qO- http://localhost:3000/ || exit 1
 
 EXPOSE 3000
 
-ENV PORT=3000
-ENV NODE_ENV=development
-
-CMD ["npm", "run", "dev"]
+CMD ["node", "server.js"]

@@ -49,13 +49,12 @@
 ### Minute 2:30 – 4:00 | Walkthrough Scenario 2: Legacy Vulnerable VPN
 1. Click **"New Analysis"** → Select **"Weak Legacy VPN"** → Launch.
 2. Highlight the dramatic contrast:
-   - **Score Hero:** `20 / 100` (Critical Risk, Grade F).
+   - **Score Hero:** `25 / 100` (Critical Risk, Grade F).
    - **Auditable Score Breakdown Table:**
      - `RULE_IKEV1`: -25 points (Deprecated protocol).
      - `RULE_WEAK_DH`: -20 points (Insecure DH Group 2, 1024-bit).
-     - `RULE_WEAK_CRYPTO`: -15 points (3DES-CBC cipher).
-     - `RULE_WEAK_AUTH`: -15 points (MD5 hashing).
-     - `RULE_NO_PFS`: -12 points (No Perfect Forward Secrecy).
+     - `RULE_WEAK_CRYPTO`: -15 points (AES-128-CBC cipher with HMAC-SHA1 lacks AEAD protection).
+     - `RULE_ANTI_REPLAY`: -15 points (Anti-replay protection disabled).
    - Show the judges: *"Every single deducted point is tied to an auditable NIST rule. No subjective opinions, no AI hallucinations in the risk score."*
 
 ### Minute 4:00 – 5:30 | Automated Reports & PDF Generation

@@ -205,7 +205,7 @@ npm run build
 2. Choose **Simulation Mode**.
 3. Select any scenario:
    - **Secure Enterprise VPN:** Modern compliant IKEv2 + AES-256-GCM (Score: `100/100`, Grade: `A`).
-   - **Legacy Weak Configuration:** Deprecated IKEv1, 3DES/SHA-1, DH2, No Replay (Score: `25/100`, Grade: `F`, Critical Risk).
+   - **Legacy Weak Configuration:** Deprecated IKEv1, AES-128-CBC/SHA-1 (no AEAD), DH2, No Replay (Score: `25/100`, Grade: `F`, Critical Risk).
    - **Moderate Security VPN:** AES-256-CBC, no PFS, extended 24h lifetime (Score: `80/100`, Grade: `B`, Moderate Risk).
    - **Secure IPv6 VPN:** Native IPv6 IPsec tunnel without NAT-T (Score: `100/100`, Grade: `A`).
    - **Traffic Anomaly:** Compliant cryptography with statistical flow entropy variance (Score: `95/100`, Grade: `A`).

@@ -1,12 +1,11 @@
 FROM python:3.12-slim
 
-# Prevent interactive debconf prompts and Python bytecode buffering
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH="/workspace:/workspace/apps/api"
 
-# Install system dependencies including TShark CLI and network tools
+# Install TShark (Wireshark CLI) and network utilities
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tshark \
     tcpdump \
@@ -17,22 +16,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /workspace
 
-# Install Python requirements
+# Install Python requirements first (layer caching)
 COPY apps/api/requirements.txt /workspace/apps/api/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r /workspace/apps/api/requirements.txt
 
-# Copy application and services code
+# Copy application and service source code
 COPY apps/api /workspace/apps/api
 COPY services /workspace/services
 COPY datasets /workspace/datasets
-COPY storage /workspace/storage
 
-# Create storage directory for uploaded PCAPs
+# Ensure storage directories exist
 RUN mkdir -p /workspace/storage/pcaps /workspace/storage/reports
 
 WORKDIR /workspace/apps/api
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

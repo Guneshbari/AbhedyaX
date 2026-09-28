@@ -14,7 +14,7 @@ Phase 5 ensures that AbhedyaX operates as a cohesive, deterministic, and verifia
 | :--- | :--- | :---: | :--- | :---: | :---: | :---: | :---: |
 | `secure-enterprise` | Secure Enterprise VPN | IKEv2 | AES-256-GCM | Group 19 (ECP-256) | **100** | **Low** | 6 / 6 (100%) |
 | `moderate-security` | Moderate Security VPN | IKEv2 | AES-128-CBC | Group 14 (MODP-2048) | **80** | **Moderate** | 6 / 6 (100%) |
-| `weak-configuration`| Weak Legacy VPN | IKEv1 | 3DES-CBC | Group 2 (MODP-1024) | **25** | **Critical** | 6 / 6 (100%) |
+| `weak-configuration`| Weak Legacy VPN | IKEv1 | AES-128-CBC | Group 2 (MODP-1024) | **25** | **Critical** | 6 / 6 (100%) |
 | `secure-ipv6` | Secure IPv6 Tunnel | IKEv2 | ChaCha20-Poly1305 | Group 20 (ECP-384) | **100** | **Low** | 6 / 6 (100%) |
 | `traffic-anomaly` | Traffic Anomaly / Attack | IKEv2 | AES-256-GCM | Group 19 (ECP-256) | **95** | **Low** | 6 / 6 (100%) |
 | `baseline-compliant` | Production Perimeter Tunnel | IKEv2 | AES-256-GCM | Group 19 (ECP-256) | **100** | **Low** | 6 / 6 (100%) |
@@ -34,9 +34,9 @@ Phase 5 ensures that AbhedyaX operates as a cohesive, deterministic, and verifia
 - **Final Score:** 80/100 (Moderate Risk).
 
 #### 3. Weak Legacy VPN
-- **Transforms:** IKEv1, 3DES-CBC, HMAC-MD5, DH Group 2 (1024-bit MODP), PFS disabled.
-- **Audit Findings:** Deprecated IKEv1 (-25), Insecure DH Group 2 (-20), Legacy 3DES (-15), Broken MD5 Auth (-15), No PFS (-12).
-- **Deductions:** Total penalty -87 points (capped at score floor 25 based on active triggers).
+- **Transforms:** IKEv1, AES-128-CBC, HMAC-SHA1, DH Group 2 (1024-bit MODP), PFS disabled.
+- **Audit Findings:** Deprecated IKEv1 (F-304, -25), Insecure DH Group 2 (F-301, -20), Weak AES-CBC-128/SHA-1 (F-302, -15), Anti-Replay Disabled (F-303, -15).
+- **Deductions:** Total penalty -75 points.
 - **Final Score:** 25/100 (Critical Risk).
 
 #### 4. Secure IPv6 Tunnel
