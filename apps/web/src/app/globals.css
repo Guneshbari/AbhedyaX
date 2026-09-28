@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #090B10;
+  --color-surface: #0F1218;
+  --color-surface-secondary: #141820;
+  --color-border: #252B35;
+  --color-border-subtle: #1C222C;
+  --color-text-primary: #F4F7FA;
+  --color-text-secondary: #9AA4B2;
+  --color-text-muted: #687384;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --color-info: #3B82F6;
+}
+
+:root {
+  --background: #090B10;
+  --foreground: #F4F7FA;
+}
+
+body {
+  background-color: #090B10;
+  color: #F4F7FA;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cyber SOC Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090B10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252B35;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}
