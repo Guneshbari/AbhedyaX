@@ -16,37 +16,32 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({
 }) => {
   const configs: Record<
     RiskLevel,
-    { label: string; icon: React.FC<{ className?: string }>; style: string; text: string }
+    { label: string; icon: React.FC<{ className?: string }>; style: string }
   > = {
     Low: {
       label: "Low Risk",
       icon: ShieldCheck,
-      style: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25",
-      text: "text-emerald-400",
+      style: "bg-[#4ADE80] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     Moderate: {
       label: "Moderate Risk",
       icon: ShieldAlert,
-      style: "bg-amber-500/10 text-amber-400 border-amber-500/25",
-      text: "text-amber-400",
+      style: "bg-[#FBBF24] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     Medium: {
       label: "Medium Risk",
       icon: ShieldAlert,
-      style: "bg-amber-500/10 text-amber-400 border-amber-500/25",
-      text: "text-amber-400",
+      style: "bg-[#FBBF24] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     High: {
       label: "High Risk",
       icon: AlertTriangle,
-      style: "bg-orange-500/10 text-orange-400 border-orange-500/25",
-      text: "text-orange-400",
+      style: "bg-[#FB923C] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     Critical: {
       label: "Critical Risk",
       icon: Flame,
-      style: "bg-red-500/10 text-red-400 border-red-500/25",
-      text: "text-red-400",
+      style: "bg-[#FF4B4B] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
   };
 
@@ -56,12 +51,12 @@ export const RiskBadge: React.FC<RiskBadgeProps> = ({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wider border select-none",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-mono font-bold uppercase tracking-wider select-none shrink-0",
         config.style,
         className
       )}
     >
-      {showIcon && <Icon className="w-3.5 h-3.5 shrink-0" />}
+      {showIcon && <Icon className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />}
       <span>{config.label}</span>
     </span>
   );

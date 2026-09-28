@@ -154,25 +154,25 @@ export default function AnalyzePage() {
 
       {/* Error Display */}
       {formError && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-red-400 text-xs">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="p-4 bg-[#FF4B4B] border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-center gap-3 text-black text-xs font-bold font-mono">
+          <AlertCircle className="w-5 h-5 shrink-0 stroke-[2.5]" />
           <span>{formError}</span>
         </div>
       )}
 
       {/* 4. Action Bar */}
-      <div className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs text-[#9AA4B2]">
+      <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-xs text-zinc-800 font-mono font-bold">
           {selectedSource === "simulation" ? (
             <span>
-              Target: <strong className="text-[#F4F7FA]">{activeScenario.name}</strong> • Deterministic execution with simulated telemetry
+              Target: <strong className="text-black bg-[#FFE600] px-1.5 py-0.5 border border-black">{activeScenario.name}</strong> • Deterministic execution with simulated telemetry
             </span>
           ) : selectedFile ? (
             <span>
-              Target: <strong className="text-[#F4F7FA]">{selectedFile.name}</strong> • Real TShark deep packet dissection & cryptographic audit
+              Target: <strong className="text-black bg-[#FFE600] px-1.5 py-0.5 border border-black">{selectedFile.name}</strong> • Real TShark deep packet dissection & cryptographic audit
             </span>
           ) : (
-            <span className="text-amber-400">Please select or upload a capture file to proceed</span>
+            <span className="text-black bg-[#FEF08A] px-2 py-0.5 border border-black">Please select or upload a capture file to proceed</span>
           )}
         </div>
 

@@ -86,18 +86,18 @@ export default function AnalysisProcessingPage() {
       />
 
       {/* Main Processing Card */}
-      <div className="p-6 sm:p-8 rounded-xl border border-[#252B35] bg-[#0F1218] space-y-6">
+      <div className="p-6 sm:p-8 bg-white border-2 sm:border-[3px] border-black shadow-[6px_6px_0px_0px_#000] space-y-6">
         {/* Top Info Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#252B35] gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b-2 border-black gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
+            <div className="p-2.5 bg-[#FFE600] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-black">
               <FileCode2 className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs text-[#687384] uppercase font-mono">
+              <div className="text-xs text-zinc-700 uppercase font-mono font-bold">
                 Session Identifier
               </div>
-              <div className="text-lg font-mono font-bold text-[#F4F7FA]">
+              <div className="text-lg font-mono font-black text-black">
                 {analysisId}
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function AnalysisProcessingPage() {
 
           <div className="flex items-center gap-3">
             <StatusBadge status={status === "queued" ? "processing" : status} />
-            <div className="font-mono text-sm font-semibold text-blue-400">
+            <div className="font-mono text-sm font-black text-black bg-[#FAF8F5] px-2.5 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
               {progress}%
             </div>
           </div>
@@ -114,31 +114,31 @@ export default function AnalysisProcessingPage() {
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-medium text-[#F4F7FA] flex items-center gap-2">
+            <span className="font-black text-black flex items-center gap-2">
               {status !== "completed" && status !== "failed" && (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-black" />
               )}
               {currentStep}
             </span>
-            <span className="font-mono text-[#687384]">{progress} / 100%</span>
+            <span className="font-mono font-bold text-black">{progress} / 100%</span>
           </div>
 
-          <div className="w-full bg-[#141820] h-2.5 rounded-full overflow-hidden border border-[#252B35]">
+          <div className="w-full bg-[#FAF8F5] h-3.5 border-2 border-black overflow-hidden shadow-[2px_2px_0px_0px_#000]">
             <div
               className={cn(
-                "h-full rounded-full transition-all duration-300",
-                status === "failed" ? "bg-red-500" : "bg-blue-500"
+                "h-full transition-all duration-300",
+                status === "failed" ? "bg-[#FF4B4B]" : "bg-[#FFE600]"
               )}
               style={{ width: `${progress}%` }}
             />
           </div>
 
-          <p className="text-xs text-[#9AA4B2] font-mono pt-1">{message}</p>
+          <p className="text-xs text-zinc-700 font-mono font-bold pt-1">{message}</p>
         </div>
 
         {/* 7-Step Processing Stepper */}
-        <div className="pt-4 border-t border-[#252B35] space-y-3">
-          <div className="text-xs font-semibold uppercase tracking-wider text-[#687384]">
+        <div className="pt-4 border-t-2 border-black space-y-3">
+          <div className="text-xs font-black uppercase tracking-wider text-black">
             Pipeline Execution Stepper
           </div>
 
@@ -153,30 +153,30 @@ export default function AnalysisProcessingPage() {
                 <div
                   key={step.id}
                   className={cn(
-                    "p-3 rounded-lg border flex items-center justify-between transition-colors",
+                    "p-3 border-2 border-black flex items-center justify-between transition-colors",
                     isFinished
-                      ? "bg-emerald-500/5 border-emerald-500/20 text-[#F4F7FA]"
+                      ? "bg-[#4ADE80] text-black shadow-[2px_2px_0px_0px_#000] font-bold"
                       : isCurrent
-                      ? "bg-blue-500/10 border-blue-500/30 text-blue-400"
-                      : "bg-[#141820]/40 border-[#252B35]/60 text-[#687384]"
+                      ? "bg-[#FFE600] text-black shadow-[3px_3px_0px_0px_#000] font-black animate-pulse"
+                      : "bg-[#FAF8F5] text-zinc-600 shadow-[2px_2px_0px_0px_#000]"
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-mono">
+                    <div className="flex items-center justify-center w-6 h-6 text-xs font-mono font-black">
                       {isFinished ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <CheckCircle2 className="w-5 h-5 text-black" />
                       ) : isCurrent ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+                        <Loader2 className="w-4 h-4 animate-spin text-black" />
                       ) : (
-                        <span className="w-5 h-5 rounded-full border border-[#252B35] flex items-center justify-center text-[10px] text-[#687384]">
+                        <span className="w-5 h-5 border border-black flex items-center justify-center text-[10px] text-black font-bold">
                           {idx + 1}
                         </span>
                       )}
                     </div>
-                    <span className="text-xs font-medium">{step.label}</span>
+                    <span className="text-xs font-black">{step.label}</span>
                   </div>
 
-                  <span className="text-[11px] font-mono text-[#687384]">
+                  <span className="text-[11px] font-mono font-bold text-black">
                     {isFinished ? "Completed" : isCurrent ? "Active" : "Queued"}
                   </span>
                 </div>
@@ -187,9 +187,9 @@ export default function AnalysisProcessingPage() {
 
         {/* Failure Alert State */}
         {status === "failed" && (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5 text-xs text-red-400">
-              <AlertCircle className="w-5 h-5 shrink-0" />
+          <div className="p-4 bg-[#FF4B4B]/15 border-2 border-black shadow-[4px_4px_0px_0px_#000] flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5 text-xs text-black font-bold">
+              <AlertCircle className="w-5 h-5 shrink-0 text-[#FF4B4B]" />
               <span>
                 {error?.message || "Analysis failed to complete in the engine."}
               </span>

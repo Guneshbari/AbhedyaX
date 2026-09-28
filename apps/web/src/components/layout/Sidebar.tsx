@@ -49,38 +49,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
         className={cn(
-          "fixed top-0 bottom-0 left-0 z-50 flex flex-col w-64 bg-[#0F1218] border-r border-[#252B35]",
-          "transition-transform duration-200 ease-in-out lg:translate-x-0",
+          "fixed top-0 bottom-0 left-0 z-50 flex flex-col w-64 bg-white border-r-2 sm:border-r-[3px] border-black",
+          "transition-transform duration-200 ease-in-out lg:translate-x-0 shadow-[4px_0px_0px_0px_#000]",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Brand Header */}
-        <div className="flex items-center justify-between h-16 px-5 border-b border-[#252B35]">
+        {/* Brand Header - Neo-Brutalist Cyber Yellow */}
+        <div className="flex items-center justify-between h-16 px-4 border-b-2 sm:border-b-[3px] border-black bg-[#FFE600]">
           <Link
             href="/"
             className="flex items-center gap-2.5 group focus:outline-none"
             onClick={onClose}
           >
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-600/15 border border-blue-500/30 text-blue-400 group-hover:border-blue-400 transition-colors">
-              <Shield className="w-4 h-4 text-blue-400" />
+            <div className="flex items-center justify-center w-9 h-9 bg-white border-2 border-black text-black shadow-[2px_2px_0px_0px_#000] group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
+              <Shield className="w-5 h-5 text-black fill-[#FFE600]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold tracking-tight text-base text-[#F4F7FA]">
-                  Abhedya<span className="text-blue-500">X</span>
+                <span className="font-black tracking-tight text-lg text-black">
+                  Abhedya<span className="bg-black text-[#FFE600] px-1 ml-0.5">X</span>
                 </span>
-                <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-[#141820] text-[#9AA4B2] border border-[#252B35]">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-white text-black border border-black shadow-[1px_1px_0px_0px_#000]">
                   v0.1
                 </span>
               </div>
-              <p className="text-[10px] font-medium text-[#687384] tracking-wider uppercase">
+              <p className="text-[9px] font-black text-black tracking-wider uppercase">
                 IPsec Intelligence
               </p>
             </div>
@@ -89,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {onClose && (
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820]"
+              className="lg:hidden p-1.5 border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-colors"
               aria-label="Close menu"
             >
               <X className="w-5 h-5" />
@@ -98,9 +98,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-[#687384]">
-            Navigation
+        <div className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+          <div className="px-2 pb-1 text-[10px] font-black uppercase tracking-wider text-zinc-600 font-mono">
+            OPERATIONAL CONSOLE
           </div>
 
           {NAVIGATION_ITEMS.map((item) => {
@@ -116,10 +116,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 href={item.route}
                 onClick={onClose}
                 className={cn(
-                  "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors select-none group",
+                  "flex items-center justify-between px-3 py-2 text-xs font-bold transition-all select-none group border-2",
                   isActive
-                    ? "bg-[#141820] text-blue-400 border border-blue-500/25 font-semibold"
-                    : "text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820]/60 border border-transparent"
+                    ? "bg-[#FFE600] text-black border-black shadow-[3px_3px_0px_0px_#000] translate-x-[-1px] translate-y-[-1px]"
+                    : "text-zinc-800 border-transparent hover:border-black hover:bg-zinc-100 hover:text-black hover:shadow-[2px_2px_0px_0px_#000]"
                 )}
               >
                 <div className="flex items-center gap-2.5">
@@ -127,8 +127,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className={cn(
                       "w-4 h-4 transition-colors",
                       isActive
-                        ? "text-blue-400"
-                        : "text-[#687384] group-hover:text-[#9AA4B2]"
+                        ? "text-black"
+                        : "text-zinc-700 group-hover:text-black"
                     )}
                   />
                   <span>{item.label}</span>
@@ -137,10 +137,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 {item.badge && (
                   <span
                     className={cn(
-                      "text-[10px] px-1.5 py-0.2 rounded font-mono",
+                      "text-[10px] px-1.5 py-0.2 font-mono font-bold border border-black",
                       isActive
-                        ? "bg-blue-500/20 text-blue-300"
-                        : "bg-[#141820] text-[#687384] border border-[#252B35]"
+                        ? "bg-white text-black shadow-[1px_1px_0px_0px_#000]"
+                        : "bg-[#FAF8F5] text-zinc-800"
                     )}
                   >
                     {item.badge}
@@ -152,25 +152,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Sidebar Footer: Simulation & Platform Telemetry */}
-        <div className="p-3 border-t border-[#252B35] space-y-2.5 bg-[#090B10]/40">
-          <div className="px-2 py-2 rounded-lg bg-[#141820] border border-[#252B35]">
+        <div className="p-3 border-t-2 sm:border-t-[3px] border-black space-y-2 bg-[#FAF8F5]">
+          <div className="p-2.5 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#687384]">
-                Operating Mode
+              <span className="text-[10px] font-black uppercase tracking-wider text-black font-mono">
+                System Mode
               </span>
               <SimulationModeBadge showIcon={false} />
             </div>
-            <p className="text-[11px] text-[#9AA4B2] leading-tight">
+            <p className="text-[11px] text-zinc-700 leading-snug font-medium">
               Deterministic scenario simulations active for Phase 1 validation.
             </p>
           </div>
 
-          <div className="px-2 py-1 flex items-center justify-between text-[10px] text-[#687384] font-mono">
+          <div className="px-2.5 py-1.5 flex items-center justify-between text-[10px] text-black font-mono font-bold bg-white border-2 border-black">
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-[#4ADE80] border border-black" />
               NTRO SIH 26160
             </span>
-            <span>SEC-NODE-01</span>
+            <span className="bg-[#FFE600] px-1 border border-black">SEC-01</span>
           </div>
         </div>
       </aside>

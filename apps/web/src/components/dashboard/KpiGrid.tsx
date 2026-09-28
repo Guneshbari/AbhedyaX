@@ -16,7 +16,7 @@ const KPI_ICON_MAP: Record<string, LucideIcon> = {
 
 export const KpiGrid: React.FC<KpiGridProps> = ({ kpis }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
       {kpis.map((kpi) => {
         const Icon = KPI_ICON_MAP[kpi.id] || Activity;
         return (

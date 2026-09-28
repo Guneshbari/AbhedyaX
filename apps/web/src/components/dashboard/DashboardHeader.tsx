@@ -13,13 +13,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = () => {
       title="IPsec Security Operations Dashboard"
       subtitle="Real-time cryptographic posture, protocol inspection, and encrypted traffic analytics across monitored VPN sessions."
       badge={
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/25">
-          <ShieldCheck className="w-3.5 h-3.5" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#4ADE80] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] font-mono font-bold text-xs uppercase">
+          <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>Active Monitoring</span>
         </span>
       }
       actions={
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <PrimaryButton
             variant="secondary"
             size="sm"

@@ -21,57 +21,59 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const title = currentItem ? currentItem.label : "Overview";
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-[#090B10]/90 backdrop-blur-md border-b border-[#252B35]">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b-2 sm:border-b-[3px] border-black shadow-[0px_3px_0px_0px_#000]">
       {/* Left: Mobile Toggle & Page Title */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820] focus:outline-none shrink-0"
+          className="lg:hidden p-2 border-2 border-black bg-white text-black hover:bg-[#FFE600] shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer shrink-0"
           aria-label="Open sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-semibold text-[#F4F7FA] truncate">{title}</span>
-          <span className="text-[#3B4252] hidden sm:inline shrink-0">/</span>
-          <span className="text-xs text-[#687384] hidden sm:inline truncate">
+          <span className="text-sm sm:text-base font-black text-black truncate tracking-tight">
+            {title}
+          </span>
+          <span className="text-black font-black hidden sm:inline shrink-0">/</span>
+          <span className="text-xs font-mono font-bold text-zinc-600 hidden sm:inline truncate uppercase">
             AbhedyaX Protocol Analyzer
           </span>
         </div>
       </div>
 
       {/* Right: Status Indicators & Profile */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-2.5 sm:gap-4">
         {/* Simulation Mode Indicator */}
         <SimulationModeBadge />
 
         {/* System Health Status */}
-        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#141820] border border-[#252B35] text-xs text-[#9AA4B2]">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span className="font-mono text-[11px]">Engine: Ready</span>
+        <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-[#4ADE80] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs font-bold text-black font-mono">
+          <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
+          <span>Engine: Ready</span>
         </div>
 
-        {/* Notifications placeholder */}
+        {/* Notifications */}
         <button
-          className="p-2 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820] transition-colors relative"
+          className="p-2 border-2 border-black bg-white hover:bg-[#FFE600] text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all relative cursor-pointer"
           title="Security Notifications"
           aria-label="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500" />
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#FF4B4B] border-2 border-black rounded-full" />
         </button>
 
         {/* User / Analyst Profile Badge */}
-        <div className="flex items-center gap-2 pl-2 border-l border-[#252B35]">
-          <div className="w-8 h-8 rounded-full bg-[#141820] border border-[#252B35] flex items-center justify-center text-xs font-mono text-[#F4F7FA]">
+        <div className="flex items-center gap-2 pl-2 border-l-2 border-black">
+          <div className="w-8 h-8 bg-[#38BDF8] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-center justify-center text-xs font-mono font-black text-black">
             NT
           </div>
           <div className="hidden xl:flex flex-col text-left">
-            <span className="text-xs font-medium text-[#F4F7FA] leading-tight">
+            <span className="text-xs font-black text-black leading-tight">
               NTRO Analyst
             </span>
-            <span className="text-[10px] font-mono text-[#687384] leading-tight">
+            <span className="text-[10px] font-mono font-bold text-zinc-600 leading-tight">
               SEC-26160
             </span>
           </div>

@@ -53,7 +53,7 @@ export const AnalysisNavTabs: React.FC<AnalysisNavTabsProps> = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 border-b border-[#252B35] pb-2 overflow-x-auto",
+        "flex items-center gap-2.5 border-b-2 sm:border-b-[3px] border-black pb-3 overflow-x-auto",
         className
       )}
     >
@@ -66,26 +66,21 @@ export const AnalysisNavTabs: React.FC<AnalysisNavTabsProps> = ({
             key={tab.id}
             href={tab.href}
             className={cn(
-              "flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors select-none shrink-0",
+              "flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono font-black border-2 border-black transition-all select-none shrink-0",
               isActive
-                ? "bg-[#141820] text-blue-400 border border-blue-500/30 font-semibold"
-                : "text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820]/50 border border-transparent"
+                ? "bg-[#FFE600] text-black shadow-[3px_3px_0px_0px_#000] translate-x-[-1px] translate-y-[-1px]"
+                : "bg-white text-black shadow-[2px_2px_0px_0px_#000] hover:bg-zinc-50 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000]"
             )}
           >
-            <Icon
-              className={cn(
-                "w-3.5 h-3.5",
-                isActive ? "text-blue-400" : "text-[#687384]"
-              )}
-            />
+            <Icon className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>{tab.label}</span>
             {tab.badge && (
               <span
                 className={cn(
-                  "text-[10px] px-1.5 py-0.2 rounded font-mono",
+                  "text-[10px] px-1.5 py-0.2 font-mono font-bold border border-black",
                   isActive
-                    ? "bg-blue-500/20 text-blue-300"
-                    : "bg-[#090B10] text-[#687384] border border-[#252B35]"
+                    ? "bg-white text-black shadow-[1px_1px_0px_0px_#000]"
+                    : "bg-[#FAF8F5] text-black"
                 )}
               >
                 {tab.badge}

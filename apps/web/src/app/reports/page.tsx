@@ -165,15 +165,15 @@ function ReportsContent() {
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600/30 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-black bg-[#C084FC] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
               >
                 {reportType === "executive" ? (
-                  <FileText className="w-3.5 h-3.5" />
+                  <FileText className="w-3.5 h-3.5 text-black" />
                 ) : (
-                  <FileCode2 className="w-3.5 h-3.5" />
+                  <FileCode2 className="w-3.5 h-3.5 text-black" />
                 )}
                 <span>Open Standalone HTML</span>
-                <ExternalLink className="w-3 h-3 opacity-60" />
+                <ExternalLink className="w-3 h-3 text-black" />
               </a>
               <PrimaryButton
                 variant="outline"
@@ -197,16 +197,16 @@ function ReportsContent() {
       </div>
 
       {/* 2. Controls Bar (Analysis Selector & Report Type Toggle) */}
-      <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 print:hidden">
+      <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 print:hidden">
         {/* Analysis Target Selector */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs min-w-0">
-          <span className="text-[#687384] uppercase font-mono text-[11px] shrink-0 font-semibold">
+          <span className="text-zinc-700 uppercase font-mono text-[11px] shrink-0 font-black">
             Target Analysis:
           </span>
           <select
             value={selectedAnalysisId}
             onChange={(e) => setSelectedAnalysisId(e.target.value)}
-            className="w-full sm:w-auto max-w-full bg-[#141820] border border-[#252B35] rounded-lg px-3 py-1.5 text-xs text-[#F4F7FA] font-mono focus:outline-none focus:border-blue-500 cursor-pointer truncate"
+            className="w-full sm:w-auto max-w-full bg-[#FAF8F5] border-2 border-black px-3 py-1.5 text-xs text-black font-mono font-bold focus:outline-none focus:bg-[#FFE600] cursor-pointer shadow-[2px_2px_0px_0px_#000] truncate"
           >
             {DASHBOARD_DATA.recentAnalyses.map((item) => (
               <option key={item.id} value={item.id}>
@@ -217,14 +217,14 @@ function ReportsContent() {
         </div>
 
         {/* Report Type Tabs */}
-        <div className="flex items-center p-1 rounded-lg bg-[#141820] border border-[#252B35] text-xs shrink-0 self-start sm:self-auto">
+        <div className="flex items-center p-1 bg-[#FAF8F5] border-2 border-black text-xs shrink-0 self-start sm:self-auto shadow-[2px_2px_0px_0px_#000]">
           <button
             type="button"
             onClick={() => setReportType("executive")}
-            className={`px-3 py-1 rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1 transition-all cursor-pointer text-xs font-black ${
               reportType === "executive"
-                ? "bg-blue-600 text-white font-medium shadow-sm"
-                : "text-[#9AA4B2] hover:text-[#F4F7FA]"
+                ? "bg-[#FFE600] text-black border border-black shadow-[1px_1px_0px_0px_#000]"
+                : "text-zinc-700 hover:text-black font-bold"
             }`}
           >
             Executive Summary
@@ -232,10 +232,10 @@ function ReportsContent() {
           <button
             type="button"
             onClick={() => setReportType("technical")}
-            className={`px-3 py-1 rounded-md transition-colors cursor-pointer ${
+            className={`px-3 py-1 transition-all cursor-pointer text-xs font-black ${
               reportType === "technical"
-                ? "bg-blue-600 text-white font-medium shadow-sm"
-                : "text-[#9AA4B2] hover:text-[#F4F7FA]"
+                ? "bg-[#FFE600] text-black border border-black shadow-[1px_1px_0px_0px_#000]"
+                : "text-zinc-700 hover:text-black font-bold"
             }`}
           >
             Technical IPsec Audit
@@ -244,26 +244,26 @@ function ReportsContent() {
       </div>
 
       {/* 3. Printable / Preview Document Container */}
-      <div className="p-6 sm:p-10 rounded-xl border border-[#252B35] bg-[#0F1218] shadow-2xl space-y-8 print:border-none print:p-0 print:bg-white print:text-black">
+      <div className="p-6 sm:p-10 bg-white border-2 sm:border-[3px] border-black shadow-[8px_8px_0px_0px_#000] space-y-8 print:border-none print:p-0 print:bg-white print:text-black">
         {/* Document Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#252B35] gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b-2 border-black gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="font-bold text-lg text-[#F4F7FA] tracking-tight">
-                Abhedya<span className="text-blue-500">X</span> Security Assessment
+              <span className="font-black text-lg text-black tracking-tight">
+                Abhedya<span className="text-[#FFE600] bg-black px-1">X</span> Security Assessment
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              <span className="text-[10px] font-mono px-2 py-0.5 border border-black bg-[#FFE600] text-black font-black shadow-[1px_1px_0px_0px_#000]">
                 NTRO SIH-26160
               </span>
             </div>
-            <h2 className="text-sm font-semibold text-[#9AA4B2]">
+            <h2 className="text-sm font-bold text-zinc-700">
               {reportType === "executive"
                 ? "Executive Posture & Strategic Risk Evaluation"
                 : "Deep Technical IPsec Protocol & Cryptographic Audit"}
             </h2>
           </div>
 
-          <div className="text-right text-xs font-mono text-[#687384] space-y-0.5">
+          <div className="text-right text-xs font-mono text-zinc-700 font-bold space-y-0.5">
             <div>Report ID: REP-{activeReport.analysis_id}</div>
             <div suppressHydrationWarning>Date: {formatDate(activeReport.created_at)}</div>
             <div>Classification: RESTRICTED // SECURITY AUDIT</div>
@@ -274,9 +274,9 @@ function ReportsContent() {
         {reportType === "executive" ? (
           <div className="space-y-6">
             {/* Executive Summary Hero */}
-            <div className="p-6 rounded-xl bg-[#141820] border border-[#252B35] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="p-6 bg-[#FAF8F5] border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#687384]">
+                <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-700 font-black">
                   Overall Cryptographic Posture
                 </span>
                 <div className="flex items-baseline gap-4">
@@ -288,34 +288,34 @@ function ReportsContent() {
                   />
                   <RiskBadge level={activeReport.security.risk_level} />
                 </div>
-                <p className="text-xs text-[#9AA4B2] max-w-lg leading-relaxed pt-1">
+                <p className="text-xs text-zinc-800 max-w-lg leading-relaxed pt-1 font-medium">
                   The evaluated IPsec tunnel demonstrates a{" "}
-                  <strong className="text-[#F4F7FA]">
+                  <strong className="text-black font-black">
                     {activeReport.security.risk_level} Risk posture (Grade {activeReport.security.grade})
                   </strong>
                   . Compliance checks verified symmetric encryption, Diffie-Hellman parameters, and anti-replay safeguards.
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg bg-[#090B10] border border-[#252B35] text-xs font-mono space-y-2 min-w-[200px]">
-                <div className="text-[#687384] uppercase text-[10px]">
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] text-xs font-mono space-y-2 min-w-[200px]">
+                <div className="text-zinc-700 uppercase text-[10px] font-black">
                   Executive Highlights
                 </div>
                 <div className="flex justify-between">
-                  <span>Findings:</span>
-                  <span className="text-[#F4F7FA] font-bold">
+                  <span className="text-zinc-700 font-bold">Findings:</span>
+                  <span className="text-black font-black">
                     {activeReport.summary.total_findings}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Critical/High:</span>
-                  <span className="text-red-400 font-bold">
+                  <span className="text-zinc-700 font-bold">Critical/High:</span>
+                  <span className="text-red-700 font-black">
                     {activeReport.summary.critical + activeReport.summary.high}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Inferred App:</span>
-                  <span className="text-blue-400 font-bold">
+                  <span className="text-zinc-700 font-bold">Inferred App:</span>
+                  <span className="text-black font-black">
                     {activeReport.traffic.predicted_class}
                   </span>
                 </div>
@@ -324,12 +324,12 @@ function ReportsContent() {
 
             {/* Strategic Strengths & Gaps */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-lg bg-[#141820] border border-[#252B35] space-y-2">
-                <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4" />
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2">
+                <span className="font-black text-emerald-800 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                   <span>Security Strengths Verified</span>
                 </span>
-                <ul className="text-[#9AA4B2] space-y-1.5 list-disc list-inside">
+                <ul className="text-zinc-800 font-medium space-y-1.5 list-disc list-inside">
                   <li>Active cipher: {activeReport.cryptography.encryption}</li>
                   <li>
                     Key exchange: {activeReport.cryptography.dh_group} verified
@@ -340,12 +340,12 @@ function ReportsContent() {
                 </ul>
               </div>
 
-              <div className="p-4 rounded-lg bg-[#141820] border border-[#252B35] space-y-2">
-                <span className="font-semibold text-amber-400 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4" />
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000] space-y-2">
+                <span className="font-black text-amber-800 flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-700" />
                   <span>Priority Remediation Items</span>
                 </span>
-                <ul className="text-[#9AA4B2] space-y-1.5 list-disc list-inside">
+                <ul className="text-zinc-800 font-medium space-y-1.5 list-disc list-inside">
                   {activeReport.findings.length > 0 ? (
                     activeReport.findings.map((f: SecurityFinding, i: number) => (
                       <li key={i} className="truncate" title={f.recommendation}>
@@ -382,12 +382,12 @@ function ReportsContent() {
 
             {/* Technical Transform Matrix Table */}
             <div className="space-y-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#687384]">
+              <h3 className="text-xs font-black uppercase tracking-wider text-black">
                 Phase 1 & Phase 2 Cryptographic Matrix
               </h3>
-              <div className="overflow-x-auto rounded-lg border border-[#252B35]">
-                <table className="w-full text-left text-xs font-mono">
-                  <thead className="bg-[#141820] text-[#9AA4B2] border-b border-[#252B35]">
+              <div className="overflow-x-auto border-2 border-black shadow-[4px_4px_0px_0px_#000]">
+                <table className="w-full text-left text-xs font-mono border-collapse">
+                  <thead className="bg-[#FFE600] text-black border-b-2 border-black font-black uppercase">
                     <tr>
                       <th className="p-3">Attribute</th>
                       <th className="p-3">Negotiated Value</th>
@@ -395,44 +395,44 @@ function ReportsContent() {
                       <th className="p-3">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#252B35]/60 text-[#F4F7FA]">
-                    <tr>
-                      <td className="p-3 text-[#9AA4B2]">IKE Version</td>
-                      <td className="p-3">{activeReport.vpn.ike_version}</td>
-                      <td className="p-3 text-[#687384]">RFC 7296</td>
-                      <td className="p-3 text-emerald-400">
+                  <tbody className="divide-y-2 divide-black text-black">
+                    <tr className="hover:bg-[#FFF9D2]/40 transition-colors">
+                      <td className="p-3 font-bold">IKE Version</td>
+                      <td className="p-3 font-black">{activeReport.vpn.ike_version}</td>
+                      <td className="p-3 text-zinc-700">RFC 7296</td>
+                      <td className="p-3 font-black text-emerald-700">
                         {activeReport.vpn.ike_version === "IKEv2" ? "Compliant" : "Deprecated"}
                       </td>
                     </tr>
-                    <tr>
-                      <td className="p-3 text-[#9AA4B2]">Symmetric Cipher</td>
-                      <td className="p-3">{activeReport.cryptography.encryption}</td>
-                      <td className="p-3 text-[#687384]">NIST SP 800-77</td>
-                      <td className="p-3 text-emerald-400">Verified</td>
+                    <tr className="hover:bg-[#FFF9D2]/40 transition-colors">
+                      <td className="p-3 font-bold">Symmetric Cipher</td>
+                      <td className="p-3 font-black">{activeReport.cryptography.encryption}</td>
+                      <td className="p-3 text-zinc-700">NIST SP 800-77</td>
+                      <td className="p-3 font-black text-emerald-700">Verified</td>
                     </tr>
-                    <tr>
-                      <td className="p-3 text-[#9AA4B2]">Diffie-Hellman</td>
-                      <td className="p-3">{activeReport.cryptography.dh_group}</td>
-                      <td className="p-3 text-[#687384]">RFC 8221</td>
-                      <td className="p-3">
+                    <tr className="hover:bg-[#FFF9D2]/40 transition-colors">
+                      <td className="p-3 font-bold">Diffie-Hellman</td>
+                      <td className="p-3 font-black">{activeReport.cryptography.dh_group}</td>
+                      <td className="p-3 text-zinc-700">RFC 8221</td>
+                      <td className="p-3 font-black">
                         {activeReport.cryptography.dh_group.includes("Group 2") ? (
-                          <span className="text-red-400">Insecure</span>
+                          <span className="text-red-700">Insecure</span>
                         ) : (
-                          <span className="text-emerald-400">Secure</span>
+                          <span className="text-emerald-700">Secure</span>
                         )}
                       </td>
                     </tr>
-                    <tr>
-                      <td className="p-3 text-[#9AA4B2]">Perfect Forward Secrecy</td>
-                      <td className="p-3">
+                    <tr className="hover:bg-[#FFF9D2]/40 transition-colors">
+                      <td className="p-3 font-bold">Perfect Forward Secrecy</td>
+                      <td className="p-3 font-black">
                         {activeReport.cryptography.pfs ? "Enabled" : "Disabled"}
                       </td>
-                      <td className="p-3 text-[#687384]">RFC 7296 Section 1.3</td>
-                      <td className="p-3">
+                      <td className="p-3 text-zinc-700">RFC 7296 Section 1.3</td>
+                      <td className="p-3 font-black">
                         {activeReport.cryptography.pfs ? (
-                          <span className="text-emerald-400">Enforced</span>
+                          <span className="text-emerald-700">Enforced</span>
                         ) : (
-                          <span className="text-amber-400">Disabled</span>
+                          <span className="text-amber-700">Disabled</span>
                         )}
                       </td>
                     </tr>
@@ -443,25 +443,25 @@ function ReportsContent() {
 
             {/* Granular Findings List */}
             <div className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#687384]">
+              <h3 className="text-xs font-black uppercase tracking-wider text-black">
                 Audited Security Findings ({activeReport.findings.length})
               </h3>
               <div className="space-y-2 text-xs">
                 {activeReport.findings.map((f: SecurityFinding) => (
                   <div
                     key={f.id}
-                    className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] space-y-1.5"
+                    className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-1.5"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono font-bold text-[#F4F7FA]">
+                      <span className="font-mono font-black text-black">
                         {f.id}: {f.title}
                       </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      <span className="text-[10px] font-mono px-2 py-0.5 border border-black bg-white text-black font-black shadow-[1px_1px_0px_0px_#000]">
                         {f.severity}
                       </span>
                     </div>
-                    <p className="text-[#9AA4B2]">{f.description}</p>
-                    <div className="text-[#687384] font-mono text-[11px] pt-1">
+                    <p className="text-zinc-800 font-medium">{f.description}</p>
+                    <div className="text-zinc-600 font-mono text-[11px] pt-1 font-bold">
                       Evidence: {f.evidence.join("; ")}
                     </div>
                   </div>
@@ -481,10 +481,10 @@ function ReportsContent() {
         )}
 
         {/* Report Footer */}
-        <div className="pt-6 border-t border-[#252B35] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-[#687384]">
+        <div className="pt-6 border-t-2 border-black flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono text-zinc-700 font-bold">
           <div>
             <span>Generated by AbhedyaX Security Assessment Engine • </span>
-            <span className="text-amber-400">Simulation Prototype</span>
+            <span className="text-black font-black">Simulation Prototype</span>
           </div>
           <div>Page 1 of 1 • Tamper-evident Audit Checksum Verified</div>
         </div>
@@ -497,7 +497,7 @@ export default function ReportsPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="p-8 text-center text-[#687384] font-mono text-sm">
+        <div className="p-8 text-center text-black font-mono text-sm border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
           Loading report preview...
         </div>
       }

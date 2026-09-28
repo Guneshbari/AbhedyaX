@@ -12,7 +12,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#090B10] text-[#F4F7FA]">
+    <div className="min-h-screen bg-[#FAF8F5] text-black">
       {/* Sidebar (Desktop fixed, Mobile offcanvas) */}
       <Sidebar
         isOpen={isSidebarOpen}
@@ -27,17 +27,21 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           {children}
         </main>
 
-        {/* Global Footer info bar */}
-        <footer className="px-6 py-4 border-t border-[#252B35] bg-[#090B10] text-center text-xs text-[#687384] flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#9AA4B2]">AbhedyaX</span>
+        {/* Global Footer info bar - Neubrutalism */}
+        <footer className="px-6 py-4 border-t-2 border-black bg-white text-xs text-black font-mono flex flex-col sm:flex-row items-center justify-between gap-2 shadow-[0px_-2px_0px_0px_#000]">
+          <div className="flex items-center gap-2 font-medium">
+            <span className="font-black bg-[#FFE600] px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
+              AbhedyaX
+            </span>
             <span>—</span>
-            <span>AI-Powered IPsec VPN Protocol Analyzer & Security Assessment</span>
+            <span className="text-zinc-800">AI-Powered IPsec Protocol Analyzer & Security Assessment</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px] font-mono">
-            <span>NTRO Problem 26160</span>
-            <span className="text-[#3B4252]">|</span>
-            <span className="text-amber-400/80">Phase 1: Simulation Mode</span>
+          <div className="flex items-center gap-3 text-[11px] font-bold">
+            <span className="bg-[#FAF8F5] px-2 py-0.5 border border-black">NTRO Problem 26160</span>
+            <span>|</span>
+            <span className="bg-[#4ADE80] text-black px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
+              Phase 1: Simulation Mode
+            </span>
           </div>
         </footer>
       </div>

@@ -24,73 +24,73 @@ export const ConfigurationSummary: React.FC<ConfigurationSummaryProps> = ({
   const pfs = isPcap ? "Rekeying Verification" : scenario?.cryptography.pfs ? "Enabled" : "Disabled";
 
   return (
-    <div className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218]">
-      <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#252B35]">
-        <div className="flex items-center gap-2 text-sm font-semibold text-[#F4F7FA]">
-          <Sliders className="w-4 h-4 text-blue-400" />
+    <div className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000]">
+      <div className="flex items-center justify-between pb-3 mb-4 border-b-2 border-black">
+        <div className="flex items-center gap-2 text-sm sm:text-base font-black text-black">
+          <Sliders className="w-4 h-4 stroke-[2.5]" />
           <span>Session Configuration Matrix</span>
         </div>
-        <span className="text-[11px] font-mono text-[#687384]">
+        <span className="text-xs font-mono font-bold text-black bg-[#FFE600] px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
           {isPcap ? "Ingestion: PCAP" : `Scenario: ${scenario?.name ?? "Default"}`}
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Source</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 truncate block">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs font-mono">
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Source</span>
+          <span className="text-black font-black mt-0.5 truncate block">
             {isPcap ? fileName || "Pending Upload" : "Simulation Benchmark"}
           </span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">IKE Protocol</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 block">{ikeVersion}</span>
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">IKE Protocol</span>
+          <span className="text-black font-black mt-0.5 block">{ikeVersion}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Encapsulation</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 block">
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Encapsulation</span>
+          <span className="text-black font-black mt-0.5 block">
             {vpnMode} / {ipVersion}
           </span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Cipher Suite</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 truncate block" title={encryption}>
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Cipher Suite</span>
+          <span className="text-black font-black mt-0.5 truncate block" title={encryption}>
             {encryption}
           </span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Authentication</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 block">{authentication}</span>
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Authentication</span>
+          <span className="text-black font-black mt-0.5 block">{authentication}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Diffie-Hellman</span>
-          <span className="text-[#F4F7FA] font-semibold mt-0.5 block">{dhGroup}</span>
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Diffie-Hellman</span>
+          <span className="text-black font-black mt-0.5 block">{dhGroup}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">PFS Status</span>
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">PFS Status</span>
           <span
             className={
               pfs === "Enabled"
-                ? "text-emerald-400 font-semibold mt-0.5 block"
+                ? "text-emerald-700 font-black mt-0.5 block"
                 : pfs === "Disabled"
-                ? "text-amber-400 font-semibold mt-0.5 block"
-                : "text-[#F4F7FA] font-semibold mt-0.5 block"
+                ? "text-amber-700 font-black mt-0.5 block"
+                : "text-black font-black mt-0.5 block"
             }
           >
             {pfs}
           </span>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35]">
-          <span className="text-[10px] text-[#687384] uppercase block">Inspection Engine</span>
-          <span className="text-blue-400 font-semibold mt-0.5 block flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5" />
+        <div className="p-3 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-600 uppercase font-black block">Inspection Engine</span>
+          <span className="text-black font-black mt-0.5 block flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>AbhedyaX v0.1</span>
           </span>
         </div>

@@ -1,29 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #090B10;
-  --color-surface: #0F1218;
-  --color-surface-secondary: #141820;
-  --color-border: #252B35;
-  --color-border-subtle: #1C222C;
-  --color-text-primary: #F4F7FA;
-  --color-text-secondary: #9AA4B2;
-  --color-text-muted: #687384;
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-info: #3B82F6;
+  --color-background: #FAF8F5;
+  --color-surface: #FFFFFF;
+  --color-surface-secondary: #F3EFE6;
+  --color-border: #000000;
+  --color-border-subtle: #000000;
+  --color-text-primary: #000000;
+  --color-text-secondary: #2D3748;
+  --color-text-muted: #4B5563;
+  --color-neo-yellow: #FFE600;
+  --color-neo-green: #4ADE80;
+  --color-neo-amber: #FBBF24;
+  --color-neo-orange: #FB923C;
+  --color-neo-red: #FF4B4B;
+  --color-neo-cyan: #38BDF8;
+  --color-neo-purple: #C084FC;
 }
 
 :root {
-  --background: #090B10;
-  --foreground: #F4F7FA;
+  --background: #FAF8F5;
+  --foreground: #000000;
 }
 
 html,
 body {
-  background-color: #090B10;
-  color: #F4F7FA;
+  background-color: #FAF8F5;
+  color: #000000;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -31,21 +34,24 @@ body {
   max-width: 100vw;
 }
 
-/* Cyber SOC Scrollbar */
+/* Neo-Brutalism Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #090B10;
+  background: #FAF8F5;
+  border-left: 2px solid #000000;
+  border-top: 2px solid #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #252B35;
-  border-radius: 3px;
+  background: #FFE600;
+  border: 2px solid #000000;
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3B82F6;
+  background: #000000;
 }

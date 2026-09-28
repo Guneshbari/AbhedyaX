@@ -21,27 +21,27 @@ export const EvidenceBadge: React.FC<EvidenceBadgeProps> = ({
     Observed: {
       label: "Wire Observed",
       icon: Eye,
-      style: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30",
+      style: "bg-[#38BDF8] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     Inferred: {
       label: "Protocol Inferred",
       icon: Cpu,
-      style: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+      style: "bg-[#C084FC] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     Simulated: {
       label: "Simulated Scenario",
       icon: TestTube,
-      style: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+      style: "bg-[#FBBF24] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     GroundTruth: {
       label: "Ground Truth Verified",
       icon: CheckCircle2,
-      style: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+      style: "bg-[#4ADE80] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
     MLPrediction: {
       label: "ML Flow Inference",
       icon: Sparkles,
-      style: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+      style: "bg-[#FFE600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000]",
     },
   };
 
@@ -51,16 +51,16 @@ export const EvidenceBadge: React.FC<EvidenceBadgeProps> = ({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium border select-none",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-mono font-black uppercase tracking-wider select-none shrink-0",
         config.style,
         className
       )}
     >
-      <Icon className="w-3 h-3 shrink-0" />
+      <Icon className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
       <span>{config.label}</span>
       {confidence !== undefined && (
-        <span className="opacity-70 text-[10px] ml-0.5">
-          ({Math.round(confidence * 100)}%)
+        <span className="font-bold text-[10px] ml-0.5 bg-black text-white px-1">
+          {Math.round(confidence * 100)}%
         </span>
       )}
     </span>

@@ -30,40 +30,31 @@ export const SecurityScore: React.FC<SecurityScoreProps> = ({
   const calculatedGrade = getGrade(score);
 
   const getColorConfig = (s: number) => {
-    // Canonical Methodology Risk Bands:
-    // Low: 90-100 (Emerald)
-    // Moderate: 75-89 (Sky)
-    // High: 50-74 (Amber)
-    // Critical: 0-49 (Red)
     if (s >= 90) {
       return {
-        text: "text-emerald-400",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/30",
-        bar: "bg-emerald-500",
+        bg: "bg-[#4ADE80]",
+        text: "text-black",
+        bar: "bg-[#4ADE80]",
       };
     }
     if (s >= 75) {
       return {
-        text: "text-sky-400",
-        bg: "bg-sky-500/10",
-        border: "border-sky-500/30",
-        bar: "bg-sky-500",
+        bg: "bg-[#38BDF8]",
+        text: "text-black",
+        bar: "bg-[#38BDF8]",
       };
     }
     if (s >= 50) {
       return {
-        text: "text-amber-400",
-        bg: "bg-amber-500/10",
-        border: "border-amber-500/30",
-        bar: "bg-amber-500",
+        bg: "bg-[#FBBF24]",
+        text: "text-black",
+        bar: "bg-[#FBBF24]",
       };
     }
     return {
-      text: "text-red-400",
-      bg: "bg-red-500/10",
-      border: "border-red-500/30",
-      bar: "bg-red-500",
+      bg: "bg-[#FF4B4B]",
+      text: "text-black",
+      bar: "bg-[#FF4B4B]",
     };
   };
 
@@ -71,38 +62,37 @@ export const SecurityScore: React.FC<SecurityScoreProps> = ({
 
   const sizeConfigs = {
     sm: {
-      text: "text-xs font-semibold",
-      grade: "text-[10px] px-1 py-0.2",
+      text: "text-sm font-black",
+      grade: "text-xs px-1.5 py-0.2",
       container: "gap-1.5",
     },
     md: {
-      text: "text-sm font-semibold",
-      grade: "text-xs px-1.5 py-0.5",
+      text: "text-base font-black",
+      grade: "text-xs px-2 py-0.5",
       container: "gap-2",
     },
     lg: {
-      text: "text-2xl font-bold",
-      grade: "text-sm px-2 py-0.5",
-      container: "gap-2.5",
+      text: "text-3xl font-black",
+      grade: "text-sm px-2.5 py-0.5",
+      container: "gap-3",
     },
   };
 
   const currentSize = sizeConfigs[size];
 
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn("flex flex-col gap-1.5", className)}>
       <div className={cn("inline-flex items-center", currentSize.container)}>
-        <span className={cn("font-mono tracking-tight", currentSize.text, colors.text)}>
+        <span className={cn("font-mono tracking-tight text-black", currentSize.text)}>
           {score}
-          <span className="text-[0.75em] text-[#687384]">/100</span>
+          <span className="text-[0.75em] text-zinc-600 font-bold">/100</span>
         </span>
         {showGrade && (
           <span
             className={cn(
-              "font-bold rounded border font-mono select-none",
+              "font-mono font-black border-2 border-black shadow-[2px_2px_0px_0px_#000] select-none uppercase",
               currentSize.grade,
               colors.bg,
-              colors.border,
               colors.text
             )}
           >
@@ -112,9 +102,9 @@ export const SecurityScore: React.FC<SecurityScoreProps> = ({
       </div>
 
       {showProgress && (
-        <div className="w-full bg-[#141820] h-1.5 rounded-full overflow-hidden border border-[#252B35]">
+        <div className="w-full bg-white h-2.5 border-2 border-black overflow-hidden shadow-[1.5px_1.5px_0px_0px_#000]">
           <div
-            className={cn("h-full rounded-full transition-all duration-300", colors.bar)}
+            className={cn("h-full border-r-2 border-black transition-all duration-300", colors.bar)}
             style={{ width: `${Math.min(Math.max(score, 0), 100)}%` }}
           />
         </div>

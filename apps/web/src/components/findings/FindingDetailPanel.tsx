@@ -19,12 +19,12 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
 }) => {
   if (!finding) {
     return (
-      <div className="p-8 rounded-xl border border-dashed border-[#252B35] bg-[#0F1218]/50 flex flex-col items-center justify-center text-center h-full min-h-[350px]">
-        <ShieldAlert className="w-8 h-8 text-[#687384] mb-2" />
-        <h3 className="text-sm font-semibold text-[#F4F7FA]">
+      <div className="p-8 border-2 border-dashed border-black bg-white shadow-[4px_4px_0px_0px_#000] flex flex-col items-center justify-center text-center h-full min-h-[350px]">
+        <ShieldAlert className="w-10 h-10 text-black stroke-[2] mb-3" />
+        <h3 className="text-base font-black text-black">
           No Finding Selected
         </h3>
-        <p className="text-xs text-[#9AA4B2] max-w-xs mt-1">
+        <p className="text-xs text-zinc-700 max-w-xs mt-1 font-medium">
           Select a finding from the list on the left to inspect detailed cryptographic evidence, impact analysis, and remediation steps.
         </p>
       </div>
@@ -32,11 +32,11 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
   }
 
   const severityBadgeStyles = {
-    Critical: "bg-red-500/10 text-red-400 border-red-500/30",
-    High: "bg-orange-500/10 text-orange-400 border-orange-500/30",
-    Medium: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-    Low: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    Informational: "bg-[#141820] text-[#9AA4B2] border-[#252B35]",
+    Critical: "bg-[#FF4B4B] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000]",
+    High: "bg-[#FB923C] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000]",
+    Medium: "bg-[#FBBF24] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000]",
+    Low: "bg-[#4ADE80] text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000]",
+    Informational: "bg-white text-black border-2 border-black shadow-[1.5px_1.5px_0px_0px_#000]",
   }[finding.severity];
 
   const getImpactExplanation = (cat: string, sev: string) => {
@@ -80,18 +80,17 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
   };
 
   return (
-    <div className="p-6 rounded-xl border border-[#252B35] bg-[#0F1218] space-y-6">
+    <div className="p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-6">
       {/* 1. Header & Badges */}
-      <div className="space-y-3 pb-5 border-b border-[#252B35]">
+      <div className="space-y-3 pb-5 border-b-2 border-black">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-[#687384] font-semibold">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-xs text-black font-black bg-[#FFE600] px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
               {finding.id}
             </span>
-            <span className="text-[#3B4252]">•</span>
             <span
               className={cn(
-                "text-xs px-2.5 py-0.5 rounded font-mono font-semibold uppercase tracking-wider border",
+                "text-xs px-2.5 py-0.5 font-mono font-black uppercase tracking-wider",
                 severityBadgeStyles
               )}
             >
@@ -100,49 +99,49 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
             {finding.provenance && (
               <EvidenceBadge source={finding.provenance} />
             )}
-            <span className="text-xs px-2.5 py-0.5 rounded bg-[#141820] border border-[#252B35] text-[#9AA4B2] font-mono">
+            <span className="text-xs px-2.5 py-0.5 bg-[#FAF8F5] border border-black text-black font-mono font-bold shadow-[1px_1px_0px_0px_#000]">
               {finding.category}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-xs text-[#9AA4B2]">
+          <div className="flex items-center gap-2 font-mono text-xs text-black font-bold">
             <span>Confidence:</span>
-            <span className="text-blue-400 font-bold">
+            <span className="bg-[#FFE600] px-1.5 py-0.5 border border-black font-black">
               {(finding.confidence * 100).toFixed(0)}%
             </span>
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-[#F4F7FA] leading-tight">
+        <h3 className="text-xl font-black text-black leading-tight">
           {finding.title}
         </h3>
       </div>
 
       {/* 2. Why It Matters: Description & Security Impact */}
       <div className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-[#687384] flex items-center gap-1.5">
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+        <h4 className="text-xs font-black uppercase font-mono tracking-wider text-black flex items-center gap-1.5">
+          <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
           <span>Why It Matters & Security Impact</span>
         </h4>
-        <p className="text-xs text-[#F4F7FA] leading-relaxed">
+        <p className="text-sm text-black leading-relaxed font-medium">
           {finding.description}
         </p>
-        <p className="text-xs text-[#9AA4B2] leading-relaxed pt-1 bg-[#141820]/50 p-3 rounded-lg border border-[#252B35]/60">
+        <p className="text-xs text-black leading-relaxed pt-1 bg-[#FEF08A] p-3.5 border-2 border-black shadow-[2px_2px_0px_0px_#000] font-medium">
           {getImpactExplanation(finding.category, finding.severity)}
         </p>
       </div>
 
       {/* 3. Inspection Evidence */}
       <div className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-[#687384] flex items-center gap-1.5">
-          <Terminal className="w-3.5 h-3.5 text-blue-400" />
+        <h4 className="text-xs font-black uppercase font-mono tracking-wider text-black flex items-center gap-1.5">
+          <Terminal className="w-4 h-4 stroke-[2.5]" />
           <span>Observed Evidence & Parameters</span>
         </h4>
-        <div className="p-3.5 rounded-lg bg-[#090B10] border border-[#252B35] space-y-1.5 font-mono text-xs">
+        <div className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-1.5 font-mono text-xs">
           {finding.evidence.map((ev, i) => (
             <div key={i} className="flex items-start gap-2">
-              <span className="text-blue-500 shrink-0 font-bold">&gt;</span>
-              <span className="text-[#F4F7FA] leading-relaxed">{ev}</span>
+              <span className="text-black font-black shrink-0">&gt;</span>
+              <span className="text-black font-bold leading-relaxed">{ev}</span>
             </div>
           ))}
         </div>
@@ -150,22 +149,22 @@ export const FindingDetailPanel: React.FC<FindingDetailPanelProps> = ({
 
       {/* 4. Recommendation */}
       <div className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-[#687384] flex items-center gap-1.5">
-          <Lightbulb className="w-3.5 h-3.5 text-emerald-400" />
+        <h4 className="text-xs font-black uppercase font-mono tracking-wider text-black flex items-center gap-1.5">
+          <Lightbulb className="w-4 h-4 stroke-[2.5]" />
           <span>Remediation Guidance</span>
         </h4>
-        <div className="p-3.5 rounded-lg bg-emerald-500/5 border border-emerald-500/20 text-xs text-[#F4F7FA] leading-relaxed">
+        <div className="p-3.5 bg-[#4ADE80] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs text-black leading-relaxed font-bold">
           {finding.recommendation}
         </div>
       </div>
 
       {/* 5. Standards References */}
-      <div className="pt-4 border-t border-[#252B35] flex items-center justify-between text-[11px] font-mono text-[#687384]">
+      <div className="pt-4 border-t-2 border-black flex items-center justify-between text-xs font-mono font-bold text-black flex-wrap gap-2">
         <div className="flex items-center gap-1.5">
-          <BookOpen className="w-3.5 h-3.5 text-[#687384]" />
+          <BookOpen className="w-4 h-4 stroke-[2.5]" />
           <span>Compliance Reference:</span>
         </div>
-        <span className="text-[#9AA4B2]">
+        <span className="bg-[#FAF8F5] px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
           {getStandardsReference(finding.category)}
         </span>
       </div>

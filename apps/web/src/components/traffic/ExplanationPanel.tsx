@@ -66,32 +66,32 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
   const rationaleItems = getRationale(traffic.predicted_class);
 
   return (
-    <div className="p-6 rounded-xl border border-[#252B35] bg-[#0F1218] space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-[#252B35]">
+    <div className="p-5 sm:p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b-2 border-black">
         <div className="flex items-center gap-2">
           {isMl ? (
-            <Cpu className="w-4 h-4 text-emerald-400" />
+            <Cpu className="w-5 h-5 text-black stroke-[2.5]" />
           ) : (
-            <HelpCircle className="w-4 h-4 text-blue-400" />
+            <HelpCircle className="w-5 h-5 text-black stroke-[2.5]" />
           )}
-          <h3 className="text-sm font-semibold text-[#F4F7FA]">
+          <h3 className="text-sm sm:text-base font-black text-black">
             {isMl
               ? "Why this classification? (ML Feature Importance)"
               : "Why this classification? (Simulated Classifier Reasoning)"}
           </h3>
         </div>
         {traffic.model && (
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/25">
+          <span className="text-[10px] font-mono px-2 py-0.5 bg-[#FFE600] text-black border border-black font-black uppercase shadow-[1px_1px_0px_0px_#000]">
             {traffic.model.name} v{traffic.model.version}
           </span>
         )}
       </div>
 
-      <div className="space-y-3 text-xs text-[#9AA4B2] leading-relaxed">
+      <div className="space-y-3 text-xs text-zinc-800 leading-relaxed font-medium">
         <p>
           AbhedyaX employs zero-payload traffic inspection algorithms. The
           underlying ML architecture classifies application behavior{" "}
-          <strong className="text-[#F4F7FA]">
+          <strong className="text-black font-bold">
             without decrypting IPsec ESP payloads
           </strong>
           , preserving confidential data streams while enabling SOC situational
@@ -100,13 +100,13 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
 
         {/* Real ML Top Contributing Features */}
         {isMl && explanations.length > 0 && (
-          <div className="p-4 rounded-lg bg-[#141820] border border-[#252B35] space-y-3">
+          <div className="p-4 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] uppercase font-mono font-semibold text-blue-400 flex items-center gap-1.5">
-                <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
+              <span className="text-xs uppercase font-mono font-black text-black flex items-center gap-1.5">
+                <BarChart3 className="w-4 h-4 stroke-[2.5]" />
                 Top Contributing Features:
               </span>
-              <span className="text-[10px] text-[#687384] font-mono">
+              <span className="text-[10px] text-zinc-600 font-mono font-bold uppercase">
                 Relative Weight
               </span>
             </div>
@@ -116,22 +116,22 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
                 const pct = Math.min(100, Math.round(exp.importance * 100));
                 return (
                   <div key={idx} className="space-y-1">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-mono text-[#F4F7FA]">
+                    <div className="flex justify-between items-center text-xs font-mono">
+                      <span className="font-black text-black">
                         {exp.feature}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[11px] text-[#687384]">
+                        <span className="text-[11px] text-zinc-600 font-bold">
                           val: {typeof exp.value === "number" ? exp.value.toFixed(2) : String(exp.value)}
                         </span>
-                        <span className="font-mono text-[11px] text-emerald-400">
+                        <span className="text-xs font-black text-black bg-[#FFE600] px-1 border border-black">
                           {pct}%
                         </span>
                       </div>
                     </div>
-                    <div className="w-full h-1.5 bg-[#090B10] rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-white border-2 border-black overflow-hidden shadow-[1px_1px_0px_0px_#000]">
                       <div
-                        className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                        className="h-full bg-[#FFE600] border-r-2 border-black transition-all duration-300"
                         style={{ width: `${Math.max(5, pct)}%` }}
                       />
                     </div>
@@ -143,14 +143,14 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
         )}
 
         {/* Heuristic / Behavioral Insights */}
-        <div className="p-4 rounded-lg bg-[#141820] border border-[#252B35] space-y-2">
-          <span className="text-[11px] uppercase font-mono font-semibold text-blue-400 block">
+        <div className="p-4 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] space-y-2">
+          <span className="text-xs uppercase font-mono font-black text-black block">
             Observed Behavioral Indicators for {traffic.predicted_class}:
           </span>
-          <ul className="space-y-1 text-xs text-[#F4F7FA] list-disc list-inside">
+          <ul className="space-y-1 text-xs text-black list-disc list-inside">
             {rationaleItems.map((item, idx) => (
               <li key={idx}>
-                <span className="text-[#9AA4B2]">{item}</span>
+                <span className="text-zinc-800 font-medium">{item}</span>
               </li>
             ))}
           </ul>
@@ -159,16 +159,16 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
 
       {/* Operational Status / Disclaimer */}
       {isMl ? (
-        <div className="p-3.5 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-start gap-2.5 text-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+        <div className="p-3.5 bg-[#4ADE80] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-start gap-2.5 text-xs text-black">
+          <CheckCircle2 className="w-4 h-4 text-black stroke-[2.5] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-emerald-400">
+            <span className="font-black font-mono uppercase">
               Active Production ML Inference:{" "}
             </span>
-            <span className="text-[#9AA4B2]">
+            <span className="font-medium">
               Flow features were extracted using zero-payload ESP dissection and
               evaluated using the active{" "}
-              <code className="text-emerald-300 font-mono">
+              <code className="bg-white px-1 border border-black font-mono font-bold">
                 {traffic.model?.name ?? "traffic_classifier"}
               </code>{" "}
               model. Classification is non-destructive and privacy-preserving.
@@ -176,13 +176,13 @@ export const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
           </div>
         </div>
       ) : (
-        <div className="p-3.5 rounded-lg bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5 text-xs">
-          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="p-3.5 bg-[#FEF08A] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex items-start gap-2.5 text-xs text-black">
+          <AlertCircle className="w-4 h-4 text-black stroke-[2.5] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-amber-400">
+            <span className="font-black font-mono uppercase">
               Simulation Mode Notice:{" "}
             </span>
-            <span className="text-[#9AA4B2]">
+            <span className="font-medium">
               Traffic classification is currently executed using deterministic
               mock scenario profiles. Train and activate an ML model artifact in
               AI Intelligence to run live machine learning classification.

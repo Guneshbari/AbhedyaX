@@ -109,36 +109,36 @@ export default function AnalysesPage() {
       />
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#687384]" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-black stroke-[2.5]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by ID, file name, cipher, or risk..."
-            className="w-full bg-[#141820] border border-[#252B35] rounded-lg pl-9 pr-8 py-1.5 text-xs text-[#F4F7FA] placeholder-[#687384] focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full bg-white border-2 border-black pl-9 pr-8 py-2 text-xs font-mono text-black placeholder-zinc-500 focus:outline-none focus:shadow-[2px_2px_0px_0px_#000] transition-shadow"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#687384] hover:text-[#F4F7FA] p-0.5 rounded"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-black hover:bg-[#FF4B4B] p-0.5 border border-black cursor-pointer"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-[#687384]">Filter:</span>
+          <span className="text-xs font-mono font-black uppercase text-black">Filter:</span>
           {FILTERS.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`text-xs px-2.5 py-1 rounded-md border select-none transition-colors cursor-pointer ${
+              className={`text-xs font-mono px-3 py-1 border-2 border-black select-none transition-all cursor-pointer ${
                 activeFilter === filter
-                  ? "bg-blue-600/20 border-blue-500/40 text-blue-400 font-medium"
-                  : "bg-[#141820] border-[#252B35] text-[#9AA4B2] hover:text-[#F4F7FA] hover:border-[#3B4252]"
+                  ? "bg-[#FFE600] text-black font-black shadow-[2px_2px_0px_0px_#000] translate-x-[-1px] translate-y-[-1px]"
+                  : "bg-white text-black font-bold shadow-[1.5px_1.5px_0px_0px_#000] hover:bg-zinc-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
               }`}
             >
               {filter}
@@ -148,7 +148,7 @@ export default function AnalysesPage() {
       </div>
 
       {/* Showing count indicator */}
-      <div className="flex items-center justify-between px-1 text-xs text-[#687384] font-mono">
+      <div className="flex items-center justify-between px-1 text-xs text-black font-mono font-bold">
         <span>
           Showing {filteredAnalyses.length} of {allAnalyses.length} recorded analyses
         </span>
@@ -158,7 +158,7 @@ export default function AnalysesPage() {
               setSearchQuery("");
               setActiveFilter("All");
             }}
-            className="text-blue-400 hover:text-blue-300 hover:underline cursor-pointer"
+            className="text-black bg-[#FFE600] px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000] hover:underline cursor-pointer"
           >
             Clear filters
           </button>

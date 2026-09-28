@@ -66,38 +66,38 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold tracking-tight text-[#F4F7FA]">
+          <h2 className="text-base font-black tracking-tight text-black">
             Upload Packet Capture
           </h2>
-          <p className="text-xs text-[#9AA4B2]">
+          <p className="text-xs text-zinc-700 font-medium">
             Target capture file containing IPsec exchanges (IKEv1/v2 UDP 500/4500, ESP Proto 50)
           </p>
         </div>
       </div>
 
-      {/* Simulation Mode Notice */}
-      <div className="p-3.5 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5">
-        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-        <div className="text-xs">
-          <span className="font-semibold text-amber-400">Notice: </span>
-          <span className="text-[#9AA4B2]">
-            PCAP analysis engine is currently running in <strong>Simulation Mode</strong>. The metadata and filename will be captured by the API contract, and deterministic simulated analysis telemetry will be generated.
+      {/* Notice Pill */}
+      <div className="p-3.5 bg-[#FEF08A] border-2 border-black shadow-[3px_3px_0px_0px_#000] flex items-start gap-2.5">
+        <AlertCircle className="w-5 h-5 text-black stroke-[2.5] shrink-0 mt-0.5" />
+        <div className="text-xs text-black">
+          <span className="font-black uppercase font-mono mr-1">Notice:</span>
+          <span>
+            AbhedyaX integrates deep packet dissection via <strong>TShark</strong> alongside deterministic scenario verification for rapid evaluation.
           </span>
         </div>
       </div>
 
       {selectedFile ? (
         /* Selected File Card */
-        <div className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218] flex items-center justify-between">
+        <div className="p-5 bg-[#FFE600] border-2 border-black shadow-[4px_4px_0px_0px_#000] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
-              <FileText className="w-5 h-5" />
+            <div className="p-2.5 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] text-black">
+              <FileText className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <div className="text-sm font-mono font-semibold text-[#F4F7FA]">
+              <div className="text-sm font-mono font-black text-black">
                 {selectedFile.name}
               </div>
-              <div className="text-xs text-[#687384] font-mono mt-0.5">
+              <div className="text-xs text-black font-mono font-bold mt-0.5">
                 Size: {formatFileSize(selectedFile.size)} • Status: Ready to Analyze
               </div>
             </div>
@@ -106,10 +106,10 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
           <button
             type="button"
             onClick={() => onSelectFile(null)}
-            className="p-1.5 rounded-lg text-[#9AA4B2] hover:text-[#F4F7FA] hover:bg-[#141820] transition-colors"
+            className="p-1.5 bg-white hover:bg-[#FF4B4B] border-2 border-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
             title="Remove file"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4 stroke-[3]" />
           </button>
         </div>
       ) : (
@@ -119,10 +119,8 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "p-8 sm:p-10 rounded-xl border-2 border-dashed text-center flex flex-col items-center justify-center transition-colors cursor-pointer",
-            isDragging
-              ? "border-blue-500 bg-blue-500/5"
-              : "border-[#252B35] bg-[#0F1218]/50 hover:border-[#3B4252] hover:bg-[#0F1218]"
+            "p-8 sm:p-10 border-2 border-dashed border-black bg-white shadow-[4px_4px_0px_0px_#000] text-center flex flex-col items-center justify-center transition-colors cursor-pointer",
+            isDragging ? "bg-[#FFFDF0]" : "hover:bg-[#FAF8F5]"
           )}
           onClick={() => fileInputRef.current?.click()}
         >
@@ -134,14 +132,14 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
             className="hidden"
           />
 
-          <div className="p-3.5 rounded-full bg-[#141820] border border-[#252B35] text-blue-400 mb-3">
-            <UploadCloud className="w-6 h-6" />
+          <div className="p-3.5 bg-[#FFE600] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-black mb-3">
+            <UploadCloud className="w-6 h-6 stroke-[2.5]" />
           </div>
 
-          <h3 className="text-sm font-semibold text-[#F4F7FA] mb-1">
+          <h3 className="text-base font-black text-black mb-1">
             Drag and drop capture file, or click to browse
           </h3>
-          <p className="text-xs text-[#687384] max-w-sm mb-4">
+          <p className="text-xs text-zinc-600 max-w-sm mb-4 font-mono font-bold">
             Supports standard Wireshark/tcpdump .pcap and .pcapng files up to 250MB
           </p>
 
@@ -154,11 +152,11 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
       {/* Benchmark Captures Selection */}
       <div className="pt-2">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-mono text-[#687384] uppercase">
+          <span className="text-xs font-mono font-bold text-black uppercase">
             Or analyze a pre-configured benchmark capture from datasets:
           </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             {
               name: "modern-ikev2-aes256gcm.pcap",
@@ -190,21 +188,21 @@ export const PcapUploader: React.FC<PcapUploaderProps> = ({
               type="button"
               onClick={() => onSelectFile({ name: sample.name, size: sample.size })}
               className={cn(
-                "p-3 rounded-lg border text-left transition-colors flex flex-col justify-between",
+                "p-3.5 border-2 border-black text-left transition-all flex flex-col justify-between cursor-pointer",
                 selectedFile?.name === sample.name
-                  ? "border-blue-500/50 bg-blue-500/10 text-[#F4F7FA]"
-                  : "border-[#252B35] bg-[#141820]/60 hover:border-[#3B4252] hover:bg-[#141820] text-[#9AA4B2]"
+                  ? "bg-[#FFE600] shadow-[3px_3px_0px_0px_#000] translate-x-[-1px] translate-y-[-1px]"
+                  : "bg-white shadow-[2px_2px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_#000]"
               )}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-semibold text-[#F4F7FA]">
+                <span className="text-xs font-black text-black">
                   {sample.label}
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#252B35] text-[#9AA4B2]">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 bg-zinc-100 text-black border border-black">
                   {sample.name.split(".")[0]}
                 </span>
               </div>
-              <p className="text-[11px] text-[#687384] font-mono">{sample.desc}</p>
+              <p className="text-[11px] text-zinc-700 font-mono font-medium">{sample.desc}</p>
             </button>
           ))}
         </div>

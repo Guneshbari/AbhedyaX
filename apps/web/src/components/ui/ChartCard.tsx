@@ -19,23 +19,25 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   return (
     <div
       className={cn(
-        "rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col overflow-hidden",
+        "bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col overflow-hidden",
         className
       )}
     >
-      <div className="flex items-center justify-between p-5 border-b border-[#252B35]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 border-b-2 border-black bg-[#FAF8F5]">
         <div>
-          <h2 className="text-sm font-semibold tracking-tight text-[#F4F7FA]">
+          <h2 className="text-sm sm:text-base font-black tracking-tight text-black">
             {title}
           </h2>
           {subtitle && (
-            <p className="mt-0.5 text-xs text-[#9AA4B2]">{subtitle}</p>
+            <p className="mt-0.5 text-xs font-mono text-zinc-600">{subtitle}</p>
           )}
         </div>
-        {action && <div>{action}</div>}
+        {action && <div className="shrink-0">{action}</div>}
       </div>
 
-      <div className="p-5 flex-1 flex flex-col justify-center">{children}</div>
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-center bg-white">
+        {children}
+      </div>
     </div>
   );
 };

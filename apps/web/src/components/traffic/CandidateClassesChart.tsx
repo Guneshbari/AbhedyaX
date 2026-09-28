@@ -31,13 +31,13 @@ const CustomBarTooltip: React.FC<CustomTooltipProps> = ({
   if (active && payload && payload.length) {
     const item = payload[0].payload;
     return (
-      <div className="p-3 rounded-lg bg-[#141820] border border-[#252B35] shadow-xl text-xs space-y-1">
-        <div className="font-semibold text-[#F4F7FA] border-b border-[#252B35] pb-1">
+      <div className="p-3 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] text-xs font-mono space-y-1">
+        <div className="font-black text-black border-b-2 border-black pb-1 uppercase">
           {item.class} Traffic
         </div>
-        <div className="flex items-center justify-between gap-3 text-[#9AA4B2]">
+        <div className="flex items-center justify-between gap-3 text-zinc-700 font-bold">
           <span>Probability:</span>
-          <span className="font-mono font-bold text-blue-400">
+          <span className="font-mono font-black text-black bg-[#FFE600] px-1 border border-black">
             {item.percentage}%
           </span>
         </div>
@@ -63,10 +63,10 @@ export const CandidateClassesChart: React.FC<CandidateClassesChartProps> = ({
     <ChartCard
       title="Candidate Class Probability Distribution"
       subtitle="Multi-class probability distribution derived from statistical flow vectors"
-      className="h-[360px]"
+      className="h-[380px]"
     >
       {mounted ? (
-        <div className="w-full h-[260px]">
+        <div className="w-full h-[270px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
@@ -77,26 +77,26 @@ export const CandidateClassesChart: React.FC<CandidateClassesChartProps> = ({
                 type="number"
                 domain={[0, 100]}
                 unit="%"
-                stroke="#687384"
-                tick={{ fill: "#687384", fontSize: 11 }}
-                tickLine={false}
-                axisLine={{ stroke: "#252B35" }}
+                stroke="#000000"
+                tick={{ fill: "#000000", fontSize: 11, fontWeight: "bold" }}
+                tickLine={{ stroke: "#000000" }}
+                axisLine={{ stroke: "#000000", strokeWidth: 2 }}
               />
               <YAxis
                 type="category"
                 dataKey="class"
-                stroke="#687384"
-                tick={{ fill: "#F4F7FA", fontSize: 12, fontWeight: 500 }}
-                tickLine={false}
-                axisLine={{ stroke: "#252B35" }}
-                width={80}
+                stroke="#000000"
+                tick={{ fill: "#000000", fontSize: 12, fontWeight: "bold" }}
+                tickLine={{ stroke: "#000000" }}
+                axisLine={{ stroke: "#000000", strokeWidth: 2 }}
+                width={85}
               />
               <Tooltip content={<CustomBarTooltip />} />
-              <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
+              <Bar dataKey="percentage" stroke="#000000" strokeWidth={2}>
                 {chartData.map((entry) => (
                   <Cell
                     key={entry.class}
-                    fill={entry.isPredicted ? "#3B82F6" : "#252B35"}
+                    fill={entry.isPredicted ? "#FFE600" : "#FAF8F5"}
                   />
                 ))}
               </Bar>
@@ -104,7 +104,7 @@ export const CandidateClassesChart: React.FC<CandidateClassesChartProps> = ({
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="w-full h-[260px] flex items-center justify-center text-xs text-[#687384]">
+        <div className="w-full h-[270px] flex items-center justify-center text-xs font-mono font-bold text-zinc-500">
           Loading distribution chart...
         </div>
       )}

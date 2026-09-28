@@ -48,11 +48,11 @@ export default function MetadataExposurePage() {
   };
 
   const getDimensionIcon = (name: string) => {
-    if (name.includes("Timing")) return <Clock className="w-4 h-4 text-cyan-400" />;
-    if (name.includes("Size")) return <Maximize2 className="w-4 h-4 text-indigo-400" />;
-    if (name.includes("Directionality")) return <ArrowUpDown className="w-4 h-4 text-purple-400" />;
-    if (name.includes("Burst")) return <Zap className="w-4 h-4 text-amber-400" />;
-    return <Timer className="w-4 h-4 text-emerald-400" />;
+    if (name.includes("Timing")) return <Clock className="w-4 h-4 text-black" />;
+    if (name.includes("Size")) return <Maximize2 className="w-4 h-4 text-black" />;
+    if (name.includes("Directionality")) return <ArrowUpDown className="w-4 h-4 text-black" />;
+    if (name.includes("Burst")) return <Zap className="w-4 h-4 text-black" />;
+    return <Timer className="w-4 h-4 text-black" />;
   };
 
   return (
@@ -67,50 +67,50 @@ export default function MetadataExposurePage() {
       />
 
       {/* USP Banner */}
-      <div className="p-4 sm:p-5 rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-[#0F1218] to-indigo-950/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 bg-[#C084FC]/20 border-2 sm:border-[3px] border-black shadow-[4px_4px_0px_0px_#000] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-indigo-500/20 text-indigo-400 shrink-0">
+          <div className="p-2.5 bg-[#C084FC] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-black shrink-0">
             <Eye className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-xs sm:text-sm font-semibold text-[#F4F7FA] flex items-center gap-2 flex-wrap">
+            <div className="text-xs sm:text-sm font-black text-black flex items-center gap-2 flex-wrap">
               <span>AbhedyaX USP-04: Zero-Payload Metadata Observability</span>
-              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-medium">
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 border-2 border-black bg-white text-black font-black shadow-[2px_2px_0px_0px_#000]">
                 Privacy & Telemetry USP
               </span>
             </div>
-            <p className="text-xs text-[#9AA4B2] mt-0.5 leading-relaxed">
+            <p className="text-xs text-zinc-800 mt-0.5 leading-relaxed font-bold">
               Demonstrates flow pattern observability while strictly preserving payload confidentiality and never decrypting ESP traffic.
             </p>
           </div>
         </div>
         <Link
           href="/ai-intelligence"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium rounded-lg bg-[#141820] hover:bg-[#1C222C] text-[#F4F7FA] border border-[#252B35] transition-colors shrink-0"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-black bg-[#FFE600] text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all shrink-0"
         >
           <span>View ML Pipeline</span>
-          <ExternalLink className="w-3.5 h-3.5 text-indigo-400" />
+          <ExternalLink className="w-3.5 h-3.5 text-black" />
         </Link>
       </div>
 
       {/* Session Selector Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-[#252B35] pb-3">
+      <div className="flex flex-wrap gap-2 border-b-2 border-black pb-3">
         {CANONICAL_RECENT_ANALYSES.map((item) => {
           const isSelected = item.id === selectedAnalysisId;
           return (
             <button
               key={item.id}
               onClick={() => handleSelectAnalysis(item.id)}
-              className={`px-3 py-2 text-xs font-mono rounded-lg transition-all flex items-center gap-2 border shrink-0 ${
+              className={`px-3 py-2 text-xs font-mono transition-all flex items-center gap-2 border-2 border-black shrink-0 ${
                 isSelected
-                  ? "bg-indigo-600/20 border-indigo-500/50 text-[#F4F7FA] font-medium shadow-sm"
-                  : "bg-[#0F1218] border-[#252B35] text-[#9AA4B2] hover:text-[#F4F7FA] hover:border-[#3B4252]"
+                  ? "bg-[#FFE600] text-black font-black shadow-[3px_3px_0px_0px_#000]"
+                  : "bg-white text-black font-bold shadow-[2px_2px_0px_0px_#000] hover:bg-[#FAF8F5]"
               }`}
             >
               <span>{item.id}</span>
-              <span className="text-[10px] text-[#687384]">({item.vpnProtocol})</span>
+              <span className="text-[10px] text-zinc-600 font-bold">({item.vpnProtocol})</span>
               {item.id === "AX-2026-00424" && (
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-sans font-medium">
+                <span className="text-[9px] px-1.5 py-0.5 border border-black bg-[#FF4B4B] text-black font-black shadow-[1px_1px_0px_0px_#000]">
                   Anomaly Case
                 </span>
               )}
@@ -120,51 +120,51 @@ export default function MetadataExposurePage() {
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-[#9AA4B2] font-mono text-sm rounded-xl border border-[#252B35] bg-[#0F1218]">
-          <div className="w-6 h-6 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin mx-auto mb-3" />
+        <div className="p-12 text-center text-black font-mono text-sm border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
+          <div className="w-6 h-6 rounded-full border-2 border-black border-t-[#FFE600] animate-spin mx-auto mb-3" />
           Evaluating metadata observability for {selectedAnalysisId}...
         </div>
       ) : !metadata ? (
-        <div className="p-12 text-center text-[#9AA4B2] font-mono text-sm rounded-xl border border-[#252B35] bg-[#0F1218]">
+        <div className="p-12 text-center text-black font-mono text-sm border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000]">
           Metadata analysis unavailable.
         </div>
       ) : (
         <div className="space-y-6">
           {/* Overview Indicator Card */}
-          <div className="p-5 sm:p-6 rounded-xl border border-[#252B35] bg-[#0F1218] backdrop-blur-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="p-5 sm:p-6 bg-white border-2 sm:border-[3px] border-black shadow-[6px_6px_0px_0px_#000] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-lg sm:text-xl font-semibold text-[#F4F7FA] tracking-tight">
+                <h2 className="text-lg sm:text-xl font-black text-black tracking-tight">
                   Session Observability Index
                 </h2>
                 <span
-                  className={`text-xs uppercase font-mono px-2.5 py-0.5 rounded-full font-medium ${
+                  className={`text-xs uppercase font-mono px-2.5 py-1 border-2 border-black font-black shadow-[2px_2px_0px_0px_#000] ${
                     metadata.indicator === "High"
-                      ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                      ? "bg-[#FF4B4B] text-black"
                       : metadata.indicator === "Moderate"
-                      ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30"
-                      : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                      ? "bg-[#FBBF24] text-black"
+                      : "bg-[#4ADE80] text-black"
                   }`}
                 >
                   {metadata.indicator} Observability
                 </span>
               </div>
-              <p className="text-xs text-[#9AA4B2] mt-2 max-w-2xl font-sans leading-relaxed">
+              <p className="text-xs text-zinc-700 mt-2 max-w-2xl font-sans leading-relaxed font-medium">
                 {metadata.explanation}
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-[#9AA4B2]">
-                <span>Session: <strong className="text-[#F4F7FA]">{metadata.analysis_id}</strong></span>
-                <span className="text-[#3B4252]">•</span>
-                <span>Provenance: <strong className="text-[#F4F7FA]">{metadata.provenance}</strong></span>
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono text-zinc-700">
+                <span>Session: <strong className="text-black font-black">{metadata.analysis_id}</strong></span>
+                <span className="text-black">•</span>
+                <span>Provenance: <strong className="text-black font-black">{metadata.provenance}</strong></span>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl border border-[#252B35] bg-[#141820] flex flex-col items-center justify-center min-w-[140px] shrink-0 self-end md:self-center">
-              <span className="text-[10px] font-mono uppercase text-[#687384] font-semibold">Observability</span>
-              <span className="text-3xl font-bold font-mono text-[#F4F7FA] mt-1">
+            <div className="p-4 bg-[#FAF8F5] border-2 border-black shadow-[3px_3px_0px_0px_#000] flex flex-col items-center justify-center min-w-[140px] shrink-0 self-end md:self-center">
+              <span className="text-[10px] font-mono uppercase text-zinc-700 font-bold">Observability</span>
+              <span className="text-3xl font-black font-mono text-black mt-1">
                 {metadata.score !== null ? `${metadata.score}` : "N/A"}
               </span>
-              <span className="text-[10px] text-[#9AA4B2] font-mono mt-0.5">out of 100</span>
+              <span className="text-[10px] text-zinc-700 font-mono font-bold mt-0.5">out of 100</span>
             </div>
           </div>
 
@@ -173,44 +173,44 @@ export default function MetadataExposurePage() {
             {metadata.dimensions.map((dim, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col justify-between"
+                className="p-5 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {getDimensionIcon(dim.name)}
-                      <h3 className="text-xs font-semibold text-[#F4F7FA]">{dim.name}</h3>
+                      <h3 className="text-xs font-black text-black">{dim.name}</h3>
                     </div>
                     <span
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
+                      className={`text-[10px] font-mono px-2 py-0.5 border-2 border-black font-black shadow-[2px_2px_0px_0px_#000] ${
                         dim.indicator === "High"
-                          ? "bg-amber-500/10 text-amber-400 border-amber-500/25"
+                          ? "bg-[#FF4B4B] text-black"
                           : dim.indicator === "Moderate"
-                          ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/25"
-                          : "bg-emerald-500/10 text-emerald-400 border-emerald-500/25"
+                          ? "bg-[#FBBF24] text-black"
+                          : "bg-[#4ADE80] text-black"
                       }`}
                     >
                       {dim.indicator}
                     </span>
                   </div>
 
-                  <div className="mt-3 text-2xl font-bold font-mono text-[#F4F7FA]">
+                  <div className="mt-3 text-2xl font-black font-mono text-black">
                     {dim.value}
-                    <span className="text-xs text-[#687384] font-normal"> / 100</span>
+                    <span className="text-xs text-zinc-600 font-bold"> / 100</span>
                   </div>
 
-                  <p className="text-xs text-[#9AA4B2] mt-2 font-sans leading-relaxed">
+                  <p className="text-xs text-zinc-700 mt-2 font-sans leading-relaxed font-medium">
                     {dim.description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#252B35]/60">
-                  <span className="text-[10px] uppercase font-mono text-[#687384] block mb-1.5 font-semibold">
+                <div className="mt-4 pt-3 border-t-2 border-black/20">
+                  <span className="text-[10px] uppercase font-mono text-zinc-700 block mb-1.5 font-bold">
                     Signal Features
                   </span>
                   <div className="flex flex-wrap gap-1 font-mono text-[10px]">
                     {dim.key_features.map((f, fi) => (
-                      <span key={fi} className="px-1.5 py-0.5 rounded bg-[#141820] text-[#9AA4B2] border border-[#252B35]">
+                      <span key={fi} className="px-1.5 py-0.5 border border-black bg-[#FAF8F5] text-black font-bold shadow-[1px_1px_0px_0px_#000]">
                         {f}
                       </span>
                     ))}
@@ -221,29 +221,29 @@ export default function MetadataExposurePage() {
 
             {/* Zero-Payload Classification Summary Card */}
             {metadata.traffic_classification && (
-              <div className="p-5 rounded-xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950/30 to-[#0F1218] flex flex-col justify-between">
+              <div className="p-5 bg-[#FFE600] border-2 sm:border-[3px] border-black shadow-[4px_4px_0px_0px_#000] flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-indigo-400">
-                    <BrainCircuit className="w-4 h-4" />
-                    <h3 className="text-xs font-semibold text-[#F4F7FA]">Inferred Application Class</h3>
+                  <div className="flex items-center gap-2 text-black">
+                    <BrainCircuit className="w-4 h-4 text-black" />
+                    <h3 className="text-xs font-black text-black">Inferred Application Class</h3>
                   </div>
 
                   <div className="mt-3">
-                    <span className="text-2xl font-bold font-mono text-[#F4F7FA]">
+                    <span className="text-2xl font-black font-mono text-black">
                       {metadata.traffic_classification.predicted_class}
                     </span>
-                    <div className="text-xs font-mono text-indigo-300 mt-1">
+                    <div className="text-xs font-mono font-bold text-black mt-1">
                       Confidence: {(metadata.traffic_classification.confidence * 100).toFixed(1)}%
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#9AA4B2] mt-2 font-sans leading-relaxed">
-                    Classification mode: <span className="font-mono text-indigo-300">{metadata.traffic_classification.classification_mode}</span>.
+                  <p className="text-xs text-zinc-800 mt-2 font-sans leading-relaxed font-medium">
+                    Classification mode: <span className="font-mono font-black">{metadata.traffic_classification.classification_mode}</span>.
                     Derived strictly from packet sizes and cadence clusters.
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-indigo-900/40 text-[10px] font-mono text-indigo-300">
+                <div className="mt-4 pt-3 border-t-2 border-black text-[10px] font-mono text-black font-black">
                   Payload Decryption: <strong>NEVER EXECUTED</strong>
                 </div>
               </div>
@@ -251,10 +251,10 @@ export default function MetadataExposurePage() {
           </div>
 
           {/* Scientific Disclaimer */}
-          <div className="p-4 rounded-xl border border-[#252B35] bg-[#090B10] text-xs text-[#9AA4B2] font-mono flex items-start gap-3">
-            <ShieldAlert className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+          <div className="p-4 border-2 border-black bg-[#FAF8F5] shadow-[3px_3px_0px_0px_#000] text-xs text-zinc-800 font-mono font-bold flex items-start gap-3">
+            <ShieldAlert className="w-5 h-5 text-black shrink-0 mt-0.5" />
             <div className="leading-relaxed">
-              <strong className="text-[#F4F7FA] block mb-0.5">Cryptographic Integrity Disclaimer:</strong>
+              <strong className="text-black block mb-0.5 font-black">Cryptographic Integrity Disclaimer:</strong>
               <span>{metadata.disclaimer}</span>
             </div>
           </div>

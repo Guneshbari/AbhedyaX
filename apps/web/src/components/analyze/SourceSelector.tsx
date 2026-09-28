@@ -26,7 +26,7 @@ export const SourceSelector: React.FC<SourceSelectorProps> = ({
       description:
         "Upload Wireshark or tcpdump capture file containing IKE & ESP traffic flows",
       icon: UploadCloud,
-      badge: "Simulation Mode Active",
+      badge: "TShark Analysis Available",
     },
   ];
 
@@ -42,45 +42,41 @@ export const SourceSelector: React.FC<SourceSelectorProps> = ({
             key={opt.id}
             onClick={() => onSelectSource(opt.id)}
             className={cn(
-              "p-5 rounded-xl border text-left transition-all duration-150 cursor-pointer relative",
+              "p-5 border-2 border-black text-left transition-all duration-100 cursor-pointer relative",
               isSelected
-                ? "bg-[#141820] border-blue-500 shadow-sm"
-                : "bg-[#0F1218] border-[#252B35] hover:border-[#3B4252] hover:bg-[#141820]/50"
+                ? "bg-[#FFE600] shadow-[5px_5px_0px_0px_#000] translate-x-[-2px] translate-y-[-2px]"
+                : "bg-white shadow-[3px_3px_0px_0px_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_#000]"
             )}
           >
             <div className="flex items-start justify-between mb-3">
               <div
                 className={cn(
-                  "p-2.5 rounded-lg border transition-colors",
-                  isSelected
-                    ? "bg-blue-500/15 border-blue-500/30 text-blue-400"
-                    : "bg-[#141820] border-[#252B35] text-[#9AA4B2]"
+                  "p-2.5 border-2 border-black text-black",
+                  isSelected ? "bg-white shadow-[2px_2px_0px_0px_#000]" : "bg-[#FFE600] shadow-[2px_2px_0px_0px_#000]"
                 )}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-5 h-5 stroke-[2.5]" />
               </div>
 
               <div className="flex items-center gap-2">
                 <span
                   className={cn(
-                    "text-[10px] font-mono px-2 py-0.5 rounded border",
-                    isSelected
-                      ? "bg-blue-500/10 border-blue-500/30 text-blue-400"
-                      : "bg-[#141820] border-[#252B35] text-[#687384]"
+                    "text-[10px] font-mono font-bold uppercase px-2 py-0.5 border border-black",
+                    isSelected ? "bg-black text-[#FFE600]" : "bg-white text-black shadow-[1px_1px_0px_0px_#000]"
                   )}
                 >
                   {opt.badge}
                 </span>
                 {isSelected && (
-                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-black stroke-[3] shrink-0" />
                 )}
               </div>
             </div>
 
-            <h3 className="text-sm font-semibold text-[#F4F7FA] mb-1">
+            <h3 className="text-base font-black text-black mb-1">
               {opt.label}
             </h3>
-            <p className="text-xs text-[#9AA4B2] leading-relaxed">
+            <p className="text-xs text-zinc-800 leading-relaxed font-medium">
               {opt.description}
             </p>
           </button>

@@ -137,8 +137,8 @@ export default function FindingsInvestigationPage() {
   if (isLoading && !result) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
-        <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-        <p className="text-xs text-[#9AA4B2] font-mono">
+        <div className="w-8 h-8 rounded-full border-2 border-black border-t-[#FFE600] animate-spin" />
+        <p className="text-xs text-black font-mono font-bold">
           Loading findings repository for {analysisId}...
         </p>
       </div>
@@ -147,12 +147,12 @@ export default function FindingsInvestigationPage() {
 
   if (!result) {
     return (
-      <div className="p-8 rounded-xl border border-red-500/30 bg-red-500/10 text-center space-y-4 max-w-xl mx-auto my-12">
-        <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
-        <h2 className="text-base font-semibold text-[#F4F7FA]">
+      <div className="p-8 border-2 border-black bg-[#FF4B4B]/15 shadow-[4px_4px_0px_0px_#000] text-center space-y-4 max-w-xl mx-auto my-12">
+        <AlertTriangle className="w-8 h-8 text-[#FF4B4B] mx-auto" />
+        <h2 className="text-base font-black text-black">
           Analysis Session Not Found
         </h2>
-        <p className="text-xs text-[#9AA4B2] leading-relaxed">
+        <p className="text-xs text-zinc-800 leading-relaxed font-mono">
           The requested session &apos;{analysisId}&apos; was not found.
         </p>
         <div className="flex items-center justify-center gap-3 pt-2">
@@ -213,37 +213,37 @@ export default function FindingsInvestigationPage() {
           {
             label: "Total Findings",
             count: summary.total_findings,
-            style: "text-[#F4F7FA] bg-[#0F1218] border-[#252B35]",
+            style: "text-black bg-[#FFE600] border-2 border-black shadow-[3px_3px_0px_0px_#000]",
           },
           {
             label: "Critical",
             count: summary.critical,
-            style: "text-red-400 bg-red-500/10 border-red-500/25",
+            style: "text-black bg-[#FF4B4B] border-2 border-black shadow-[3px_3px_0px_0px_#000]",
           },
           {
             label: "High Severity",
             count: summary.high,
-            style: "text-orange-400 bg-orange-500/10 border-orange-500/25",
+            style: "text-black bg-[#FB923C] border-2 border-black shadow-[3px_3px_0px_0px_#000]",
           },
           {
             label: "Medium Severity",
             count: summary.medium,
-            style: "text-amber-400 bg-amber-500/10 border-amber-500/25",
+            style: "text-black bg-[#FBBF24] border-2 border-black shadow-[3px_3px_0px_0px_#000]",
           },
           {
             label: "Low / Informational",
             count: summary.low + summary.informational,
-            style: "text-blue-400 bg-blue-500/10 border-blue-500/25",
+            style: "text-black bg-[#38BDF8] border-2 border-black shadow-[3px_3px_0px_0px_#000]",
           },
         ].map((item) => (
           <div
             key={item.label}
-            className={`p-3.5 rounded-xl border flex flex-col justify-between ${item.style}`}
+            className={`p-3.5 flex flex-col justify-between ${item.style}`}
           >
-            <span className="text-[10px] uppercase font-mono tracking-wider opacity-80">
+            <span className="text-[10px] uppercase font-black font-mono tracking-wider">
               {item.label}
             </span>
-            <span className="text-2xl font-bold font-mono mt-1">
+            <span className="text-2xl font-black font-mono mt-1">
               {item.count}
             </span>
           </div>
@@ -279,7 +279,7 @@ export default function FindingsInvestigationPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Finding Cards List */}
           <div className="lg:col-span-5 space-y-3">
-            <div className="flex items-center justify-between text-xs text-[#687384] px-1 font-mono">
+            <div className="flex items-center justify-between text-xs text-black font-bold px-1 font-mono">
               <span>Displaying {filteredFindings.length} findings</span>
               <span>Select to inspect</span>
             </div>

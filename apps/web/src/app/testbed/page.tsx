@@ -192,8 +192,8 @@ export default function TestbedPage() {
         ]}
         badge={
           executionMode === "real" ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border-2 border-black text-xs font-mono font-black bg-[#4ADE80] text-black shadow-[2px_2px_0px_0px_#000]">
+              <span className="w-2 h-2 rounded-full bg-black" />
               Real strongSwan Testbed
             </span>
           ) : (
@@ -215,58 +215,58 @@ export default function TestbedPage() {
 
       {/* 2. Testbed Status Overview Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-        <div className="p-3.5 rounded-xl border border-[#252B35] bg-[#0F1218]">
-          <span className="text-[10px] text-[#687384] uppercase block">
+        <div className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-700 uppercase font-black block">
             Testbed Status
           </span>
-          <span className="text-emerald-400 font-bold mt-1 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          <span className="text-emerald-700 font-black mt-1 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-700" />
             {canRunReal ? "Real Testbed Ready" : "Simulation Ready"}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-[#252B35] bg-[#0F1218]">
-          <span className="text-[10px] text-[#687384] uppercase block">
+        <div className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-700 uppercase font-black block">
             Execution Mode
           </span>
-          <span className="text-[#F4F7FA] font-bold mt-1 block uppercase">
+          <span className="text-black font-black mt-1 block uppercase">
             {executionMode}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-[#252B35] bg-[#0F1218]">
-          <span className="text-[10px] text-[#687384] uppercase block">
+        <div className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-700 uppercase font-black block">
             Scenarios Available
           </span>
-          <span className="text-blue-400 font-bold mt-1 block">
+          <span className="text-black font-black mt-1 block">
             {scenarios ? `${scenarios.length} Defined` : "5 Benchmarks"}
           </span>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-[#252B35] bg-[#0F1218]">
-          <span className="text-[10px] text-[#687384] uppercase block">
+        <div className="p-3.5 bg-white border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <span className="text-[10px] text-zinc-700 uppercase font-black block">
             Target Namespaces
           </span>
-          <span className="text-[#F4F7FA] font-bold mt-1 block truncate">
+          <span className="text-black font-black mt-1 block truncate">
             ns_initiator, ns_responder
           </span>
         </div>
       </div>
 
       {/* 3. Execution Mode & Traffic Injection Controls Bar */}
-      <div className="p-4 rounded-xl border border-[#252B35] bg-[#0F1218] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-mono">
+      <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-mono">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-[#687384] uppercase text-[11px] font-bold flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-blue-400" />
+          <span className="text-black uppercase text-[11px] font-black flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-black" />
             Mode:
           </span>
-          <div className="inline-flex rounded-lg border border-[#252B35] p-1 bg-[#141820]">
+          <div className="inline-flex border-2 border-black p-1 bg-[#FAF8F5] shadow-[2px_2px_0px_0px_#000]">
             <button
               onClick={() => setExecutionMode("simulation")}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              className={`px-3 py-1 text-xs font-black transition-all ${
                 executionMode === "simulation"
-                  ? "bg-blue-600 text-white shadow-sm"
-                  : "text-[#9AA4B2] hover:text-[#F4F7FA]"
+                  ? "bg-[#FFE600] text-black border border-black shadow-[1px_1px_0px_0px_#000]"
+                  : "text-zinc-700 hover:text-black"
               }`}
             >
               Simulation Mode
@@ -279,10 +279,10 @@ export default function TestbedPage() {
                   ? "Execute inside real Linux network namespaces using strongSwan"
                   : envStatus?.message || "Missing root / strongSwan on this host"
               }
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              className={`px-3 py-1 text-xs font-black transition-all ${
                 executionMode === "real"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-[#9AA4B2] hover:text-[#F4F7FA] disabled:opacity-40 disabled:cursor-not-allowed"
+                  ? "bg-[#4ADE80] text-black border border-black shadow-[1px_1px_0px_0px_#000]"
+                  : "text-zinc-700 hover:text-black disabled:opacity-40 disabled:cursor-not-allowed"
               }`}
             >
               Real strongSwan {!canRunReal && "(Unavailable)"}
@@ -291,14 +291,14 @@ export default function TestbedPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-[#687384] uppercase text-[11px] font-bold flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5 text-purple-400" />
+          <span className="text-black uppercase text-[11px] font-black flex items-center gap-1.5">
+            <Activity className="w-3.5 h-3.5 text-black" />
             Traffic Profile:
           </span>
           <select
             value={trafficProfile}
             onChange={(e) => setTrafficProfile(e.target.value as TrafficClass)}
-            className="px-3 py-1.5 rounded-lg border border-[#252B35] bg-[#141820] text-[#F4F7FA] focus:outline-none focus:border-blue-500 font-mono text-xs"
+            className="px-3 py-1.5 border-2 border-black bg-[#FAF8F5] text-black font-bold focus:outline-none focus:bg-[#FFE600] font-mono text-xs shadow-[2px_2px_0px_0px_#000]"
           >
             <option value="ICMP">ICMP (Ping Keep-Alive)</option>
             <option value="Web">Web (HTTP Bursts)</option>
@@ -312,8 +312,8 @@ export default function TestbedPage() {
 
       {/* Error alert */}
       {errorMessage && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="p-4 bg-[#FF4B4B]/15 border-2 border-black shadow-[4px_4px_0px_0px_#000] text-black text-xs font-bold flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-[#FF4B4B]" />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -346,25 +346,25 @@ export default function TestbedPage() {
       />
 
       {/* 7. Recent Test Runs History */}
-      <div className="p-6 rounded-xl border border-[#252B35] bg-[#0F1218] space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#252B35]">
+      <div className="p-6 bg-white border-2 sm:border-[3px] border-black shadow-[6px_6px_0px_0px_#000] space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-black">
           <div>
-            <h3 className="text-sm font-semibold text-[#F4F7FA]">
+            <h3 className="text-sm font-black text-black">
               Recent Testbed Execution Runs
             </h3>
-            <p className="text-xs text-[#9AA4B2]">
+            <p className="text-xs text-zinc-700 font-medium">
               Historical scenario runs executed through the testbed orchestrator
             </p>
           </div>
           <Link
             href="/analyses"
-            className="text-xs text-blue-400 hover:text-blue-300 font-medium"
+            className="text-xs text-black font-black hover:underline"
           >
             All Analyses &rarr;
           </Link>
         </div>
 
-        <div className="divide-y divide-[#252B35]/60 text-xs font-mono">
+        <div className="divide-y-2 divide-black/20 text-xs font-mono">
           {DASHBOARD_DATA.recentAnalyses.slice(0, 4).map((run) => (
             <div
               key={run.id}
@@ -373,22 +373,22 @@ export default function TestbedPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/analyses/${run.id}`}
-                  className="font-bold text-blue-400 hover:underline"
+                  className="font-black text-black hover:underline"
                 >
                   {run.id}
                 </Link>
-                <span className="text-[#3B4252]">•</span>
-                <span className="text-[#F4F7FA]">{run.sourceName}</span>
-                <span className="text-[#3B4252]">•</span>
-                <span className="text-[#9AA4B2]">{run.encryption}</span>
+                <span className="text-black">•</span>
+                <span className="text-black font-bold">{run.sourceName}</span>
+                <span className="text-black">•</span>
+                <span className="text-zinc-700 font-medium">{run.encryption}</span>
               </div>
 
-              <div className="flex items-center gap-4 text-[#687384]">
+              <div className="flex items-center gap-4 text-zinc-700 font-bold">
                 <span>Score: {run.securityScore}/100</span>
                 <span suppressHydrationWarning>{formatDate(run.createdAt)}</span>
                 <Link
                   href={`/analyses/${run.id}`}
-                  className="text-blue-400 hover:text-blue-300 flex items-center gap-0.5"
+                  className="text-black font-black hover:underline flex items-center gap-0.5"
                 >
                   <span>View</span>
                   <ArrowUpRight className="w-3 h-3" />

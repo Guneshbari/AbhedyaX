@@ -70,77 +70,77 @@ export const TrafficFeatureMetrics: React.FC<TrafficFeatureMetricsProps> = ({
   const entropy = getEntropy(predictedClass);
 
   return (
-    <div className="p-5 rounded-xl border border-[#252B35] bg-[#0F1218] space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-[#252B35]">
-        <div className="flex items-center gap-2 text-sm font-semibold text-[#F4F7FA]">
-          <Sliders className="w-4 h-4 text-blue-400" />
+    <div className="p-5 sm:p-6 bg-white border-2 border-black shadow-[4px_4px_0px_0px_#000] space-y-4">
+      <div className="flex items-center justify-between pb-3 border-b-2 border-black">
+        <div className="flex items-center gap-2 text-sm sm:text-base font-black text-black">
+          <Sliders className="w-4 h-4 stroke-[2.5]" />
           <span>Extracted Flow Metadata Features</span>
         </div>
-        <span className="text-[11px] font-mono text-[#687384]">
+        <span className="text-xs font-mono font-bold text-black bg-[#FFE600] px-2 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
           {hasMlFeatures ? "28 Statistical Features Extracted (Zero-Payload)" : "Zero-Payload Dissection"}
         </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
         {/* Packet Size Pattern */}
-        <div className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#687384] mb-2">
-            <span className="text-[10px] uppercase font-mono">Packet Size Pattern</span>
-            <Gauge className="w-4 h-4 text-blue-400" />
+        <div className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-black mb-2 font-mono font-black">
+            <span className="text-[10px] uppercase">Packet Size Pattern</span>
+            <Gauge className="w-4 h-4 stroke-[2.5]" />
           </div>
           <div>
-            <div className="text-sm font-semibold font-mono text-[#F4F7FA]">
+            <div className="text-sm font-black font-mono text-black">
               {packetSizeDisplay}
             </div>
-            <p className="text-[11px] text-[#9AA4B2] mt-1 leading-snug">
+            <p className="text-[11px] text-zinc-600 mt-1 leading-snug font-medium">
               Histogram of MTU-clamped frame lengths
             </p>
           </div>
         </div>
 
         {/* Directionality */}
-        <div className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#687384] mb-2">
-            <span className="text-[10px] uppercase font-mono">Directionality Ratio</span>
-            <ArrowLeftRight className="w-4 h-4 text-blue-400" />
+        <div className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-black mb-2 font-mono font-black">
+            <span className="text-[10px] uppercase">Directionality Ratio</span>
+            <ArrowLeftRight className="w-4 h-4 stroke-[2.5]" />
           </div>
           <div>
-            <div className="text-sm font-semibold font-mono text-[#F4F7FA]">
+            <div className="text-sm font-black font-mono text-black">
               {directionalityDisplay}
             </div>
-            <p className="text-[11px] text-[#9AA4B2] mt-1 leading-snug">
+            <p className="text-[11px] text-zinc-600 mt-1 leading-snug font-medium">
               Client initiator vs responder egress ratio
             </p>
           </div>
         </div>
 
         {/* Inter-arrival Pattern */}
-        <div className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#687384] mb-2">
-            <span className="text-[10px] uppercase font-mono">Inter-Arrival Cadence</span>
-            <Activity className="w-4 h-4 text-blue-400" />
+        <div className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-black mb-2 font-mono font-black">
+            <span className="text-[10px] uppercase">Inter-Arrival Cadence</span>
+            <Activity className="w-4 h-4 stroke-[2.5]" />
           </div>
           <div>
-            <div className="text-sm font-semibold font-mono text-[#F4F7FA]">
+            <div className="text-sm font-black font-mono text-black">
               {interArrivalDisplay}
             </div>
-            <p className="text-[11px] text-[#9AA4B2] mt-1 leading-snug">
+            <p className="text-[11px] text-zinc-600 mt-1 leading-snug font-medium">
               Inter-packet arrival time variance and jitter
             </p>
           </div>
         </div>
 
         {/* Session Duration */}
-        <div className="p-3.5 rounded-lg bg-[#141820] border border-[#252B35] flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#687384] mb-2">
-            <span className="text-[10px] uppercase font-mono">Session Duration</span>
-            <Clock className="w-4 h-4 text-blue-400" />
+        <div className="p-3.5 bg-[#FAF8F5] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex flex-col justify-between">
+          <div className="flex items-center justify-between text-black mb-2 font-mono font-black">
+            <span className="text-[10px] uppercase">Session Duration</span>
+            <Clock className="w-4 h-4 stroke-[2.5]" />
           </div>
           <div>
-            <div className="text-sm font-semibold font-mono text-[#F4F7FA]">
+            <div className="text-sm font-black font-mono text-black">
               {formattedDuration}
             </div>
-            <p className="text-[11px] text-[#9AA4B2] mt-1 leading-snug">
+            <p className="text-[11px] text-zinc-600 mt-1 leading-snug font-medium">
               Total active ESP flow transmission window
             </p>
           </div>
@@ -150,39 +150,39 @@ export const TrafficFeatureMetrics: React.FC<TrafficFeatureMetricsProps> = ({
       {/* Extra ML Inferred Flow Metrics if present */}
       {hasMlFeatures && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-1">
-          <div className="p-3 rounded-lg bg-[#0D1016] border border-[#202530]">
-            <div className="flex items-center gap-1.5 text-[#687384] mb-1">
-              <Layers className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-[10px] uppercase font-mono">Total Packets</span>
+          <div className="p-3 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex items-center gap-1.5 text-zinc-600 mb-1">
+              <Layers className="w-3.5 h-3.5 stroke-[2.5] text-black" />
+              <span className="text-[10px] uppercase font-mono font-bold">Total Packets</span>
             </div>
-            <div className="text-base font-bold font-mono text-[#F4F7FA]" suppressHydrationWarning>
+            <div className="text-base font-black font-mono text-black" suppressHydrationWarning>
               {Number(raw.packet_count).toLocaleString("en-US")}
             </div>
           </div>
-          <div className="p-3 rounded-lg bg-[#0D1016] border border-[#202530]">
-            <div className="flex items-center gap-1.5 text-[#687384] mb-1">
-              <HardDrive className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-[10px] uppercase font-mono">Total Bytes</span>
+          <div className="p-3 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex items-center gap-1.5 text-zinc-600 mb-1">
+              <HardDrive className="w-3.5 h-3.5 stroke-[2.5] text-black" />
+              <span className="text-[10px] uppercase font-mono font-bold">Total Bytes</span>
             </div>
-            <div className="text-base font-bold font-mono text-[#F4F7FA]">
+            <div className="text-base font-black font-mono text-black">
               {((Number(raw.forward_bytes ?? 0) + Number(raw.reverse_bytes ?? 0)) / 1024).toFixed(1)} KB
             </div>
           </div>
-          <div className="p-3 rounded-lg bg-[#0D1016] border border-[#202530]">
-            <div className="flex items-center gap-1.5 text-[#687384] mb-1">
-              <Zap className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-[10px] uppercase font-mono">Packet Rate</span>
+          <div className="p-3 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex items-center gap-1.5 text-zinc-600 mb-1">
+              <Zap className="w-3.5 h-3.5 stroke-[2.5] text-black" />
+              <span className="text-[10px] uppercase font-mono font-bold">Packet Rate</span>
             </div>
-            <div className="text-base font-bold font-mono text-[#F4F7FA]">
+            <div className="text-base font-black font-mono text-black">
               {Number(raw.packet_rate ?? 0).toFixed(1)} pkts/s
             </div>
           </div>
-          <div className="p-3 rounded-lg bg-[#0D1016] border border-[#202530]">
-            <div className="flex items-center gap-1.5 text-[#687384] mb-1">
-              <Activity className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-[10px] uppercase font-mono">Byte Rate</span>
+          <div className="p-3 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+            <div className="flex items-center gap-1.5 text-zinc-600 mb-1">
+              <Activity className="w-3.5 h-3.5 stroke-[2.5] text-black" />
+              <span className="text-[10px] uppercase font-mono font-bold">Byte Rate</span>
             </div>
-            <div className="text-base font-bold font-mono text-[#F4F7FA]">
+            <div className="text-base font-black font-mono text-black">
               {((Number(raw.byte_rate ?? 0)) / 1024).toFixed(1)} KB/s
             </div>
           </div>
@@ -190,14 +190,14 @@ export const TrafficFeatureMetrics: React.FC<TrafficFeatureMetricsProps> = ({
       )}
 
       {/* Shannon Entropy Indicator */}
-      <div className="p-3.5 rounded-lg bg-[#090B10] border border-[#252B35] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-3.5 bg-[#FEF08A] border-2 border-black shadow-[2px_2px_0px_0px_#000] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-[#687384] font-mono text-[11px] uppercase">
+          <span className="text-black font-mono text-xs uppercase font-black">
             Payload Shannon Entropy:
           </span>
-          <span className="font-mono font-bold text-blue-400">{entropy.val}</span>
+          <span className="font-mono font-black text-black bg-white px-1.5 py-0.5 border border-black">{entropy.val}</span>
         </div>
-        <span className="text-[#9AA4B2] text-[11px]">{entropy.desc}</span>
+        <span className="text-black text-xs font-medium">{entropy.desc}</span>
       </div>
     </div>
   );
