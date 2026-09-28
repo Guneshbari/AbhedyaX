@@ -58,9 +58,11 @@ async def test_create_and_poll_analysis():
         result_resp = await client.get(f"/api/v1/analyses/{analysis_id}")
         assert result_resp.status_code == 200
         result = result_resp.json()
-        assert result["analysis_id"] == analysis_id
-        assert result["security"]["score"] == 94
+        assert result["security"]["score"] == 100
         assert result["security"]["grade"] == "A"
+        assert result["security"]["risk_level"] == "Low"
+        assert result["risk_scoring"]["security_score"] == 100
+        assert result["risk_scoring"]["risk_level"] == "Low"
         assert result["traffic"]["predicted_class"] == "Video"
         assert len(result["findings"]) == 3
 
@@ -154,4 +156,29 @@ async def test_report_endpoints_404():
 
         r3 = await client.get("/api/v1/analyses/AX-NONEXISTENT/report/json")
         assert r3.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_list_analyses_endpoint():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/v1/analyses")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert isinstance(data, list)
+        assert len(data) >= 6
+
+        # Check AX-2026-00427 specifically
+        weak_item = next((item for item in data if item["analysis_id"] == "AX-2026-00427"), None)
+        assert weak_item is not None
+        assert weak_item["security"]["score"] == 25
+        assert weak_item["security"]["risk_level"] == "Critical"
+        assert weak_item["security"]["grade"] == "F"
+        assert weak_item["risk_scoring"]["security_score"] == 25
+        assert weak_item["risk_scoring"]["risk_level"] == "Critical"
+
+        # Check all items for internal consistency
+        for item in data:
+            assert item["security"]["score"] == item["risk_scoring"]["security_score"]
+            assert item["security"]["risk_level"] == item["risk_scoring"]["risk_level"]
 

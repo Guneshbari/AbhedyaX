@@ -23,14 +23,19 @@ export const SecurityScore: React.FC<SecurityScoreProps> = ({
     if (s >= 90) return "A";
     if (s >= 80) return "B";
     if (s >= 70) return "C";
-    if (s >= 50) return "D";
+    if (s >= 60) return "D";
     return "F";
   };
 
   const calculatedGrade = getGrade(score);
 
   const getColorConfig = (s: number) => {
-    if (s >= 85) {
+    // Canonical Methodology Risk Bands:
+    // Low: 90-100 (Emerald)
+    // Moderate: 75-89 (Sky)
+    // High: 50-74 (Amber)
+    // Critical: 0-49 (Red)
+    if (s >= 90) {
       return {
         text: "text-emerald-400",
         bg: "bg-emerald-500/10",
@@ -38,20 +43,20 @@ export const SecurityScore: React.FC<SecurityScoreProps> = ({
         bar: "bg-emerald-500",
       };
     }
-    if (s >= 70) {
+    if (s >= 75) {
+      return {
+        text: "text-sky-400",
+        bg: "bg-sky-500/10",
+        border: "border-sky-500/30",
+        bar: "bg-sky-500",
+      };
+    }
+    if (s >= 50) {
       return {
         text: "text-amber-400",
         bg: "bg-amber-500/10",
         border: "border-amber-500/30",
         bar: "bg-amber-500",
-      };
-    }
-    if (s >= 50) {
-      return {
-        text: "text-orange-400",
-        bg: "bg-orange-500/10",
-        border: "border-orange-500/30",
-        bar: "bg-orange-500",
       };
     }
     return {

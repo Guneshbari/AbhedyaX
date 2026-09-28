@@ -18,18 +18,27 @@ import { TrafficFeatureMetrics } from "@/components/traffic/TrafficFeatureMetric
 import { TrafficTimeline } from "@/components/traffic/TrafficTimeline";
 import { ExplanationPanel } from "@/components/traffic/ExplanationPanel";
 import { getAnalysisResult } from "@/lib/api/analyses";
+import { getPredefinedAnalysis } from "@/data/dashboardData";
 
 export default function TrafficIntelligencePage() {
   const params = useParams();
   const analysisId = String(params.id);
 
-  const { data: result, isLoading, error } = useQuery({
+  const predefined = React.useMemo(
+    () => getPredefinedAnalysis(analysisId),
+    [analysisId]
+  );
+
+  const { data: queryResult, isLoading, error } = useQuery({
     queryKey: ["analysis-result", analysisId],
     queryFn: () => getAnalysisResult(analysisId),
     enabled: Boolean(analysisId),
+    retry: 1,
   });
 
-  if (isLoading) {
+  const result = queryResult || predefined;
+
+  if (isLoading && !result) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
         <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
@@ -40,7 +49,7 @@ export default function TrafficIntelligencePage() {
     );
   }
 
-  if (error || !result) {
+  if (!result) {
     return (
       <div className="p-8 rounded-xl border border-red-500/30 bg-red-500/10 text-center space-y-4 max-w-xl mx-auto my-12">
         <AlertCircle className="w-8 h-8 text-red-400 mx-auto" />

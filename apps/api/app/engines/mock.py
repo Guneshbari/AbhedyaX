@@ -23,6 +23,46 @@ PROCESSING_STEPS = [
 ]
 
 
+PREDEFINED_ANALYSES_MAP: Dict[str, Dict[str, Any]] = {
+    "AX-2026-00428": {
+        "scenario_id": "secure-enterprise",
+        "file_name": "gw-delhi-hq-ipsec.pcap",
+        "source_type": "simulation",
+        "created_at": "2026-09-28T16:20:00Z",
+    },
+    "AX-2026-00427": {
+        "scenario_id": "weak-configuration",
+        "file_name": "legacy-branch-04.pcap",
+        "source_type": "simulation",
+        "created_at": "2026-09-28T15:45:00Z",
+    },
+    "AX-2026-00426": {
+        "scenario_id": "moderate-security",
+        "file_name": "dr-backup-link.pcap",
+        "source_type": "simulation",
+        "created_at": "2026-09-28T14:10:00Z",
+    },
+    "AX-2026-00425": {
+        "scenario_id": "secure-ipv6",
+        "file_name": "cloud-gw-ipv6.pcap",
+        "source_type": "simulation",
+        "created_at": "2026-09-28T12:35:00Z",
+    },
+    "AX-2026-00424": {
+        "scenario_id": "traffic-anomaly",
+        "file_name": "perimeter-tap-anomaly.pcap",
+        "source_type": "simulation",
+        "created_at": "2026-09-28T11:05:00Z",
+    },
+    "AX-2026-00423": {
+        "scenario_id": "secure-enterprise",
+        "file_name": "remote-worker-gateway.pcap",
+        "source_type": "pcap",
+        "created_at": "2026-09-28T09:40:00Z",
+    },
+}
+
+
 class MockAnalysisEngine(AnalysisEngine):
     """
     Deterministic Mock Analysis Engine for Phase 1 simulation and frontend UX validation.
@@ -38,6 +78,35 @@ class MockAnalysisEngine(AnalysisEngine):
         self._sessions: Dict[str, Dict[str, Any]] = {}
         self._results: Dict[str, AnalysisResult] = {}
         self._tasks: Dict[str, asyncio.Task] = {}
+        self._seed_predefined_analyses()
+
+    def _seed_predefined_analyses(self) -> None:
+        for aid, meta in PREDEFINED_ANALYSES_MAP.items():
+            if aid not in self._results:
+                try:
+                    result = build_analysis_result(
+                        analysis_id=aid,
+                        scenario_id=meta["scenario_id"],
+                        source_type=meta["source_type"],
+                        file_name=meta["file_name"],
+                        created_at=meta["created_at"],
+                        completed_at=meta["created_at"],
+                    )
+                    self._results[aid] = result
+                    self._sessions[aid] = {
+                        "analysis_id": aid,
+                        "status": "completed",
+                        "progress": 100,
+                        "current_step": "Analysis Complete",
+                        "message": "Predefined baseline analysis loaded.",
+                        "source_type": meta["source_type"],
+                        "scenario_id": meta["scenario_id"],
+                        "file_name": meta["file_name"],
+                        "created_at": meta["created_at"],
+                        "completed_at": meta["created_at"],
+                    }
+                except Exception as e:
+                    logger.error(f"Failed to seed predefined analysis {aid}: {e}")
 
     def _generate_id(self) -> str:
         aid = f"AX-2026-00{self._id_counter}"
@@ -128,6 +197,9 @@ class MockAnalysisEngine(AnalysisEngine):
                 self._sessions[analysis_id]["message"] = str(e)
 
     async def get_status(self, analysis_id: str) -> Optional[AnalysisStatusResponse]:
+        if analysis_id not in self._sessions and analysis_id in PREDEFINED_ANALYSES_MAP:
+            self._seed_predefined_analyses()
+
         session = self._sessions.get(analysis_id)
         if not session:
             return None
@@ -141,4 +213,10 @@ class MockAnalysisEngine(AnalysisEngine):
         )
 
     async def get_result(self, analysis_id: str) -> Optional[AnalysisResult]:
+        if analysis_id not in self._results and analysis_id in PREDEFINED_ANALYSES_MAP:
+            self._seed_predefined_analyses()
         return self._results.get(analysis_id)
+
+    async def list_results(self) -> list[AnalysisResult]:
+        self._seed_predefined_analyses()
+        return list(self._results.values())

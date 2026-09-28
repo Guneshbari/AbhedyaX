@@ -85,6 +85,12 @@ async def get_active_ml_model() -> Dict[str, Any]:
     }
 
 
+@router.get("", response_model=List[AnalysisResult])
+async def list_analyses() -> List[AnalysisResult]:
+    """Retrieve all completed analyses across real and simulated benchmark sessions."""
+    return await analysis_service.list_analyses()
+
+
 @router.post("", response_model=CreateAnalysisResponse, status_code=status.HTTP_201_CREATED)
 async def create_analysis(request: CreateAnalysisRequest) -> CreateAnalysisResponse:
     """Create a new IPsec session analysis (simulation or PCAP ingestion)."""

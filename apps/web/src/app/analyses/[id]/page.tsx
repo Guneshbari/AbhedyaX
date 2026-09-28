@@ -24,6 +24,7 @@ import { AssessmentProvenance } from "@/components/analysis/AssessmentProvenance
 import { ReportActions } from "@/components/analysis/ReportActions";
 import { EvidenceBadge } from "@/components/analysis/EvidenceBadge";
 import { getAnalysisResult } from "@/lib/api/analyses";
+import { getPredefinedAnalysis } from "@/data/dashboardData";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -31,17 +32,25 @@ export default function AnalysisResultPage() {
   const params = useParams();
   const analysisId = String(params.id);
 
+  const predefined = React.useMemo(
+    () => getPredefinedAnalysis(analysisId),
+    [analysisId]
+  );
+
   const {
-    data: result,
+    data: queryResult,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["analysis-result", analysisId],
     queryFn: () => getAnalysisResult(analysisId),
     enabled: Boolean(analysisId),
+    retry: 1,
   });
 
-  if (isLoading) {
+  const result = queryResult || predefined;
+
+  if (isLoading && !result) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
         <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
@@ -52,7 +61,7 @@ export default function AnalysisResultPage() {
     );
   }
 
-  if (error || !result) {
+  if (!result) {
     return (
       <div className="p-8 rounded-xl border border-red-500/30 bg-red-500/10 text-center space-y-4 max-w-xl mx-auto my-12">
         <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />

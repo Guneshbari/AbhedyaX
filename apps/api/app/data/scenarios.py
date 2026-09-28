@@ -15,6 +15,7 @@ from app.models.analysis import (
     GroundTruthValidationResult,
 )
 from services.security_engine.src.risk_engine import risk_scoring_engine
+from services.security_engine.src.methodology import score_to_grade
 
 SCENARIOS: Dict[str, Dict[str, Any]] = {
     "secure-enterprise": {
@@ -36,7 +37,7 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             "pfs": True,
         },
         "security": {
-            "score": 94,
+            "score": 100,
             "grade": "A",
             "risk_level": "Low",
             "replay_protection": True,
@@ -115,9 +116,9 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             "pfs": False,
         },
         "security": {
-            "score": 72,
-            "grade": "C",
-            "risk_level": "Medium",
+            "score": 80,
+            "grade": "B",
+            "risk_level": "Moderate",
             "replay_protection": True,
             "sa_lifetime_seconds": 86400,
         },
@@ -194,9 +195,9 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             "pfs": False,
         },
         "security": {
-            "score": 43,
+            "score": 25,
             "grade": "F",
-            "risk_level": "High",
+            "risk_level": "Critical",
             "replay_protection": False,
             "sa_lifetime_seconds": 86400,
         },
@@ -289,7 +290,7 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             "pfs": True,
         },
         "security": {
-            "score": 96,
+            "score": 100,
             "grade": "A",
             "risk_level": "Low",
             "replay_protection": True,
@@ -358,9 +359,9 @@ SCENARIOS: Dict[str, Dict[str, Any]] = {
             "pfs": True,
         },
         "security": {
-            "score": 81,
-            "grade": "B",
-            "risk_level": "Medium",
+            "score": 95,
+            "grade": "A",
+            "risk_level": "Low",
             "replay_protection": True,
             "sa_lifetime_seconds": 28800,
         },
@@ -446,6 +447,15 @@ def build_analysis_result(
 
     # Compute deterministic risk scoring
     risk_res = risk_scoring_engine.evaluate_findings(findings_list)
+    canonical_grade = score_to_grade(risk_res.security_score)
+
+    security_assessment = SecurityAssessment(
+        score=risk_res.security_score,
+        grade=canonical_grade,  # type: ignore[arg-type]
+        risk_level=risk_res.risk_level,
+        replay_protection=data["security"]["replay_protection"],
+        sa_lifetime_seconds=data["security"]["sa_lifetime_seconds"],
+    )
 
     # Build evidence provenance trail
     evidence_provenance = [
@@ -511,7 +521,7 @@ def build_analysis_result(
         ),
         vpn=VPNConfiguration(**data["vpn"]),
         cryptography=CryptographyConfiguration(**data["cryptography"]),
-        security=SecurityAssessment(**data["security"]),
+        security=security_assessment,
         traffic=TrafficIntelligence(
             predicted_class=data["traffic"]["predicted_class"],
             confidence=data["traffic"]["confidence"],

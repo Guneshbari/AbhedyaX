@@ -51,3 +51,26 @@ def score_to_risk_level(score: int) -> RiskLevelType:
         return "High"
     else:
         return "Critical"
+
+
+def score_to_grade(score: int) -> str:
+    """Map a numerical score (0-100) to its letter grade.
+
+    Grading Bands:
+      90 - 100 -> A
+      80 -  89 -> B
+      70 -  79 -> C
+      60 -  69 -> D
+       0 -  59 -> F
+    """
+    clamped_score = max(0, min(100, score))
+    if clamped_score >= 90:
+        return "A"
+    elif clamped_score >= 80:
+        return "B"
+    elif clamped_score >= 70:
+        return "C"
+    elif clamped_score >= 60:
+        return "D"
+    else:
+        return "F"

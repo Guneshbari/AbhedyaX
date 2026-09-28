@@ -19,6 +19,7 @@ from app.models.analysis import (
     GradeType,
 )
 from app.packet.extractor import ProtocolExtractionResult
+from services.security_engine.src.methodology import score_to_risk_level, score_to_grade
 
 # Configurable category weights summing to 100
 CATEGORY_WEIGHTS = {
@@ -206,27 +207,9 @@ def compute_security_score(
     total_score = sum(f.score for f in factors)
     total_score = max(0, min(100, total_score))
 
-    # Determine Letter Grade
-    if total_score >= 90:
-        grade: GradeType = "A"
-    elif total_score >= 80:
-        grade = "B"
-    elif total_score >= 65:
-        grade = "C"
-    elif total_score >= 50:
-        grade = "D"
-    else:
-        grade = "F"
-
-    # Determine Risk Level
-    if total_score >= 85:
-        risk_level: RiskLevelType = "Low"
-    elif total_score >= 70:
-        risk_level = "Medium"
-    elif total_score >= 50:
-        risk_level = "High"
-    else:
-        risk_level = "Critical"
+    # Determine Letter Grade & Risk Level using canonical methodology
+    grade: GradeType = score_to_grade(total_score)  # type: ignore[assignment]
+    risk_level: RiskLevelType = score_to_risk_level(total_score)
 
     assessment = SecurityAssessment(
         score=total_score,

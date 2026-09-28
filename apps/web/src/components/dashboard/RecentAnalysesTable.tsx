@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, FileCode2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowUpRight, FileCode2, FileText } from "lucide-react";
 import { AnalysisSummary } from "@/types/dashboard";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -12,11 +13,20 @@ import { formatDate } from "@/lib/utils";
 
 interface RecentAnalysesTableProps {
   analyses: AnalysisSummary[];
+  title?: string;
+  subtitle?: string;
+  hideHeader?: boolean;
+  showViewAll?: boolean;
 }
 
 export const RecentAnalysesTable: React.FC<RecentAnalysesTableProps> = ({
   analyses,
+  title = "Recent Analyses",
+  subtitle = "Inspected tunnels, cryptographic suites, and deterministic compliance findings",
+  hideHeader = false,
+  showViewAll = true,
 }) => {
+  const router = useRouter();
   const columns: Column<AnalysisSummary>[] = [
     {
       key: "id",
@@ -103,44 +113,60 @@ export const RecentAnalysesTable: React.FC<RecentAnalysesTableProps> = ({
     },
     {
       key: "actions",
-      header: "",
+      header: "Actions",
       className: "text-right",
       render: (row) => (
-        <Link
-          href={`/analyses/${row.id}`}
-          className="inline-flex items-center gap-1 text-xs text-[#9AA4B2] hover:text-[#F4F7FA] font-medium"
-        >
-          <span>View</span>
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="flex items-center justify-end gap-1.5">
+          <Link
+            href={`/reports?analysisId=${row.id}`}
+            onClick={(e) => e.stopPropagation()}
+            title="Open Security & Compliance Report"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#141820] border border-[#252B35] text-[11px] text-blue-400 hover:text-blue-300 hover:border-blue-500/40 hover:bg-[#1a202c] transition-colors font-medium"
+          >
+            <FileText className="w-3 h-3" />
+            <span>Report</span>
+          </Link>
+          <Link
+            href={`/analyses/${row.id}`}
+            onClick={(e) => e.stopPropagation()}
+            title="Inspect Telemetry & Findings"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-600/15 border border-blue-500/30 text-[11px] text-blue-300 hover:text-white hover:bg-blue-600/30 transition-colors font-medium"
+          >
+            <span>View</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </Link>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-sm font-semibold tracking-tight text-[#F4F7FA]">
-            Recent Analyses
-          </h2>
-          <p className="text-xs text-[#9AA4B2]">
-            Inspected tunnels, cryptographic suites, and deterministic compliance findings
-          </p>
+      {!hideHeader && (
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-semibold tracking-tight text-[#F4F7FA]">
+              {title}
+            </h2>
+            <p className="text-xs text-[#9AA4B2]">{subtitle}</p>
+          </div>
+          {showViewAll && (
+            <Link
+              href="/analyses"
+              className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1"
+            >
+              <span>View All Analyses</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          )}
         </div>
-        <Link
-          href="/analyses"
-          className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1"
-        >
-          <span>View All Analyses</span>
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </Link>
-      </div>
+      )}
 
       <DataTable
         columns={columns}
         data={analyses}
         keyExtractor={(item) => item.id}
+        onRowClick={(row) => router.push(`/analyses/${row.id}`)}
         emptyMessage="No recent analyses recorded."
       />
     </div>

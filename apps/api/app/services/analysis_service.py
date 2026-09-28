@@ -4,7 +4,7 @@ Provides a unified gateway for analysis creation, lifecycle tracking, and result
 Ensures zero silent fallback between simulation and real packet analysis.
 """
 
-from typing import Optional
+from typing import Optional, List, Dict
 from app.engines.base import AnalysisEngine
 from app.engines.mock import MockAnalysisEngine
 from app.engines.real import RealAnalysisEngine
@@ -90,6 +90,19 @@ class AnalysisService:
             return res
 
         return await self.mock_engine.get_result(analysis_id)
+
+    async def list_analyses(self) -> List[AnalysisResult]:
+        """Retrieve all completed analyses across real and mock engines, sorted descending by created_at."""
+        real_results = await self.real_engine.list_results()
+        mock_results = await self.mock_engine.list_results()
+
+        all_results: Dict[str, AnalysisResult] = {}
+        for r in mock_results:
+            all_results[r.analysis_id] = r
+        for r in real_results:
+            all_results[r.analysis_id] = r
+
+        return sorted(all_results.values(), key=lambda r: r.created_at, reverse=True)
 
 
 # Global singleton instance for app routes

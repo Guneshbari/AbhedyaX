@@ -5,6 +5,12 @@ from services.security_engine.src.models import (
     ScoringDeduction,
     RiskScoringResult,
 )
+from services.security_engine.src.methodology import (
+    METHODOLOGY_VERSION,
+    RISK_BANDS,
+    score_to_risk_level,
+    score_to_grade,
+)
 from services.security_engine.src.risk_engine import RiskScoringEngine, risk_scoring_engine
 
 __all__ = [
@@ -13,4 +19,9 @@ __all__ = [
     "RiskScoringResult",
     "RiskScoringEngine",
     "risk_scoring_engine",
+    "score_to_risk_level",
+    "score_to_grade",
+    "RISK_BANDS",
+    "METHODOLOGY_VERSION",
 ]
+

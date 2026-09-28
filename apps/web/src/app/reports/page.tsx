@@ -27,7 +27,7 @@ import {
   getTechnicalReportUrl,
 } from "@/lib/api/analyses";
 import { AnalysisResult, SecurityFinding } from "@/types/analysis";
-import { DASHBOARD_DATA } from "@/data/dashboardData";
+import { DASHBOARD_DATA, getPredefinedAnalysis } from "@/data/dashboardData";
 import { formatDate } from "@/lib/utils";
 
 function ReportsContent() {
@@ -54,6 +54,10 @@ function ReportsContent() {
   const activeReport: AnalysisResult = useMemo(() => {
     if (analysisResult) {
       return analysisResult;
+    }
+    const predefined = getPredefinedAnalysis(selectedAnalysisId);
+    if (predefined) {
+      return predefined;
     }
     // Fallback to recent analysis item
     const fallback =

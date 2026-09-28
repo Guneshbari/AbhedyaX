@@ -17,6 +17,7 @@ import { FindingDetailPanel } from "@/components/findings/FindingDetailPanel";
 import { FindingsToolbar } from "@/components/findings/FindingsToolbar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getAnalysisResult } from "@/lib/api/analyses";
+import { getPredefinedAnalysis } from "@/data/dashboardData";
 
 const SEVERITY_WEIGHT: Record<string, number> = {
   Critical: 5,
@@ -30,11 +31,19 @@ export default function FindingsInvestigationPage() {
   const params = useParams();
   const analysisId = String(params.id);
 
-  const { data: result, isLoading } = useQuery({
+  const predefined = useMemo(
+    () => getPredefinedAnalysis(analysisId),
+    [analysisId]
+  );
+
+  const { data: queryResult, isLoading } = useQuery({
     queryKey: ["analysis-result", analysisId],
     queryFn: () => getAnalysisResult(analysisId),
     enabled: Boolean(analysisId),
+    retry: 1,
   });
+
+  const result = queryResult || predefined;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState("All");
@@ -125,13 +134,32 @@ export default function FindingsInvestigationPage() {
     URL.revokeObjectURL(url);
   };
 
-  if (isLoading) {
+  if (isLoading && !result) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-3">
         <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
         <p className="text-xs text-[#9AA4B2] font-mono">
           Loading findings repository for {analysisId}...
         </p>
+      </div>
+    );
+  }
+
+  if (!result) {
+    return (
+      <div className="p-8 rounded-xl border border-red-500/30 bg-red-500/10 text-center space-y-4 max-w-xl mx-auto my-12">
+        <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
+        <h2 className="text-base font-semibold text-[#F4F7FA]">
+          Analysis Session Not Found
+        </h2>
+        <p className="text-xs text-[#9AA4B2] leading-relaxed">
+          The requested session &apos;{analysisId}&apos; was not found.
+        </p>
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <PrimaryButton variant="primary" size="sm" href="/analyses">
+            Back to Analyses
+          </PrimaryButton>
+        </div>
       </div>
     );
   }

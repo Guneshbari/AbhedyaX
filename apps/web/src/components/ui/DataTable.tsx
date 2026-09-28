@@ -14,6 +14,7 @@ interface DataTableProps<T> {
   keyExtractor: (item: T) => string;
   emptyMessage?: string;
   className?: string;
+  onRowClick?: (row: T) => void;
 }
 
 export function DataTable<T>({
@@ -22,6 +23,7 @@ export function DataTable<T>({
   keyExtractor,
   emptyMessage = "No records found.",
   className,
+  onRowClick,
 }: DataTableProps<T>) {
   return (
     <div
@@ -58,7 +60,20 @@ export function DataTable<T>({
               data.map((row, idx) => (
                 <tr
                   key={keyExtractor(row)}
-                  className="transition-colors duration-100 hover:bg-[#141820]/50"
+                  onClick={(e) => {
+                    if (!onRowClick) return;
+                    const target = e.target as HTMLElement | null;
+                    if (target?.closest("a, button, input, select, textarea, [role='button']")) {
+                      return;
+                    }
+                    onRowClick(row);
+                  }}
+                  className={cn(
+                    "transition-colors duration-100",
+                    onRowClick
+                      ? "cursor-pointer hover:bg-[#141820]/80 active:bg-[#141820]"
+                      : "hover:bg-[#141820]/50"
+                  )}
                 >
                   {columns.map((col) => (
                     <td key={col.key} className={cn("px-4 py-3.5", col.className)}>

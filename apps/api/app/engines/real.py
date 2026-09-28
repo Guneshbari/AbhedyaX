@@ -21,6 +21,7 @@ from app.models.analysis import (
     AnalysisStatusResponse,
     AnalysisResult,
     AnalysisSource,
+    SecurityAssessment,
     TrafficIntelligence,
     TrafficCandidateClass,
     TrafficFeatures,
@@ -28,6 +29,7 @@ from app.models.analysis import (
     GroundTruthValidationResult,
 )
 from services.security_engine.src.risk_engine import risk_scoring_engine
+from services.security_engine.src.methodology import score_to_grade
 from app.packet.tshark import (
     is_tshark_available,
     get_tshark_version,
@@ -252,6 +254,16 @@ class RealAnalysisEngine(AnalysisEngine):
             session["message"] = f"Successfully analyzed {len(normalized_packets)} packets using TShark."
             # Calculate deterministic risk score
             risk_res = risk_scoring_engine.evaluate_findings(findings)
+            canonical_grade = score_to_grade(risk_res.security_score)
+
+            # Reconcile SecurityAssessment to match canonical risk scoring exactly
+            assessment = SecurityAssessment(
+                score=risk_res.security_score,
+                grade=canonical_grade,  # type: ignore[arg-type]
+                risk_level=risk_res.risk_level,
+                replay_protection=assessment.replay_protection,
+                sa_lifetime_seconds=assessment.sa_lifetime_seconds,
+            )
 
             # Build evidence provenance trail from observed frames and ML inference
             evidence_provenance = [
@@ -393,3 +405,6 @@ class RealAnalysisEngine(AnalysisEngine):
 
     async def get_result(self, analysis_id: str) -> Optional[AnalysisResult]:
         return self._results.get(analysis_id)
+
+    async def list_results(self) -> list[AnalysisResult]:
+        return list(self._results.values())

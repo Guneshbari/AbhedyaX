@@ -36,3 +36,8 @@ class AnalysisEngine(ABC):
     async def get_result(self, analysis_id: str) -> Optional[AnalysisResult]:
         """Retrieve the completed AnalysisResult or None if still running or not found."""
         pass
+
+    @abstractmethod
+    async def list_results(self) -> list[AnalysisResult]:
+        """Retrieve all completed AnalysisResults."""
+        pass
