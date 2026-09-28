@@ -13,18 +13,77 @@
 - **Category:** Software
 - **Title:** AI-Powered IPsec VPN Protocol Analyzer and Security Assessment Framework
 
-AbhedyaX is an enterprise-grade cybersecurity analysis platform designed to inspect, analyze, and assess the security posture of IPsec (IKEv1/IKEv2, ESP/AH) Virtual Private Networks. It combines deterministic protocol inspection, cryptographic policy validation, risk scoring, and machine learning-driven encrypted traffic classification into a unified, actionable security intelligence dashboard.
+AbhedyaX is an enterprise-grade cybersecurity analysis platform designed to inspect, analyze, and assess the security posture of IPsec (IKEv1/IKEv2, ESP/AH) Virtual Private Networks. It combines deterministic protocol inspection, cryptographic policy validation, auditable risk scoring, and zero-payload machine learning-driven encrypted traffic classification into a unified, actionable security intelligence dashboard.
+
+---
+
+## ⚡ Quickstart: Running the Platform
+
+### Option 1: One-Command Startup (Recommended)
+
+From the repository root, execute the automated runner:
+
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+**What this does automatically:**
+- Sets up `.env`, `apps/api/.env`, and `apps/web/.env.local`
+- Provisions the Python 3.12 virtual environment (`apps/api/.venv`) and installs backend dependencies
+- Installs frontend packages (`apps/web/node_modules`)
+- Starts the FastAPI backend at **`http://localhost:8000`** (Swagger docs at `/docs`)
+- Starts the Next.js SOC web application at **`http://localhost:3000`**
+
+Press `Ctrl+C` at any time to cleanly stop all background services.
+
+---
+
+### Option 2: Step-by-Step Manual Startup
+
+#### 1. Backend Service (FastAPI)
+```bash
+cd apps/api
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+cp .env.example .env
+
+# Run FastAPI with hot-reload
+python main.py
+```
+- API Endpoint: `http://localhost:8000`
+- Swagger Documentation: `http://localhost:8000/docs`
+
+#### 2. Frontend Application (Next.js)
+```bash
+cd apps/web
+cp .env.example .env.local
+npm install
+npm run dev
+```
+- Web Application: `http://localhost:3000`
+
+---
+
+### Option 3: Docker Compose
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
 ---
 
 ## 🏛️ Core Architecture Principles
 
-1. **Modular Monorepo:** Distinct boundaries between frontend, backend, packet analyzer, machine learning, security engine, testbed, datasets, and shared schemas.
-2. **Canonical API Contract First:** The backend communicates strictly via a canonical `AnalysisResult` contract, allowing frontend UI development and backend engine evolution to proceed independently.
-3. **Engine Interchangeability:** An abstract `AnalysisEngine` interface powers both the initial `MockAnalysisEngine` (for deterministic simulation and UX validation) and the subsequent `RealAnalysisEngine` (integrating TShark, Scapy, Zeek, ML inference, and strongSwan).
-4. **Deterministic & Explainable Security Rules:** Cryptographic evaluation, policy compliance, and risk grading are 100% deterministic, evidence-based, and auditable.
-5. **Targeted Machine Learning:** ML models are applied strictly where statistical inference is required (encrypted traffic classification, anomaly detection), never for subjective cryptographic severity decisions.
-6. **Explicit Simulation Transparency:** Simulation Mode is clearly indicated in the UI; simulated data is never misrepresented as live packet captures.
+1. **Modular Monorepo:** Clean architectural separation between apps (`api`, `web`), core engines (`security-engine`, `report-generator`, `ml`, `testbed`), and datasets.
+2. **Canonical Contract First:** All components communicate via a canonical [`AnalysisResult`](file:///home/gnx/Projects/SIH/abhedyax/apps/api/app/models/analysis.py#L125-L160) contract. Both simulated benchmark scenarios and real packet captures produce the exact same schema.
+3. **Deterministic Security Risk Engine:** Cryptographic assessment, policy compliance, and risk grading are 100% deterministic, evidence-backed, and auditable. Baseline score starts at 100 with itemized deductions against NIST SP 800-77 and RFC 8221 standards.
+4. **Zero-Payload Traffic Intelligence:** Machine learning models classify encrypted tunnels using observable packet metadata (sizes, inter-arrival times, burst ratios, entropy), never decrypting payloads or inspecting cleartext.
+5. **Auditable Evidence Provenance:** Every assessment finding records clear provenance tags (`Observed`, `Inferred`, `Simulated`, `GroundTruth`, `MLPrediction`).
+6. **Executive & Technical Reporting:** Jinja2 templates render self-contained executive and technical reports with print-to-PDF CSS.
 
 ---
 
@@ -32,15 +91,14 @@ AbhedyaX is an enterprise-grade cybersecurity analysis platform designed to insp
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui, Lucide Icons, Recharts, Zustand, TanStack Query |
-| **Backend** | Python 3.12+, FastAPI, Uvicorn, Pydantic v2 |
-| **Packet Analysis** | TShark / Wireshark CLI, Scapy, Zeek (optional) |
-| **IPsec Testbed** | strongSwan, Linux Network Namespaces (`netns`), tcpdump |
-| **Machine Learning** | scikit-learn, XGBoost, NumPy, Polars, ONNX Runtime |
-| **Data & Cache** | PostgreSQL 16, Redis 7 |
-| **Reporting** | Jinja2 (Templating), Playwright / Chromium (PDF rendering) |
-| **Testing** | Pytest (Backend), Vitest (Frontend), Playwright (E2E) |
-| **Infrastructure** | Docker, Docker Compose, Ubuntu 24.04 LTS |
+| **Frontend** | Next.js (App Router, Turbopack), TypeScript, Tailwind CSS, shadcn/ui, Lucide Icons, Recharts, TanStack Query |
+| **Backend API** | Python 3.12+, FastAPI, Uvicorn, Pydantic v2 |
+| **Security Risk Engine** | Deterministic rule matching, NIST SP 800-77 & RFC 8221 policy checks, anti-double-counting logic |
+| **Wire Dissection** | TShark / Wireshark CLI (`-T json`), structured frame normalizer, IKEv1/IKEv2 & ESP/AH extractors |
+| **Machine Learning** | scikit-learn, XGBoost, NumPy, Polars (28 zero-payload statistical flow features, confidence abstention) |
+| **IPsec Testbed** | strongSwan 5.9, Linux Network Namespaces (`netns`), `tcpdump`, synthetic traffic generators |
+| **Reporting** | Jinja2 templating, inline print-to-PDF styling, canonical JSON serialization |
+| **Testing** | Pytest, pytest-asyncio, TypeScript (`tsc`), ESLint |
 
 ---
 
@@ -49,106 +107,80 @@ AbhedyaX is an enterprise-grade cybersecurity analysis platform designed to insp
 ```text
 abhedyax/
 ├── apps/
-│   ├── api/                     # FastAPI backend and REST API service
-│   └── web/                     # Next.js frontend dashboard and SOC UI
+│   ├── api/                     # FastAPI backend REST service
+│   │   ├── app/                 # Routes, engine orchestrator, packet normalizer
+│   │   ├── tests/               # API, consistency, and engine test suites
+│   │   ├── main.py              # Application entrypoint
+│   │   └── requirements.txt     # Backend dependencies
+│   └── web/                     # Next.js frontend SOC dashboard
+│       ├── src/app/             # Pages: Dashboard, Analyze, Analyses, Findings, Traffic, Reports, Testbed
+│       ├── src/components/      # Reusable UI components, tables, scorecards, charts
+│       ├── src/lib/api/         # Typed API clients for backend communication
+│       └── src/data/            # Synchronized canonical telemetry and fallback datasets
 ├── services/
-│   ├── analyzer/                # Packet capture analysis, protocol identification, feature extraction
-│   ├── ml/                      # ML models, feature engineering, training, inference
-│   ├── security-engine/         # Deterministic IPsec security rules, findings, risk scoring
-│   ├── testbed/                 # strongSwan IPsec testbed, network namespaces, traffic generation
-│   └── report-generator/        # Executive and technical security report rendering
-├── packages/
-│   ├── shared-types/            # Canonical TypeScript types, Pydantic schemas, enums
-│   └── config/                  # Shared configuration presets and environment conventions
+│   ├── security-engine/         # Centralized deterministic risk scoring engine & grading
+│   ├── report-generator/        # Executive & technical HTML/PDF report generators
+│   ├── ml/                      # ML pipeline: 28-feature extractor, model registry, inference
+│   └── testbed/                 # strongSwan IPsec testbed, Linux namespaces, capture orchestrator
 ├── datasets/
-│   ├── raw/                     # Original PCAP files and captures
-│   ├── processed/               # Cleaned, normalized flow datasets
-│   ├── synthetic/               # Synthetic and simulated training/testing data
-│   └── scenarios/               # Controlled IPsec test scenarios & ground-truth outputs
-├── models/
-│   ├── checkpoints/             # Trained model checkpoints (.onnx, .joblib)
-│   └── artifacts/               # Scalers, encoders, feature schemas, evaluation metrics
-├── docker/                      # Dockerfiles and container configurations
-├── docs/
-│   ├── architecture/            # Architectural design records and component diagrams
-│   ├── api/                     # REST API schemas and endpoint specifications
-│   ├── security/                # Cryptographic rules, scoring rubric, threat model
-│   ├── dataset/                 # Dataset curation, labeling, and feature documentation
-│   └── demo/                    # Hackathon demonstration runbooks and walkthroughs
-├── scripts/                     # Setup, data preparation, training, and demo scripts
-├── tests/
-│   ├── integration/             # Cross-service integration test suite
-│   └── e2e/                     # End-to-end browser and workflow tests
-├── configs/                     # System configuration files and scenario descriptors
-├── storage/
-│   ├── pcaps/                   # Local development PCAP storage
-│   └── reports/                 # Generated PDF and JSON reports
-├── docker-compose.yml           # Multi-container local orchestration
-├── ARCHITECTURE.md              # Detailed architecture specifications
-├── .env.example                 # Template environment variables
-└── LICENSE                      # License placeholder
+│   └── scenarios/
+│       └── pcaps/               # Benchmark test captures (IKEv2 AES-GCM, IKEv1 3DES, NAT-T, etc.)
+├── docs/                        # Comprehensive documentation and runbooks
+│   ├── RUNBOOK.md               # Detailed developer and execution runbook
+│   ├── api/api-reference.md     # Complete REST API specification
+│   ├── dataset/overview.md      # Benchmark PCAPs catalog and format specification
+│   ├── demo/quickstart.md       # 3-minute hackathon demo walkthrough
+│   ├── phase5/                  # Phase 5 deep dives (risk scoring, reports, validation, hardening)
+│   ├── ml/                      # Machine learning architecture, features, and evaluation
+│   └── testbed/                 # strongSwan namespace architecture and safety
+├── docker/
+│   ├── Dockerfile.api           # Container build for FastAPI backend (with TShark)
+│   └── Dockerfile.web           # Container build for Next.js frontend
+├── docker-compose.yml           # Multi-container orchestration (API, Web, Postgres, Redis)
+├── run.sh                       # One-command development runner
+└── README.md                    # This document
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🧪 Testing & Quality Assurance
 
-### Prerequisites
+All test suites can be executed with standard commands:
 
-- **Node.js:** v20.x or higher + pnpm / npm
-- **Python:** v3.12 or higher + virtualenv / poetry
-- **Docker & Docker Compose:** Latest stable version
-- **System Tools (Linux):** `tshark`, `tcpdump`, `iproute2` (for testbed development)
+```bash
+# 1. API and Cross-Surface Consistency Tests (31 tests)
+cd apps/api
+.venv/bin/pytest tests
 
-### Environment Setup
+# 2. Deterministic Risk Engine & Report Generator Tests (17 tests)
+cd ../..
+PYTHONPATH=.:apps/api apps/api/.venv/bin/pytest \
+  services/security-engine/tests \
+  services/report-generator/tests
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+# 3. Machine Learning & Testbed Pipeline Tests (28 tests)
+PYTHONPATH=.:apps/api apps/api/.venv/bin/pytest \
+  services/ml/tests \
+  services/testbed/tests
 
-2. Start the supporting services using Docker Compose:
-   ```bash
-   docker compose up -d postgres redis
-   ```
-
-3. Backend setup (`apps/api`):
-   ```bash
-   cd apps/api
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   uvicorn main:app --reload --port 8000
-   ```
-
-4. Frontend setup (`apps/web`):
-   ```bash
-   cd apps/web
-   npm install
-   npm run dev
-   ```
+# 4. Frontend TypeScript Typing, Linting & Build Verification
+cd apps/web
+npx tsc --noEmit
+npm run lint
+npm run build
+```
 
 ---
 
----
+## 📖 Documentation Index
 
-## 🚦 Roadmap & Implementation Status
-
-- [x] **Phase 1: Product UI & UX** - Complete Next.js dashboard with full interactive screens, Dark SOC design system, and canonical API contract.
-- [x] **Phase 2: Core Packet Engine** - Integration of TShark CLI for real PCAP dissection, IKE/ESP parameter extraction, and normalized wire parsing.
-- [x] **Phase 3: strongSwan Testbed & Dataset Generator** - Controlled Linux network namespaces, automated traffic generators (ping/curl/iperf3), and ground-truth metadata generation.
-- [x] **Phase 4: ML Encrypted Traffic Classifier** - Zero-payload 28-feature extraction pipeline, trained Random Forest model (F1: 77.8%), confidence abstention, and feature explainability.
-- [x] **Phase 5: End-to-End Validation, Risk Engine & Reporting Hardening** - Centralized deterministic risk scoring engine (`services/security-engine`), evidence provenance framework (`Observed`, `Inferred`, `Simulated`, `GroundTruth`, `MLPrediction`), testbed ground-truth validation, and executive/technical report generator (`services/report-generator`) with print-to-PDF CSS.
-
----
-
-## 📚 Phase 5 Documentation & Runbooks
-Detailed implementation guides and verification records:
-- [Deterministic Risk Scoring Engine](docs/phase5/risk-scoring.md)
-- [Evidence Provenance & Zero-Payload Guarantee](docs/phase5/evidence-provenance.md)
-- [Executive & Technical Security Reporting](docs/phase5/reporting.md)
-- [End-to-End Validation & Ground-Truth Verification](docs/phase5/validation.md)
-- [Production & Hackathon Deployment Guide](docs/phase5/deployment.md)
-- [Security Architecture & Hardening Safeguards](docs/phase5/security-hardening.md)
-- [Hackathon Live Demonstration Runbook](docs/phase5/demo-runbook.md)
-
+- **[Complete Developer Runbook](docs/RUNBOOK.md)** — Step-by-step setup, configuration reference, and troubleshooting.
+- **[REST API Reference](docs/api/api-reference.md)** — Comprehensive endpoint schemas, requests, and responses.
+- **[Benchmark Datasets & PCAP Catalog](docs/dataset/overview.md)** — Sample capture files and wire validation profiles.
+- **[Quickstart & Live Demo Guide](docs/demo/quickstart.md)** — Demonstration script for presentations and hackathons.
+- **[Deterministic Risk Scoring Methodology](docs/phase5/risk-scoring.md)** — Mathematical deduction formula and risk bands.
+- **[Evidence Provenance Framework](docs/phase5/evidence-provenance.md)** — Wire verification and zero-payload guarantee.
+- **[Executive & Technical Reporting](docs/phase5/reporting.md)** — Print-to-PDF reports architecture.
+- **[End-to-End Validation](docs/phase5/validation.md)** — Testbed ground-truth verification.
+- **[ML Architecture & 28-Feature Pipeline](docs/ml/architecture.md)** — Encrypted traffic classification without payload decryption.
+- **[strongSwan Testbed Architecture](docs/testbed/architecture.md)** — Linux network namespaces and VPN provisioning.

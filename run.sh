@@ -18,6 +18,11 @@ if [ ! -f "$API_DIR/.env" ]; then
     cp "$API_DIR/.env.example" "$API_DIR/.env"
 fi
 
+if [ ! -f "$WEB_DIR/.env.local" ] && [ -f "$WEB_DIR/.env.example" ]; then
+    echo "Creating apps/web/.env.local from apps/web/.env.example..."
+    cp "$WEB_DIR/.env.example" "$WEB_DIR/.env.local"
+fi
+
 # 2. Check virtual environment
 VENV_PYTHON="$API_DIR/.venv/bin/python"
 if [ ! -f "$VENV_PYTHON" ]; then
