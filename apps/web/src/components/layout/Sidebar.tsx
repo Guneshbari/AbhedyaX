@@ -154,14 +154,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* Sidebar Footer: Simulation & Platform Telemetry */}
         <div className="p-3 border-t-2 sm:border-t-[3px] border-black space-y-2 bg-[#FAF8F5]">
           <div className="p-2.5 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000]">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-black font-mono">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black font-mono whitespace-nowrap">
                 System Mode
               </span>
-              <SimulationModeBadge showIcon={false} />
+              <SimulationModeBadge showIcon={false} isInteractive={false} className="text-[10px] px-2 py-0.5" />
             </div>
             <p className="text-[11px] text-zinc-700 leading-snug font-medium">
-              Deterministic scenario simulations active for Phase 1 validation.
+              Deterministic canonical scenario telemetry active for RFC validation.
             </p>
           </div>
 
