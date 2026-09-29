@@ -7,27 +7,29 @@ import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SecurityScore } from "@/components/ui/SecurityScore";
 import { CANONICAL_RECENT_ANALYSES } from "@/data/dashboardData";
 import { getSecurityTwin } from "@/lib/api/securityTwin";
+import { getDemoSecurityTwin } from "@/demo";
 import { SecurityTwin } from "@/types/securityTwin";
 import { RiskLevel } from "@/types/dashboard";
 import { ShieldCheck, ArrowRight, CheckCircle2, XCircle, Layers, Sliders, ExternalLink } from "lucide-react";
 
 export default function SecurityTwinIndexPage() {
   const [selectedAnalysisId, setSelectedAnalysisId] = useState<string>("AX-2026-00428");
-  const [twin, setTwin] = useState<SecurityTwin | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [twin, setTwin] = useState<SecurityTwin | null>(() => getDemoSecurityTwin("AX-2026-00428"));
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
     getSecurityTwin(selectedAnalysisId)
       .then((data) => {
-        if (isMounted) {
+        if (isMounted && data) {
           setTwin(data);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        console.error("Failed to load Security Twin:", err);
-        if (isMounted) setLoading(false);
+        console.warn("API twin fetch failed, keeping demo fixture:", err);
+        if (isMounted) {
+          setTwin(getDemoSecurityTwin(selectedAnalysisId));
+        }
       });
 
     return () => {
@@ -36,8 +38,8 @@ export default function SecurityTwinIndexPage() {
   }, [selectedAnalysisId]);
 
   const handleSelectAnalysis = (id: string) => {
-    setLoading(true);
     setSelectedAnalysisId(id);
+    setTwin(getDemoSecurityTwin(id));
   };
 
   return (

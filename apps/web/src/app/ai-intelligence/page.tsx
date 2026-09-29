@@ -12,11 +12,13 @@ import {
 import { PageHeader } from "@/components/ui/PageHeader";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { getActiveMLModel } from "@/lib/api/analyses";
+import { DEMO_ML_MODEL_STATUS } from "@/demo";
 
 export default function AiIntelligencePage() {
-  const { data: mlStatus } = useQuery({
+  const { data: mlStatus = DEMO_ML_MODEL_STATUS } = useQuery({
     queryKey: ["active-ml-model"],
     queryFn: getActiveMLModel,
+    initialData: DEMO_ML_MODEL_STATUS,
     refetchInterval: 30000,
   });
 

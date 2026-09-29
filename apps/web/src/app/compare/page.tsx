@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { compareAnalyses, getDemoComparisons } from "@/lib/api/securityTwin";
+import { getDemoDriftComparison, CANONICAL_DEMO_COMPARISONS } from "@/demo";
 import { DriftComparisonResult, DemoComparisonPreset } from "@/types/securityTwin";
 import { RiskLevel } from "@/types/dashboard";
 import { CANONICAL_RECENT_ANALYSES } from "@/data/dashboardData";
@@ -24,26 +25,33 @@ function ComparePageContent() {
 
   const [baselineId, setBaselineId] = useState<string>(initialBaseline);
   const [currentId, setCurrentId] = useState<string>(initialCurrent);
-  const [comparison, setComparison] = useState<DriftComparisonResult | null>(null);
-  const [presets, setPresets] = useState<DemoComparisonPreset[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [comparison, setComparison] = useState<DriftComparisonResult | null>(
+    () => getDemoDriftComparison(initialBaseline, initialCurrent)
+  );
+  const [presets, setPresets] = useState<DemoComparisonPreset[]>(CANONICAL_DEMO_COMPARISONS);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    getDemoComparisons().then((p) => setPresets(p));
+    getDemoComparisons()
+      .then((p) => {
+        if (p && p.length > 0) setPresets(p);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     let isMounted = true;
     compareAnalyses(baselineId, currentId)
       .then((res) => {
-        if (isMounted) {
+        if (isMounted && res) {
           setComparison(res);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        console.error("Comparison failed:", err);
-        if (isMounted) setLoading(false);
+        console.warn("API comparison failed, keeping demo drift fixture:", err);
+        if (isMounted) {
+          setComparison(getDemoDriftComparison(baselineId, currentId));
+        }
       });
 
     return () => {
@@ -52,19 +60,19 @@ function ComparePageContent() {
   }, [baselineId, currentId]);
 
   const selectPreset = (preset: DemoComparisonPreset) => {
-    setLoading(true);
     setBaselineId(preset.baseline_id);
     setCurrentId(preset.current_id);
+    setComparison(getDemoDriftComparison(preset.baseline_id, preset.current_id));
   };
 
   const handleBaselineChange = (id: string) => {
-    setLoading(true);
     setBaselineId(id);
+    setComparison(getDemoDriftComparison(id, currentId));
   };
 
   const handleCurrentChange = (id: string) => {
-    setLoading(true);
     setCurrentId(id);
+    setComparison(getDemoDriftComparison(baselineId, id));
   };
 
   return (

@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid shadow layer -->
+  <path d="M 24 5 L 42 11 V 26 C 42 36 24 44 24 44 C 24 44 6 36 6 26 V 11 Z" fill="#000000" transform="translate(2, 2)"/>
+  <!-- Fortress Shield -->
+  <path d="M 24 4 L 42 10 V 25 C 42 35 24 43 24 43 C 24 43 6 35 6 25 V 10 Z" fill="#FFE600" stroke="#000000" stroke-width="3" stroke-linejoin="miter"/>
+  <!-- Bastion Facet -->
+  <path d="M 24 4 L 42 10 L 24 16 L 6 10 Z" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+  <!-- Cryptographic X -->
+  <polygon points="14,16 20,16 34,34 28,34" fill="#000000"/>
+  <polygon points="34,16 28,16 14,34 20,34" fill="#000000"/>
+  <!-- Protocol Crosshair -->
+  <line x1="24" y1="12" x2="24" y2="17" stroke="#000000" stroke-width="2.5"/>
+  <line x1="24" y1="31" x2="24" y2="36" stroke="#000000" stroke-width="2.5"/>
+  <line x1="12" y1="24" x2="17" y2="24" stroke="#000000" stroke-width="2.5"/>
+  <line x1="31" y1="24" x2="36" y2="24" stroke="#000000" stroke-width="2.5"/>
+  <!-- Emerald Diamond Node -->
+  <polygon points="24,18 30,24 24,30 18,24" fill="#4ADE80" stroke="#000000" stroke-width="2.5"/>
+  <circle cx="24" cy="24" r="2.5" fill="#000000"/>
+</svg>

@@ -26,6 +26,7 @@ import {
   getTestbedRun,
   cancelTestbedRun,
 } from "@/lib/api/testbed";
+import { DEMO_TESTBED_STATUS, DEMO_TESTBED_SCENARIOS } from "@/demo";
 import { TrafficClass } from "@/types/testbed";
 import { DASHBOARD_DATA } from "@/data/dashboardData";
 import { formatDate } from "@/lib/utils";
@@ -47,17 +48,19 @@ export default function TestbedPage() {
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // 1. Fetch testbed environment capabilities
-  const { data: envStatus } = useQuery({
+  // 1. Fetch testbed environment capabilities with instant demo initial data
+  const { data: envStatus = DEMO_TESTBED_STATUS } = useQuery({
     queryKey: ["testbed-status"],
     queryFn: getTestbedStatus,
+    initialData: DEMO_TESTBED_STATUS,
     refetchInterval: 15000,
   });
 
-  // 2. Fetch scenario definitions
-  const { data: scenarios } = useQuery({
+  // 2. Fetch scenario definitions with instant demo initial data
+  const { data: scenarios = DEMO_TESTBED_SCENARIOS } = useQuery({
     queryKey: ["testbed-scenarios"],
     queryFn: getTestbedScenarios,
+    initialData: DEMO_TESTBED_SCENARIOS,
   });
 
   // 3. Poll active run if running

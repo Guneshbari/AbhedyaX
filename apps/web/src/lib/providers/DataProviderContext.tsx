@@ -27,24 +27,24 @@ export function getConfiguredDataMode(): DataMode {
 }
 
 function resolveInitialMode(): DataMode {
+  const envMode = process.env.NEXT_PUBLIC_DATA_MODE;
+  if (envMode === "api") {
+    return "api";
+  }
   if (typeof window !== "undefined") {
     try {
       const saved = localStorage.getItem("abhedyax_data_mode");
-      if (saved === "demo" || saved === "api" || saved === "auto") {
-        return saved as DataMode;
+      if (saved === "demo") {
+        return "demo";
       }
     } catch {
       // localStorage may be unavailable in some security contexts
     }
   }
-  const envMode = process.env.NEXT_PUBLIC_DATA_MODE;
-  if (envMode === "api" || envMode === "auto" || envMode === "demo") {
-    return envMode as DataMode;
-  }
   return "demo";
 }
 
-// Initialize module-level values
+// Initialize module-level values - strictly default to DemoDataProvider
 const initialMode = resolveInitialMode();
 currentConfiguredMode = initialMode;
 if (initialMode === "api") {
@@ -63,7 +63,11 @@ export function DataProviderProvider({ children }: { children: React.ReactNode }
     initialMode === "api" ? "api" : "demo"
   );
   const [isApiAvailable, setIsApiAvailable] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>("Initializing data mode...");
+  const [statusMessage, setStatusMessage] = useState<string>(
+    initialMode === "api"
+      ? "API Mode selected"
+      : "Demo Mode active (deterministic canonical datasets, zero network latency)"
+  );
 
   const updateActiveProvider = useCallback((newEffectiveMode: EffectiveMode) => {
     currentEffectiveMode = newEffectiveMode;
@@ -78,7 +82,7 @@ export function DataProviderProvider({ children }: { children: React.ReactNode }
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
       const res = await fetch(`${baseUrl}/health`, {
         method: "GET",
         signal: controller.signal,
@@ -142,9 +146,12 @@ export function DataProviderProvider({ children }: { children: React.ReactNode }
     [checkApiHealth, updateActiveProvider]
   );
 
+  // Initialize cleanly without triggering network delays on mount
   useEffect(() => {
-    setMode(initialMode);
-  }, [initialMode, setMode]);
+    if (initialMode === "demo") {
+      updateActiveProvider("demo");
+    }
+  }, [initialMode, updateActiveProvider]);
 
   const recheckConnectivity = useCallback(async () => {
     setStatusMessage("Re-checking backend connectivity...");

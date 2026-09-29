@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { NAVIGATION_ITEMS } from "@/data/navigation";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
+import { AbhedyaLogo } from "@/components/ui/AbhedyaLogo";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -68,21 +69,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             className="flex items-center gap-2.5 group focus:outline-none"
             onClick={onClose}
           >
-            <div className="flex items-center justify-center w-9 h-9 bg-white border-2 border-black text-black shadow-[2px_2px_0px_0px_#000] group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
-              <Shield className="w-5 h-5 text-black fill-[#FFE600]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black tracking-tight text-lg text-black">
-                  Abhedya<span className="bg-black text-[#FFE600] px-1 ml-0.5">X</span>
-                </span>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-white text-black border border-black shadow-[1px_1px_0px_0px_#000]">
-                  v0.1
-                </span>
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center p-1 bg-white border-2 border-black shadow-[2px_2px_0px_0px_#000] group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-[3px_3px_0px_0px_#000] transition-all">
+                <AbhedyaLogo size={28} />
               </div>
-              <p className="text-[9px] font-black text-black tracking-wider uppercase">
-                IPsec Intelligence
-              </p>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-black tracking-tight text-lg text-black">
+                    Abhedya<span className="bg-black text-[#FFE600] px-1 ml-0.5">X</span>
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 bg-white text-black border border-black shadow-[1px_1px_0px_0px_#000]">
+                    v0.1
+                  </span>
+                </div>
+                <p className="text-[9px] font-black text-black tracking-wider uppercase">
+                  IPsec Intelligence
+                </p>
+              </div>
             </div>
           </Link>
 

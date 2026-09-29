@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+import { AbhedyaLogo } from "@/components/ui/AbhedyaLogo";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -41,6 +42,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         {/* Global Footer info bar - Neubrutalism */}
         <footer className="px-6 py-4 border-t-2 border-black bg-white text-xs text-black font-mono flex flex-col sm:flex-row items-center justify-between gap-2 shadow-[0px_-2px_0px_0px_#000] print:hidden">
           <div className="flex items-center gap-2 font-medium">
+            <AbhedyaLogo size={20} />
             <span className="font-black bg-[#FFE600] px-1.5 py-0.5 border border-black shadow-[1px_1px_0px_0px_#000]">
               AbhedyaX
             </span>

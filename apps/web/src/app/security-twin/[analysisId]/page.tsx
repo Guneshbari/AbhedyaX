@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SecurityScore } from "@/components/ui/SecurityScore";
 import { getSecurityTwin } from "@/lib/api/securityTwin";
+import { getDemoSecurityTwin } from "@/demo";
 import { SecurityTwin } from "@/types/securityTwin";
 import { RiskLevel } from "@/types/dashboard";
 import { ArrowLeft, GitCompare, Sliders, Layers, FileText } from "lucide-react";
@@ -15,21 +16,22 @@ export default function SecurityTwinDetailPage() {
   const params = useParams();
   const analysisId = (params?.analysisId as string) || "AX-2026-00428";
 
-  const [twin, setTwin] = useState<SecurityTwin | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [twin, setTwin] = useState<SecurityTwin | null>(() => getDemoSecurityTwin(analysisId));
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
     getSecurityTwin(analysisId)
       .then((data) => {
-        if (isMounted) {
+        if (isMounted && data) {
           setTwin(data);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        console.error("Error loading twin:", err);
-        if (isMounted) setLoading(false);
+        console.warn("Error loading twin from API, using demo fixture:", err);
+        if (isMounted) {
+          setTwin(getDemoSecurityTwin(analysisId));
+        }
       });
 
     return () => {

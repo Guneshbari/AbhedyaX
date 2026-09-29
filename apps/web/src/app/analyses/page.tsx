@@ -8,6 +8,7 @@ import { RecentAnalysesTable } from "@/components/dashboard/RecentAnalysesTable"
 import { DASHBOARD_DATA } from "@/data/dashboardData";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { getAnalyses } from "@/lib/api/analyses";
+import { CANONICAL_ANALYSES_LIST } from "@/demo";
 import { AnalysisSummary } from "@/types/dashboard";
 
 const FILTERS = ["All", "IKEv2", "IKEv1", "High Risk"] as const;
@@ -17,9 +18,10 @@ export default function AnalysesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
 
-  const { data: apiAnalyses } = useQuery({
+  const { data: apiAnalyses = CANONICAL_ANALYSES_LIST } = useQuery({
     queryKey: ["analyses-list"],
     queryFn: () => getAnalyses(),
+    initialData: CANONICAL_ANALYSES_LIST,
     retry: 1,
   });
 

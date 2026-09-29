@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { getPostureTimeline } from "@/lib/api/securityTwin";
+import { getDemoPostureTimeline } from "@/demo";
 import { PostureTimelineResult } from "@/types/securityTwin";
 import { RiskLevel } from "@/types/dashboard";
 import {
@@ -14,21 +15,24 @@ import {
 } from "lucide-react";
 
 export default function PosturePage() {
-  const [posture, setPosture] = useState<PostureTimelineResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [posture, setPosture] = useState<PostureTimelineResult | null>(
+    () => getDemoPostureTimeline()
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
     getPostureTimeline()
       .then((data) => {
-        if (isMounted) {
+        if (isMounted && data) {
           setPosture(data);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        console.error("Failed to load posture timeline:", err);
-        if (isMounted) setLoading(false);
+        console.warn("API posture timeline failed, keeping demo fixture:", err);
+        if (isMounted) {
+          setPosture(getDemoPostureTimeline());
+        }
       });
 
     return () => {

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, Bell } from "lucide-react";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { NAVIGATION_ITEMS } from "@/data/navigation";
+import { AbhedyaLogo } from "@/components/ui/AbhedyaLogo";
 
 import { useDataProvider } from "@/lib/providers";
 
@@ -25,8 +26,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white border-b-2 sm:border-b-[3px] border-black shadow-[0px_3px_0px_0px_#000] print:hidden">
-      {/* Left: Mobile Toggle & Page Title */}
-      <div className="flex items-center gap-3 min-w-0">
+      {/* Left: Mobile Toggle, Logo & Page Title */}
+      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
         <button
           onClick={onMenuToggle}
           className="lg:hidden p-2 border-2 border-black bg-white text-black hover:bg-[#FFE600] shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer shrink-0"
@@ -34,6 +35,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         >
           <Menu className="w-5 h-5" />
         </button>
+
+        <div className="lg:hidden shrink-0">
+          <AbhedyaLogo size={24} />
+        </div>
 
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm sm:text-base font-black text-black truncate tracking-tight">
@@ -55,24 +60,24 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         <div
           className={`hidden md:flex items-center gap-1.5 px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs font-bold font-mono ${
             effectiveMode === "demo"
-              ? "bg-[#FAF8F5] text-black"
+              ? "bg-[#FFE600] text-black"
               : isApiAvailable
               ? "bg-[#4ADE80] text-black"
               : "bg-[#FF4B4B] text-white"
           }`}
         >
           <span
-            className={`w-2 h-2 rounded-full ${
+            className={`w-2 h-2 rounded-full border border-black ${
               effectiveMode === "demo"
-                ? "bg-black"
+                ? "bg-[#4ADE80] animate-pulse"
                 : isApiAvailable
                 ? "bg-black animate-pulse"
                 : "bg-white"
             }`}
           />
-          <span>
+          <span className="font-black">
             {effectiveMode === "demo"
-              ? "Engine: Demo"
+              ? "Demo Mode (Ready)"
               : isApiAvailable
               ? "Engine: Live"
               : "Engine: Offline"}

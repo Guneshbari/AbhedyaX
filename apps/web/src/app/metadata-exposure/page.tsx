@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { getAnalysisMetadataExposure } from "@/lib/api/securityTwin";
+import { getDemoMetadataExposure } from "@/demo";
 import { MetadataExposureResult } from "@/types/securityTwin";
 import { CANONICAL_RECENT_ANALYSES } from "@/data/dashboardData";
 import {
@@ -20,21 +21,24 @@ import {
 
 export default function MetadataExposurePage() {
   const [selectedAnalysisId, setSelectedAnalysisId] = useState<string>("AX-2026-00424"); // Default to anomaly scenario to showcase contrast
-  const [metadata, setMetadata] = useState<MetadataExposureResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [metadata, setMetadata] = useState<MetadataExposureResult | null>(
+    () => getDemoMetadataExposure("AX-2026-00424")
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     let isMounted = true;
     getAnalysisMetadataExposure(selectedAnalysisId)
       .then((data) => {
-        if (isMounted) {
+        if (isMounted && data) {
           setMetadata(data);
-          setLoading(false);
         }
       })
       .catch((err) => {
-        console.error("Failed to load metadata exposure:", err);
-        if (isMounted) setLoading(false);
+        console.warn("API metadata exposure failed, keeping demo fixture:", err);
+        if (isMounted) {
+          setMetadata(getDemoMetadataExposure(selectedAnalysisId));
+        }
       });
 
     return () => {
@@ -43,8 +47,8 @@ export default function MetadataExposurePage() {
   }, [selectedAnalysisId]);
 
   const handleSelectAnalysis = (id: string) => {
-    setLoading(true);
     setSelectedAnalysisId(id);
+    setMetadata(getDemoMetadataExposure(id));
   };
 
   const getDimensionIcon = (name: string) => {
