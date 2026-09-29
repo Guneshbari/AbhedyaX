@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Zap, CheckCircle2 } from "lucide-react";
+import { Zap, CheckCircle2, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDataProvider } from "@/lib/providers";
-import { useJudgeDemoStore } from "@/store/judgeDemo";
-import { usePathname } from "next/navigation";
+import { useDemoJourney, DEMO_PRIMARY_ID } from "@/store/demoJourney";
+import { useRouter } from "next/navigation";
 
 interface SimulationModeBadgeProps {
   className?: string;
@@ -19,10 +19,19 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
   isInteractive = true,
 }) => {
   const { effectiveMode, mode } = useDataProvider();
-  const { open, isOpen } = useJudgeDemoStore();
-  const pathname = usePathname();
+  const { isActive, startDemo, exitDemo } = useDemoJourney();
+  const router = useRouter();
 
   const isDemo = effectiveMode === "demo";
+
+  function handleClick() {
+    if (isActive) {
+      exitDemo();
+    } else {
+      startDemo(DEMO_PRIMARY_ID);
+      router.push("/");
+    }
+  }
 
   const badgeContent = (
     <>
@@ -30,31 +39,31 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
         <span
           className={cn(
             "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-            isOpen ? "bg-[#22C55E]" : "bg-black"
+            isActive ? "bg-[#22C55E]" : "bg-black"
           )}
         />
         <span
           className={cn(
             "relative inline-flex rounded-full h-2 w-2",
-            isOpen ? "bg-[#22C55E]" : "bg-black"
+            isActive ? "bg-[#22C55E]" : "bg-black"
           )}
         />
       </span>
       {showIcon &&
-        (isOpen ? (
-          <Zap className="w-3.5 h-3.5 text-black stroke-[2.5] shrink-0" />
+        (isActive ? (
+          <PlayCircle className="w-3.5 h-3.5 text-black stroke-[2.5] shrink-0" />
         ) : isDemo ? (
           <Zap className="w-3.5 h-3.5 text-black stroke-[2.5] shrink-0" />
         ) : (
           <CheckCircle2 className="w-3.5 h-3.5 text-black stroke-[2.5] shrink-0" />
         ))}
       <span className="truncate">
-        {isOpen
-          ? "JUDGE DEMO ACTIVE"
+        {isActive
+          ? "EXIT DEMO"
           : isDemo
           ? mode === "auto"
-            ? "Demo (Auto)"
-            : "Demo Mode"
+            ? "Start Demo"
+            : "Start Demo"
           : "API Connected"}
       </span>
     </>
@@ -63,8 +72,8 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
   const baseClasses = cn(
     "inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono font-black tracking-wider uppercase",
     "border-2 border-black shadow-[2px_2px_0px_0px_#000] select-none shrink-0",
-    isOpen
-      ? "bg-[#22C55E] text-black"
+    isActive
+      ? "bg-[#4ADE80] text-black"
       : isDemo
       ? "bg-[#FFE600] text-black"
       : "bg-[#4ADE80] text-black",
@@ -87,9 +96,13 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
 
   return (
     <button
-      onClick={() => open(pathname ?? "/")}
+      onClick={handleClick}
       className={baseClasses}
-      title="Click to launch Judge Demo — guided 8-stage VPN security analysis"
+      title={
+        isActive
+          ? "Exit guided demo journey"
+          : "Start guided judge demo — follow the AbhedyaX analysis pipeline"
+      }
     >
       {badgeContent}
     </button>

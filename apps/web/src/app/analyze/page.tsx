@@ -7,6 +7,8 @@ import { Play, AlertCircle, ArrowLeft } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
+import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
+
 import { SourceSelector } from "@/components/analyze/SourceSelector";
 import { ScenarioPicker } from "@/components/analyze/ScenarioPicker";
 import {
@@ -197,6 +199,15 @@ export default function AnalyzePage() {
           </PrimaryButton>
         </div>
       </div>
+
+      {/* Demo Journey — Step 2: after selecting "secure-enterprise" and clicking Start Analysis,
+          the existing analysis flow navigates automatically to /analyses/[id]/processing.
+          This CTA lets judges directly jump to the canonical result if needed. */}
+      <DemoNextStepCTA
+        nextRoute="/analyses/AX-2026-00428/processing"
+        nextLabel="View Analysis Processing"
+        context="Step 3 of 8 — Watch AbhedyaX process the secure-enterprise VPN capture."
+      />
     </div>
   );
 }

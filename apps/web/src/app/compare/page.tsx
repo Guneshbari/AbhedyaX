@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
+import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
 import { compareAnalyses, getDemoComparisons } from "@/lib/api/securityTwin";
 import { getDemoDriftComparison, CANONICAL_DEMO_COMPARISONS } from "@/demo";
 import { DriftComparisonResult, DemoComparisonPreset } from "@/types/securityTwin";
@@ -359,6 +360,12 @@ function ComparePageContent() {
           </div>
         </div>
       )}
+      {/* Demo Journey — Step 6 CTA: navigate to Metadata Exposure */}
+      <DemoNextStepCTA
+        nextRoute="/metadata-exposure"
+        nextLabel="View Metadata Exposure"
+        context="Step 7 of 8 — Analyze encrypted traffic metadata without decrypting payload."
+      />
     </div>
   );
 }

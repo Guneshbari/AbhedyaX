@@ -7,6 +7,8 @@ import { SecurityTrendChart } from "@/components/dashboard/SecurityTrendChart";
 import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { RecentAnalysesTable } from "@/components/dashboard/RecentAnalysesTable";
+import { DemoDashboardCTA } from "@/components/dashboard/DemoDashboardCTA";
+
 
 export default function DashboardPage() {
   return (
@@ -35,6 +37,10 @@ export default function DashboardPage() {
 
       {/* Recent Analyses Telemetry Table */}
       <RecentAnalysesTable analyses={DASHBOARD_DATA.recentAnalyses} />
+
+      {/* Demo Journey — Step 1 CTA: navigate to Analyze */}
+      <DemoDashboardCTA />
     </div>
   );
 }
+

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { AbhedyaLogo } from "@/components/ui/AbhedyaLogo";
-import { JudgeDemoShell } from "@/components/judge-demo/JudgeDemoShell";
+import { DemoJourneyBanner } from "@/components/ui/DemoJourneyBanner";
 
 
 interface AppShellProps {
@@ -61,8 +61,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         </footer>
       </div>
 
-      {/* Judge Demo Shell — portal overlay, triggered from navbar Demo Mode button */}
-      <JudgeDemoShell />
+      {/* Slim fixed-bottom demo progress bar — only shown during guided demo */}
+      <DemoJourneyBanner />
     </div>
   );
 };

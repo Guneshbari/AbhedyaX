@@ -6,6 +6,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SecurityScore } from "@/components/ui/SecurityScore";
+import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
 import { getSecurityTwin } from "@/lib/api/securityTwin";
 import { getDemoSecurityTwin } from "@/demo";
 import { SecurityTwin } from "@/types/securityTwin";
@@ -249,6 +250,12 @@ export default function SecurityTwinDetailPage() {
           </div>
         </div>
       )}
+      {/* Demo Journey — Step 5 CTA: navigate to Compare/Drift */}
+      <DemoNextStepCTA
+        nextRoute="/compare?baseline=AX-2026-00428&current=AX-2026-00427"
+        nextLabel="Compare vs Legacy Configuration"
+        context="Step 6 of 8 — Detect drift: Secure Enterprise (100) vs Legacy Critical (25), Δ −75."
+      />
     </div>
   );
 }

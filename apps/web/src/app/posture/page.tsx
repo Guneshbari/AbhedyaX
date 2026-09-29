@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
+import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
 import { getPostureTimeline } from "@/lib/api/securityTwin";
 import { getDemoPostureTimeline } from "@/demo";
 import { PostureTimelineResult } from "@/types/securityTwin";
@@ -246,6 +247,12 @@ export default function PosturePage() {
           </div>
         </div>
       )}
+      {/* Demo Journey — Step 8 CTA: navigate to Auditable Report */}
+      <DemoNextStepCTA
+        nextRoute="/reports?analysisId=AX-2026-00428"
+        nextLabel="View Auditable Report"
+        context="Step 8 of 8 — Evidence chain, executive summary, and technical report for AX-2026-00428."
+      />
     </div>
   );
 }
