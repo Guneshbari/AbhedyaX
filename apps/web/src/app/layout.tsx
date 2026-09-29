@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { DataProviderProvider } from "@/lib/providers";
 
 export const metadata: Metadata = {
   title: "AbhedyaX — IPsec Security Intelligence",
@@ -18,7 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#FAF8F5] text-black antialiased selection:bg-[#FFE600] selection:text-black">
         <QueryProvider>
-          <AppShell>{children}</AppShell>
+          <DataProviderProvider>
+            <AppShell>{children}</AppShell>
+          </DataProviderProvider>
         </QueryProvider>
       </body>
     </html>

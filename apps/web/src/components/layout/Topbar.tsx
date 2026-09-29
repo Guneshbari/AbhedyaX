@@ -6,12 +6,15 @@ import { Menu, Bell } from "lucide-react";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
 import { NAVIGATION_ITEMS } from "@/data/navigation";
 
+import { useDataProvider } from "@/lib/providers";
+
 interface TopbarProps {
   onMenuToggle?: () => void;
 }
 
 export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const pathname = usePathname();
+  const { effectiveMode, isApiAvailable } = useDataProvider();
 
   // Find active navigation item title
   const currentItem = NAVIGATION_ITEMS.find((item) =>
@@ -49,9 +52,31 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         <SimulationModeBadge />
 
         {/* System Health Status */}
-        <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-[#4ADE80] border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs font-bold text-black font-mono">
-          <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
-          <span>Engine: Ready</span>
+        <div
+          className={`hidden md:flex items-center gap-1.5 px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_#000] text-xs font-bold font-mono ${
+            effectiveMode === "demo"
+              ? "bg-[#FAF8F5] text-black"
+              : isApiAvailable
+              ? "bg-[#4ADE80] text-black"
+              : "bg-[#FF4B4B] text-white"
+          }`}
+        >
+          <span
+            className={`w-2 h-2 rounded-full ${
+              effectiveMode === "demo"
+                ? "bg-black"
+                : isApiAvailable
+                ? "bg-black animate-pulse"
+                : "bg-white"
+            }`}
+          />
+          <span>
+            {effectiveMode === "demo"
+              ? "Engine: Demo"
+              : isApiAvailable
+              ? "Engine: Live"
+              : "Engine: Offline"}
+          </span>
         </div>
 
         {/* Notifications */}
