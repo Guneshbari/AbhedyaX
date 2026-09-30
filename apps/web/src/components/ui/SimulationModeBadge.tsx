@@ -5,8 +5,7 @@ import { Zap, CheckCircle2, PlayCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDataProvider } from "@/lib/providers";
 import { useDemoJourney, DEMO_PRIMARY_ID } from "@/store/demoJourney";
-
-
+import { useRouter } from "next/navigation";
 
 interface SimulationModeBadgeProps {
   className?: string;
@@ -21,17 +20,19 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
 }) => {
   const { effectiveMode, mode } = useDataProvider();
   const { isActive, startDemo, exitDemo } = useDemoJourney();
+  const router = useRouter();
 
   const isDemo = effectiveMode === "demo";
-
 
   function handleClick() {
     if (isActive) {
       exitDemo();
     } else {
       startDemo(DEMO_PRIMARY_ID);
+      router.push("/");
     }
   }
+
 
 
   const badgeContent = (
