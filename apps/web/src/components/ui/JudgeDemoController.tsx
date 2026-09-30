@@ -6,7 +6,7 @@
  * Structure:
  *   [Header row]  AbhedyaX logo · JUDGE DEMO // GUIDED WORKFLOW · STAGE X/8 · Analysis ID · [_][✕]
  *   [Stage nav]   01 BASELINE · 02 ANALYZE · 03 ASSESS · 04 AI · 05 TWIN · 06 DRIFT · 07 EXPOSURE · 08 REPORT
- *   [Content row] STAGE badge · Title · Description  ·  [PRIMARY ACTION] [NEXT STEP →]
+ *   [Content row] STAGE badge · Title · Description  ·  [PHASE ACTION] [PREV STEP] [NEXT STEP →]
  */
 "use client";
 
@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import {
   X,
   ChevronRight,
+  ChevronLeft,
   Minus,
   Check,
   Lock,
@@ -48,7 +49,7 @@ const STAGES: readonly DemoStageConfig[] = [
       "Begin with AX-2026-00428 — a secure enterprise IPsec configuration. Score: 100 · Grade A · Risk: Low.",
     judgeMessage:
       "We begin with a known secure VPN. AbhedyaX establishes the expected baseline security posture.",
-    pageRoute: "/",
+    pageRoute: `/analyses/${DEMO_PRIMARY_ID}`,
     primaryLabel: "Open Baseline Analysis",
     primaryRoute: `/analyses/${DEMO_PRIMARY_ID}`,
     nextRoute: "/analyze",
@@ -163,8 +164,15 @@ function getStageStatus(
 // JudgeDemoController
 // ---------------------------------------------------------------------------
 export function JudgeDemoController() {
-  const { isActive, currentStep, completedStages, setStep, advanceStep, exitDemo } =
-    useDemoJourney();
+  const {
+    isActive,
+    currentStep,
+    completedStages,
+    setStep,
+    advanceStep,
+    previousStep,
+    exitDemo,
+  } = useDemoJourney();
   const [minimized, setMinimized] = useState(false);
   const router = useRouter();
 
@@ -174,13 +182,38 @@ export function JudgeDemoController() {
   const stage = STAGES[displayStep - 1] ?? STAGES[0];
   const maxReached = Math.max(displayStep, ...(completedStages || [1]));
 
+  const hasPrevious = displayStep > 1;
+  const hasNext = Boolean(stage.nextRoute);
+
+  const handleNext = () => {
+    if (!hasNext) return;
+    const nextStageNum = displayStep + 1;
+    const nextStage = STAGES[nextStageNum - 1];
+    advanceStep();
+    if (nextStage) {
+      router.push(nextStage.pageRoute);
+    } else if (stage.nextRoute) {
+      router.push(stage.nextRoute);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (!hasPrevious) return;
+    const prevStageNum = displayStep - 1;
+    const prevStage = STAGES[prevStageNum - 1];
+    previousStep();
+    if (prevStage) {
+      router.push(prevStage.pageRoute);
+    }
+  };
+
   // -----------------------------------------------------------------------
   // MINIMIZED strip
   // -----------------------------------------------------------------------
   if (minimized) {
     return (
       <div className="mb-4 border-2 border-black shadow-[3px_3px_0px_0px_#000] bg-black print:hidden">
-        <div className="flex items-center gap-3 px-3 py-2">
+        <div className="flex items-center gap-3 px-3 py-2 flex-wrap sm:flex-nowrap">
           <AbhedyaLogo size={16} />
           <span className="font-mono font-black text-[10px] text-[#FFE600] uppercase tracking-[0.18em]">
             JUDGE DEMO
@@ -188,7 +221,7 @@ export function JudgeDemoController() {
           <span className="font-mono text-[10px] text-[#687384] uppercase">
             STAGE {displayStep} / {STAGES.length}
           </span>
-          <span className="font-mono text-[9px] text-[#687384] hidden sm:inline">
+          <span className="font-mono text-[9px] text-[#687384] hidden md:inline">
             — {stage.label}: {stage.title}
           </span>
 
@@ -220,23 +253,33 @@ export function JudgeDemoController() {
             })}
           </div>
 
-          <div className="flex items-center gap-2 ml-auto">
-            {stage.nextRoute && (
+          <div className="flex items-center gap-1.5 ml-auto">
+            {hasPrevious && (
               <button
                 type="button"
-                onClick={() => {
-                  advanceStep();
-                  router.push(stage.nextRoute!);
-                }}
+                onClick={handlePrevious}
+                className="flex items-center gap-1 px-2 py-1 bg-white border border-black text-black font-mono font-black text-[10px] uppercase hover:bg-zinc-200 transition-colors"
+              >
+                <ChevronLeft className="w-3 h-3" /> PREV
+              </button>
+            )}
+            {hasNext ? (
+              <button
+                type="button"
+                onClick={handleNext}
                 className="flex items-center gap-1 px-2 py-1 bg-[#FFE600] border border-black text-black font-mono font-black text-[10px] uppercase hover:bg-yellow-300 transition-colors"
               >
                 NEXT <ChevronRight className="w-3 h-3" />
               </button>
+            ) : (
+              <span className="font-mono text-[10px] text-[#22C55E] font-bold px-1.5 py-0.5 border border-[#22C55E]">
+                ✓ COMPLETE
+              </span>
             )}
             <button
               type="button"
               onClick={() => setMinimized(false)}
-              className="p-1 text-[#687384] hover:text-[#FFE600] transition-colors"
+              className="p-1 text-[#687384] hover:text-[#FFE600] transition-colors ml-1"
               title="Expand controller"
             >
               <ChevronDown className="w-4 h-4" />
@@ -385,7 +428,7 @@ export function JudgeDemoController() {
 
         {/* Right: action buttons */}
         <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
-          {/* Primary action */}
+          {/* Phase action button — preserved! */}
           <button
             type="button"
             onClick={() => {
@@ -397,14 +440,23 @@ export function JudgeDemoController() {
             <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           </button>
 
-          {/* NEXT STEP */}
-          {stage.nextRoute ? (
+          {/* PREVIOUS STEP */}
+          {hasPrevious && (
             <button
               type="button"
-              onClick={() => {
-                advanceStep();
-                router.push(stage.nextRoute!);
-              }}
+              onClick={handlePrevious}
+              className="flex items-center gap-1.5 px-3 py-2.5 bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_#000] font-mono font-black text-[11px] uppercase tracking-wide hover:bg-[#FAF8F5] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
+              PREVIOUS STEP
+            </button>
+          )}
+
+          {/* NEXT STEP */}
+          {hasNext ? (
+            <button
+              type="button"
+              onClick={handleNext}
               className="flex items-center gap-1.5 px-3 py-2.5 bg-black text-[#FFE600] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.4)] font-mono font-black text-[11px] uppercase tracking-wide hover:bg-zinc-900 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
             >
               NEXT STEP

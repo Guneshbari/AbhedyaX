@@ -29,9 +29,10 @@ export const SimulationModeBadge: React.FC<SimulationModeBadgeProps> = ({
       exitDemo();
     } else {
       startDemo(DEMO_PRIMARY_ID);
-      router.push("/");
+      router.push(`/analyses/${DEMO_PRIMARY_ID}`);
     }
   }
+
 
 
 

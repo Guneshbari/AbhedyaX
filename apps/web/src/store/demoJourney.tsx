@@ -22,8 +22,8 @@ export const DEMO_STEPS = [
     step: 1,
     label: "BASELINE",
     description: "Establish Secure VPN Baseline",
-    routes: ["/"],
-    pageRoute: "/",
+    routes: ["/", `/analyses/${DEMO_PRIMARY_ID}`],
+    pageRoute: `/analyses/${DEMO_PRIMARY_ID}`,
     nextRoute: "/analyze",
     nextLabel: "Analyze VPN",
   },
@@ -115,6 +115,7 @@ export interface DemoJourneyActions {
   startDemo: (primaryAnalysisId?: string) => void;
   exitDemo: () => void;
   advanceStep: () => void;
+  previousStep: () => void;
   setStep: (step: number) => void;
   resetDemo: () => void;
 }
@@ -240,6 +241,24 @@ export function DemoJourneyProvider({ children }: { children: React.ReactNode })
     });
   }, []);
 
+  const previousStep = useCallback(() => {
+    setState((s) => {
+      const prevStep = Math.max(s.currentStep - 1, 1);
+      const nextState: DemoJourneyState = {
+        ...s,
+        currentStep: prevStep,
+      };
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+        } catch {
+          // ignore
+        }
+      }
+      return nextState;
+    });
+  }, []);
+
   const setStep = useCallback((step: number) => {
     setState((s) => {
       const nextState: DemoJourneyState = {
@@ -266,6 +285,7 @@ export function DemoJourneyProvider({ children }: { children: React.ReactNode })
     startDemo,
     exitDemo,
     advanceStep,
+    previousStep,
     setStep,
     resetDemo,
   };
