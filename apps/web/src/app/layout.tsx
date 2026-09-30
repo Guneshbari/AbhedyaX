@@ -3,6 +3,8 @@ import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { DataProviderProvider } from "@/lib/providers";
+import { DemoJourneyProvider } from "@/store/demoJourney";
+
 
 export const metadata: Metadata = {
   title: "AbhedyaX — IPsec Security Intelligence",
@@ -20,9 +22,12 @@ export default function RootLayout({
       <body className="bg-[#FAF8F5] text-black antialiased selection:bg-[#FFE600] selection:text-black">
         <QueryProvider>
           <DataProviderProvider>
-            <AppShell>{children}</AppShell>
+            <DemoJourneyProvider>
+              <AppShell>{children}</AppShell>
+            </DemoJourneyProvider>
           </DataProviderProvider>
         </QueryProvider>
+
       </body>
     </html>
   );
