@@ -17,7 +17,6 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { SecurityScore } from "@/components/ui/SecurityScore";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { SimulationModeBadge } from "@/components/ui/SimulationModeBadge";
-import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
 import { AnalysisNavTabs } from "@/components/analysis/AnalysisNavTabs";
 import { RiskScoreBreakdown } from "@/components/analysis/RiskScoreBreakdown";
 import { AuditableReasoningPanel } from "@/components/analysis/AuditableReasoningPanel";
@@ -618,12 +617,6 @@ export default function AnalysisResultPage() {
           )}
         </div>
       </div>
-      {/* Demo Journey — Step 4 CTA: navigate to Security Twin */}
-      <DemoNextStepCTA
-        nextRoute={`/security-twin/${analysisId}`}
-        nextLabel="View Security Twin"
-        context="Step 5 of 8 — Compare the expected security configuration against what AbhedyaX observed."
-      />
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { DemoNextStepCTA } from "@/components/ui/DemoNextStepCTA";
 import { getAnalysisMetadataExposure } from "@/lib/api/securityTwin";
 import { getDemoMetadataExposure } from "@/demo";
 import { MetadataExposureResult } from "@/types/securityTwin";
@@ -265,12 +264,6 @@ export default function MetadataExposurePage() {
           </div>
         </div>
       )}
-      {/* Demo Journey — Step 7a CTA: navigate to Posture Timeline */}
-      <DemoNextStepCTA
-        nextRoute="/posture"
-        nextLabel="View Security Posture Timeline"
-        context="Step 7b of 8 — Historical security posture across all analyzed sessions."
-      />
     </div>
   );
 }

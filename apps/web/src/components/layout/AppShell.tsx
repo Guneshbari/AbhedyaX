@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { AbhedyaLogo } from "@/components/ui/AbhedyaLogo";
-import { DemoJourneyBanner } from "@/components/ui/DemoJourneyBanner";
-
+import { JudgeDemoController } from "@/components/ui/JudgeDemoController";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -38,6 +37,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <Topbar onMenuToggle={() => setIsSidebarOpen((prev) => !prev)} />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl 2xl:max-w-[1600px] w-full min-w-0 mx-auto print:p-0 print:m-0 print:max-w-none">
+          {/* Judge Demo Guided Workflow Controller — appears above page content during demo */}
+          <JudgeDemoController />
+
           {children}
         </main>
 
@@ -49,7 +51,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
               AbhedyaX
             </span>
             <span>—</span>
-            <span className="text-zinc-800">AI-Powered IPsec Protocol Analyzer & Security Assessment</span>
+            <span className="text-zinc-800">AI-Powered IPsec Protocol Analyzer &amp; Security Assessment</span>
           </div>
           <div className="flex items-center gap-3 text-[11px] font-bold">
             <span className="bg-[#FAF8F5] px-2 py-0.5 border border-black">NTRO Problem 26160</span>
@@ -60,9 +62,6 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </div>
         </footer>
       </div>
-
-      {/* Slim fixed-bottom demo progress bar — only shown during guided demo */}
-      <DemoJourneyBanner />
     </div>
   );
 };
